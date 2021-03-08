@@ -135,6 +135,10 @@ h1 {
     cursor: pointer;
 }
 
+h1 a {
+    text-decoration: none;
+}
+
 input {
     width: 582px;
     color: #222;
