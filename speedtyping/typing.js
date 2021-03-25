@@ -30,7 +30,6 @@ typingInput.addEventListener('input', () => {
     const arrQuote = quoteDisplay.querySelectorAll('span')
     const arrInput = typingInput.value.split('')
     
-    console.log(arrInput.length)
     let chars = arrQuote.length
     arrQuote.forEach((charSpan, index) => {
         const char = arrInput[index]
@@ -43,13 +42,10 @@ typingInput.addEventListener('input', () => {
             charSpan.classList.remove('incorrect')
             correctchar++
         }
-        else if (arrInput.length === chars) {
+        else if (arrInput.length === chars) { //condition to renderNewQuote
             console.log('will print new quote')
             words+=typingInput.value.split(' ').length
             totalchar+=arrInput.length
-            console.log(`No. of words: ${words}`)
-            console.log(`correct char = ${correctchar}`)
-            console.log(`Total char = ${totalchar}`)
             rendernewquote()
         }
         else { //wrong character typed
@@ -71,7 +67,7 @@ async function rendernewquote() {
     console.log('posting new quote')
     const quote = await getrandomquote()
     quoteDisplay.innerHTML = ''
-    quote.split('').forEach(element => {
+    quote.split('').forEach(element => { //will enclose every char (of above quote) within a <span>
         const charSpan = document.createElement('span')
         charSpan.innerText = element
         quoteDisplay.appendChild(charSpan)
