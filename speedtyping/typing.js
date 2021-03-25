@@ -1,4 +1,4 @@
-const quote_url = 'http://api.quotable.io/random'
+const quote_url = 'https://api.quotable.io/random'
 
 const mainh1 = document.querySelector('main h1')
 const textArea = document.querySelector('textarea')
