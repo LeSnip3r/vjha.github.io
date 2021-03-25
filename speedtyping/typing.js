@@ -42,18 +42,18 @@ typingInput.addEventListener('input', () => {
             charSpan.classList.remove('incorrect')
             correctchar++
         }
-        else if (arrInput.length === chars) { //condition to renderNewQuote
-            console.log('will print new quote')
-            words+=typingInput.value.split(' ').length
-            totalchar+=arrInput.length
-            rendernewquote()
-        }
-        else { //wrong character typed
+        else if(char !== charSpan.innerText) { //wrong character typed
             totalchar++
             charSpan.classList.add('incorrect')
             charSpan.classList.remove('correct')
         }
     })
+    if (arrInput.length === chars) { //condition to renderNewQuote
+        console.log('will print new quote')
+        words+=typingInput.value.split(' ').length
+        totalchar+=arrInput.length
+        rendernewquote()
+    }
 })
 
 function getrandomquote() {
