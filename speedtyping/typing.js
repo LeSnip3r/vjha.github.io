@@ -1,12 +1,12 @@
 const quote_url = 'https://api.quotable.io/random'
 
 const mainh1 = document.querySelector('main h1')
-const textArea = document.querySelector('textarea')
-const mainP = document.querySelector('main p')
+const textArea = document.querySelector('textarea') //input
+const mainP = document.querySelector('main p') //random quote
 const result = document.querySelector('main h3')
 
-const quoteDisplay = document.getElementById('para')
-const typingInput = document.getElementById('longInput')
+const quoteDisplay = document.getElementById('para') //random quote
+const typingInput = document.getElementById('longInput') //user types here
 
 const timer = document.getElementById('timer')
 
@@ -14,11 +14,11 @@ const displaySpeed = document.getElementById('speed')
 const displayAccuracy = document.getElementById('acc')
 
 
-let words = 0
-let correctchar = 0
-let totalchar = 0
-let isPlaying
+let words = 0 //counter for words typed
+let correctchar = 0 //counter for correct char
+let totalchar = 0 //counter for total char
 let time = 60
+
 let flag = 0
 
 
@@ -38,7 +38,7 @@ typingInput.addEventListener('input', () => {
             charSpan.classList.remove('correct')
             charSpan.classList.remove('incorrect')
         }
-        else if (char === charSpan.innerText) {
+        else if (char === charSpan.innerText) { //correct character typed
             charSpan.classList.add('correct')
             charSpan.classList.remove('incorrect')
             correctchar++
@@ -52,7 +52,7 @@ typingInput.addEventListener('input', () => {
             console.log(`Total char = ${totalchar}`)
             rendernewquote()
         }
-        else {
+        else { //wrong character typed
             totalchar++
             charSpan.classList.add('incorrect')
             charSpan.classList.remove('correct')
@@ -84,16 +84,23 @@ function startTimer() {
             time--
         }
         else if (time === 0) {
+            //results
             words+=typingInput.value.split(' ').length
             totalchar+=typingInput.value.split('').length
-            result.classList.remove('hide')
+
+            //assigning values to results
             displaySpeed.innerText = words
             displayAccuracy.innerText = Math.round((correctchar/totalchar)*100)
+
+            //after time expires, hide the quote,input and display results
+            result.classList.remove('hide')            
             mainh1.classList.add('hide')
             textArea.classList.add('hide')
             mainP.classList.add('hide')
+
             clearInterval(x)
         }
+        //updating timer
         timer.innerHTML = time
     }, 1000)
 }
