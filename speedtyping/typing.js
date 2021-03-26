@@ -18,7 +18,7 @@ let words = 0 //counter for words typed
 let correctchar = 0 //counter for correct char
 let totalchar = 0 //counter for total char
 let time = 60
-
+let totalcorrectchar = 0
 let flag = 0
 
 
@@ -29,29 +29,28 @@ typingInput.addEventListener('input', () => {
     }
     const arrQuote = quoteDisplay.querySelectorAll('span')
     const arrInput = typingInput.value.split('')
-    
+    correctchar = 0
     let chars = arrQuote.length
     arrQuote.forEach((charSpan, index) => {
         const char = arrInput[index]
         if (char == null) {
             charSpan.classList.remove('correct')
             charSpan.classList.remove('incorrect')
-        }
-        else if (char === charSpan.innerText) { //correct character typed
+        } else if (char === charSpan.innerText) { //correct character typed
             charSpan.classList.add('correct')
             charSpan.classList.remove('incorrect')
             correctchar++
-        }
-        else if(char !== charSpan.innerText) { //wrong character typed
-            totalchar++
+        } else if (char !== charSpan.innerText) { //wrong character typed
             charSpan.classList.add('incorrect')
             charSpan.classList.remove('correct')
         }
     })
     if (arrInput.length === chars) { //condition to renderNewQuote
         console.log('will print new quote')
-        words+=typingInput.value.split(' ').length
-        totalchar+=arrInput.length
+        words += typingInput.value.split(' ').length
+        totalchar += arrInput.length
+        totalcorrectchar += correctchar
+        console.log("totalcorrectchar" + totalcorrectchar)
         rendernewquote()
     }
 })
@@ -71,25 +70,35 @@ async function rendernewquote() {
         const charSpan = document.createElement('span')
         charSpan.innerText = element
         quoteDisplay.appendChild(charSpan)
-    });    
+    });
 }
 
 function startTimer() {
-    var x=setInterval(function () {
+    var x = setInterval(function() {
         if (time > 0) {
             time--
-        }
-        else if (time === 0) {
+        } else if (time === 0) {
             //results
-            words+=typingInput.value.split(' ').length
-            totalchar+=typingInput.value.split('').length
-
-            //assigning values to results
+            const arrInput = typingInput.value.split('')
+            const arrQuote = quoteDisplay.querySelectorAll('span')
+            let chars = arrQuote.length
+            arrQuote.forEach((charSpan, index) => {
+                const char = arrInput[index]
+                if (char === charSpan.innerText) { //correct character typed
+                    totalcorrectchar++
+                    console.log(totalcorrectchar)
+                }
+            })
+            totalchar += typingInput.value.split('').length
+            words += typingInput.value.split(' ').length
+                //assigning values to results
             displaySpeed.innerText = words
-            displayAccuracy.innerText = Math.round((correctchar/totalchar)*100)
+            console.log("Total CHAR" + totalchar)
+            console.log("correct" + totalcorrectchar)
+            displayAccuracy.innerText = Math.round((totalcorrectchar / totalchar) * 100)
 
             //after time expires, hide the quote,input and display results
-            result.classList.remove('hide')            
+            result.classList.remove('hide')
             mainh1.classList.add('hide')
             textArea.classList.add('hide')
             mainP.classList.add('hide')
