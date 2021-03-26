@@ -4,6 +4,7 @@ const mainh1 = document.querySelector('main h1')
 const textArea = document.querySelector('textarea') //input
 const mainP = document.querySelector('main p') //random quote
 const result = document.querySelector('main h3')
+const playAgain = document.querySelector('button')
 
 const quoteDisplay = document.getElementById('para') //random quote
 const typingInput = document.getElementById('longInput') //user types here
@@ -45,7 +46,7 @@ typingInput.addEventListener('input', () => {
             charSpan.classList.remove('correct')
         }
     })
-    if (arrInput.length === chars) { //condition to renderNewQuote
+    if (arrInput.length >= chars) { //condition to renderNewQuote
         console.log('will print new quote')
         words += typingInput.value.split(' ').length
         totalchar += arrInput.length
@@ -91,13 +92,15 @@ function startTimer() {
             })
             totalchar += typingInput.value.split('').length
             words += typingInput.value.split(' ').length
-                //assigning values to results
+
+            //assigning values to results
             displaySpeed.innerText = words
             console.log("Total CHAR" + totalchar)
             console.log("correct" + totalcorrectchar)
             displayAccuracy.innerText = Math.round((totalcorrectchar / totalchar) * 100)
 
-            //after time expires, hide the quote,input and display results
+            //after time expires, hide the quote,input and display results,playAgain button
+            playAgain.classList.remove('hide')
             result.classList.remove('hide')
             mainh1.classList.add('hide')
             textArea.classList.add('hide')

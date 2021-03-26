@@ -80,6 +80,19 @@ textarea:focus {
     outline: none;
 }
 
+button {
+    padding: 7px 14px;
+    font-size: 15px;
+    margin: 20px;
+    border-radius: 6px;
+    border-color: transparent;
+}
+
+button:hover {
+    cursor: pointer;
+    border-color: rgba(0,0,0,0.3);
+}
+
 .hide {
     display: none;
 }
@@ -120,4 +133,18 @@ footer {
 .incorrect {
     color: red;
     text-decoration: underline;
+}
+
+@media screen and (max-width: 400px) {
+    header h1 {
+        font-size: 31px;
+    }
+
+    textarea {
+        width: 53%;
+    }
+
+    .box {
+        width: 53%;
+    }
 }
