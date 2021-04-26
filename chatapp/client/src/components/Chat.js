@@ -3,7 +3,7 @@ import queryString from 'query-string'
 import io from 'socket.io-client'
 import './Chat.css'
 
-import ChatBox from './chatbox'
+import ChatHeader from './chatheader'
 import PrevMessages from './prevmssg'
 import InputMessage from './input'
 import TextContainer from './txtcontainer'
@@ -73,7 +73,7 @@ const Chat = ({location}) => {
         <div className='outerContainer'>
             <div className='container'>
                 {/* The skeleton */}
-                <ChatBox room={room} />                
+                <ChatHeader room={room} />                
 
                 {/* contains the conversation */}
                 <PrevMessages allMessages={allMessages} name={name} />

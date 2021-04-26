@@ -1,11 +1,9 @@
-//This is the skeleton of the chatbox
-
 import React from 'react'
 import onlineIcon from './onlineIcon.png'
 import closeIcon from './closeIcon.png'
-import './chatbox.css'
+import './chatheader.css'
 
-const Chatbox = ({room})=>{
+const ChatHeader = ({room})=>{
     return(
         <div className="chatbox">
             <div className="leftSide">
@@ -21,4 +19,4 @@ const Chatbox = ({room})=>{
     )      
 }
 
-export default Chatbox
+export default ChatHeader

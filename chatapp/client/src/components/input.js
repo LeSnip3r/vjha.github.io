@@ -1,5 +1,5 @@
 import React from 'react'
-import './chatbox.css'
+import './chatheader.css'
 import './input.css'
 
 const InputMessage = ({message,setMessage,sendMessage})=>{

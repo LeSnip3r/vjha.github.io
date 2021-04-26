@@ -6,7 +6,7 @@ import Message from './message'
 import './prevmssg.css'
 
 const PrevMessages = ( {allMessages, name} ) => (
-    <Scroll>
+    <Scroll className="messages">
         {/* traversing through each Message(component) */}
         {allMessages.map( (message, i)  => 
             <div key={i}>
