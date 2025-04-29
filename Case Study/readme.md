@@ -1,4 +1,4 @@
-# Amazon Returns UX Case Study  
+# Amazon Returns Case Study  
 Analyzing the end-to-end return process for Amazon Shopping (Mobile App)
 
 Overview -
