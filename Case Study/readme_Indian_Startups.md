@@ -10,5 +10,5 @@ Too often, startup playbooks glamorize hustle culture while treating documentati
 💡 Author's Note:
 This deck is designed to provoke introspection among founders, product leads, and ops teams about the cost of ignoring KM. The goal is to shift conversations from short-term velocity to long-term sustainability.
 
-⚙️ Tooling Acknowledgment
+⚙️ Tooling Acknowledgment:
 This presentation was designed using Gamma.app, an AI-powered platform that streamlines the creation of professional presentations.
