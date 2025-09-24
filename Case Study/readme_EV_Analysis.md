@@ -5,12 +5,12 @@
 ---
 
 ## 📋 Table of Contents
-- [Overview]
-- [Motivation]
-- [Objectives]
-- [Methodology]
-- [Dataset]
-- [Key Features]
+- Overview
+- Motivation
+- Objectives
+- Methodology
+- Dataset
+- Key Features
 
 ---
 
