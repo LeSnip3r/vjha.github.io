@@ -5,18 +5,16 @@
 ---
 
 ## 📋 Table of Contents
-- [Overview](#-overview)
-- [Motivation](#-motivation)
-- [Objectives](#-objectives)
-- [Methodology](#-methodology)
-- [Dataset](#-dataset)
-- [Key Features](#-key-features)
-- [Installation](#-installation)
-- [Usage](#-usage)
-- [Results](#-results)
-- [Future Work](#-future-work)
-- [Contributing](#-contributing)
-- [License](#-license)
+- [Overview]
+- [Motivation]
+- [Objectives]
+- [Methodology]
+- [Dataset]
+- [Key Features]
+- [Installation]
+- [Usage]
+- [Results]
+- [Future Work]
 
 ---
 
