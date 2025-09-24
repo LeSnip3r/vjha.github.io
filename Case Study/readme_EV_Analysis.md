@@ -11,10 +11,6 @@
 - [Methodology]
 - [Dataset]
 - [Key Features]
-- [Installation]
-- [Usage]
-- [Results]
-- [Future Work]
 
 ---
 
