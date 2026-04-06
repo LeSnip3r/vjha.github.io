@@ -1,0 +1,2022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polaris 6.0 — In-Transit</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#F2F4F8;--surface:#FFFFFF;--card:#FFFFFF;--card2:#F7F8FC;
+  --border:#E2E7F0;--border2:#EBF0F8;
+  --text:#1A2340;--text2:#4A5778;--text3:#8A97B8;
+  --accent:#2563EB;--accent-bg:#EEF3FF;--accent-light:#DBEAFE;
+  --teal:#0891B2;--teal-bg:#E0F2FE;
+  --green:#059669;--green-bg:#DCFCE7;--green-border:#A7F3D0;
+  --amber:#D97706;--amber-bg:#FEF3C7;--amber-border:#FCD34D;
+  --red:#DC2626;--red-bg:#FEE2E2;--red-border:#FCA5A5;
+  --purple:#7C3AED;--purple-bg:#EDE9FE;--purple-border:#C4B5FD;
+  --orange:#EA580C;
+  --shadow-sm:0 1px 3px rgba(26,35,64,.08),0 1px 2px rgba(26,35,64,.04);
+  --shadow-md:0 4px 12px rgba(26,35,64,.10);
+  --shadow-lg:0 8px 24px rgba(26,35,64,.14);
+}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:12px;line-height:1.5;display:flex;flex-direction:column;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+/* ── HEADER ── */
+.header{height:52px;min-height:52px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;z-index:200;flex-shrink:0;box-shadow:var(--shadow-sm);}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px;letter-spacing:-.3px;color:var(--text);}
+.logo-icon{width:28px;height:28px;background:linear-gradient(135deg,#2563EB,#7C3AED);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;flex-shrink:0;}
+.hdiv{width:1px;height:22px;background:var(--border);flex-shrink:0;}
+.status-wrap{position:relative;}
+.status-pill{display:flex;align-items:center;gap:5px;background:var(--green-bg);border:1px solid var(--green-border);border-radius:20px;padding:4px 11px 4px 8px;font-size:11px;font-weight:600;color:var(--green);cursor:pointer;user-select:none;transition:all .15s;}
+.status-pill:hover{opacity:.85;}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;}
+.status-dropdown{position:absolute;top:calc(100% + 6px);left:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;min-width:148px;z-index:999;overflow:hidden;display:none;box-shadow:var(--shadow-lg);}
+.status-dropdown.open{display:block;}
+.status-opt{padding:8px 14px;font-size:12px;cursor:pointer;color:var(--text2);}
+.status-opt:hover{background:var(--card2);}
+.timer-block{display:flex;flex-direction:column;gap:0;}
+.timer-lbl{font-size:9px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.5px;}
+.timer-val{font-size:12px;font-weight:700;color:var(--text2);font-family:'JetBrains Mono',monospace;}
+.h-spacer{flex:1;}
+.role-chip{background:var(--accent-bg);border:1px solid var(--accent-light);border-radius:20px;padding:3px 11px;font-size:10px;color:var(--accent);display:flex;align-items:center;gap:4px;font-weight:600;}
+.h-btn{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:5px 12px;font-size:11px;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:5px;font-weight:500;transition:all .15s;white-space:nowrap;font-family:'Inter',sans-serif;}
+.h-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
+.tasks-wrap{position:relative;}
+.tasks-popup{position:absolute;top:calc(100% + 8px);right:0;width:290px;background:var(--surface);border:1px solid var(--border);border-radius:12px;z-index:999;overflow:hidden;display:none;box-shadow:var(--shadow-lg);}
+.tasks-popup.open{display:block;}
+.tasks-pop-hd{padding:9px 13px;border-bottom:1px solid var(--border2);font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.6px;background:var(--card2);}
+.tasks-pop-body{padding:6px;}
+.tq-item{display:flex;gap:8px;padding:7px 9px;border-radius:7px;border:1px solid transparent;cursor:pointer;margin-bottom:2px;transition:all .12s;}
+.tq-item:hover{background:var(--card2);border-color:var(--border);}
+.tq-item.tq-active{background:var(--accent-bg);border-color:var(--accent-light);}
+.tq-bar{width:3px;border-radius:3px;flex-shrink:0;align-self:stretch;}
+.tq-info{flex:1;min-width:0;}
+.tq-name{font-size:11.5px;font-weight:600;color:var(--text);}
+.tq-sub{font-size:10px;color:var(--text3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tq-time{font-size:10px;color:var(--text3);align-self:flex-end;flex-shrink:0;}
+.avatar-wrap{position:relative;}
+.avatar{width:30px;height:30px;background:linear-gradient(135deg,#2563EB,#7C3AED);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;cursor:pointer;position:relative;}
+.avatar-notif{width:7px;height:7px;background:var(--red);border-radius:50%;position:absolute;top:-1px;right:-1px;border:2px solid var(--surface);}
+.profile-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;min-width:200px;z-index:999;overflow:hidden;display:none;box-shadow:var(--shadow-lg);}
+.profile-dropdown.open{display:block;}
+.profile-header{padding:13px;border-bottom:1px solid var(--border2);}
+.profile-name{font-size:13px;font-weight:700;color:var(--text);}
+.profile-meta{font-size:10px;color:var(--text3);margin-top:2px;}
+.profile-opt{padding:8px 13px;font-size:11.5px;cursor:pointer;color:var(--text2);display:flex;align-items:center;gap:8px;}
+.profile-opt:hover{background:var(--card2);}
+
+/* ── EDGE+ BADGE ── */
+.edge-plus{display:inline-flex;align-items:center;background:linear-gradient(135deg,#3730A3,#4F46E5);border-radius:5px;padding:1px 6px 1px 4px;vertical-align:middle;}
+.edge-plus span:first-child{font-size:10px;font-weight:700;color:#fff;letter-spacing:-.2px;}
+.edge-plus span.ep{color:#F87171;font-size:13px;font-weight:900;line-height:1;margin-left:1px;}
+
+/* ── CONTEXT BAR ── */
+.ctx-bar{height:190px;min-height:190px;background:var(--surface);border-bottom:2px solid var(--border);display:flex;align-items:stretch;padding:8px 20px;gap:8px;flex-shrink:0;box-shadow:var(--shadow-sm);}
+.ctx-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 13px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;min-width:0;}
+.ctx-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:10px 10px 0 0;}
+.ctx-card.c-cust{flex:1;max-width:210px;}
+.ctx-card.c-cust::before{background:var(--accent);}
+.ctx-card.c-active{flex:2.2;background:#FEFBF0;border-color:var(--amber-border);}
+.ctx-card.c-active::before{background:var(--amber);}
+.ctx-card.c-wallet{flex:1;max-width:200px;}
+.ctx-card.c-wallet::before{background:var(--teal);}
+.ctx-card.c-stats{flex:1;max-width:200px;}
+.ctx-card.c-stats::before{background:var(--green);}
+.ctx-card.c-action{flex:1;max-width:215px;background:var(--accent);border-color:#1D4ED8;}
+.ctx-card.c-action::before{background:rgba(255,255,255,.25);}
+.cc-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;}
+.cc-main{font-size:13px;font-weight:700;color:var(--text);margin-top:2px;}
+.cc-sub{font-size:10px;color:var(--text3);}
+.stat-cell{text-align:center;}
+.stat-num{font-size:17px;font-weight:800;line-height:1.1;}
+.stat-lbl{font-size:8.5px;color:var(--text3);}
+.fl-item{font-size:9px;color:var(--text3);white-space:nowrap;}
+.fl-val-g{font-weight:700;color:var(--green);background:var(--green-bg);padding:1px 5px;border-radius:3px;}
+.fl-val-r{font-weight:700;color:var(--red);background:var(--red-bg);padding:1px 5px;border-radius:3px;}
+
+/* active order ctx */
+.ao-row{display:flex;align-items:center;gap:5px;margin-top:4px;flex-wrap:wrap;}
+.ao-field{display:flex;flex-direction:column;gap:1px;min-width:0;}
+.ao-lbl{font-size:8px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.4px;}
+.ao-val{font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;}
+.ao-divider{width:1px;height:26px;background:var(--amber-border);flex-shrink:0;}
+.policy-badge-ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);border-radius:20px;padding:2px 8px;font-size:9px;font-weight:700;white-space:nowrap;}
+.gen-chip{font-size:9px;font-weight:700;background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);border-radius:4px;padding:2px 6px;}
+.ao-actions{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap;}
+.ao-btn{padding:4px 9px;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;white-space:nowrap;transition:all .15s;display:inline-flex;align-items:center;gap:4px;}
+.ao-btn-wh{background:var(--surface);color:var(--text2);border:1px solid var(--border);}
+.ao-btn-wh:hover{border-color:var(--teal);color:var(--teal);}
+.ao-btn-ret{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border);}
+.ao-btn-inv{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-light);}
+.ao-btn-esc{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);}
+
+/* quick actions */
+.qa-label{font-size:8.5px;font-weight:700;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;}
+.qa-raise{width:100%;padding:7px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:7px;color:#fff;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'Inter',sans-serif;margin-bottom:5px;}
+.qa-raise:hover{background:rgba(255,255,255,.28);}
+.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+.qa-btn{padding:6px 3px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:6px;color:rgba(255,255,255,.9);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:'Inter',sans-serif;font-size:9.5px;font-weight:600;}
+.qa-btn:hover{background:rgba(255,255,255,.24);}
+.qa-ico{font-size:13px;line-height:1;}
+.qa-lbl{font-size:8.5px;color:rgba(255,255,255,.75);text-align:center;}
+
+/* ── TAB BAR ── */
+.tab-bar{height:40px;min-height:40px;background:var(--surface);border-bottom:2px solid var(--border);display:flex;align-items:flex-end;padding:0 20px;gap:0;flex-shrink:0;overflow-x:auto;}
+.tab{padding:8px 14px;font-size:12px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;display:flex;align-items:center;gap:4px;white-space:nowrap;transition:color .15s;}
+.tab:hover{color:var(--text2);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+.tc{font-size:9px;padding:1px 6px;border-radius:10px;background:var(--border2);color:var(--text3);}
+.tab.active .tc{background:var(--accent-bg);color:var(--accent);}
+.tc.warn{background:var(--amber-bg);color:var(--amber);}
+
+/* ── MAIN LAYOUT ── */
+.main{display:flex;flex:1;min-height:0;overflow:hidden;}
+.cpanel{flex:1;overflow-y:auto;padding:14px 16px;background:var(--bg);display:flex;flex-direction:column;gap:10px;min-width:0;}
+.rpanel{width:280px;flex-shrink:0;border-left:1px solid var(--border);overflow-y:auto;background:var(--surface);display:flex;flex-direction:column;}
+
+/* ── RIGHT PANEL (flat list style, not deep accordion) ── */
+.rp-section{border-bottom:1px solid var(--border);}
+.rp-header{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;cursor:pointer;user-select:none;transition:background .12s;}
+.rp-header:hover{background:var(--card2);}
+.rp-title{font-size:11px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.4px;}
+.rp-header.open{background:var(--accent-bg);}
+.rp-header.open .rp-title{color:var(--accent);}
+.rp-right{display:flex;align-items:center;gap:8px;}
+.rp-add{font-size:10px;color:var(--accent);font-weight:600;cursor:pointer;padding:1px 4px;border-radius:4px;}
+.rp-add:hover{background:var(--accent-bg);}
+.rp-chev{font-size:12px;color:var(--text);font-weight:400;transition:transform .18s;}
+.rp-chev.open{transform:rotate(90deg);}
+.rp-body{display:none;padding:10px 16px;background:var(--surface);}
+.rp-body.open{display:block;}
+.rp-viewall{font-size:10px;color:var(--accent);font-weight:600;cursor:pointer;white-space:nowrap;}
+
+/* User info 2-col grid */
+.ui-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.ui-row{display:flex;flex-direction:column;gap:1px;}
+.ui-lbl{font-size:9px;color:var(--text3);font-weight:500;}
+.ui-val{font-size:11px;color:var(--text);font-weight:500;}
+.ui-val.g{color:var(--green);}
+.ui-val.pu{color:var(--purple);}
+.ui-val.mono{font-family:'JetBrains Mono',monospace;font-size:10.5px;}
+
+/* Address / Patient items */
+.rp-item{display:flex;align-items:flex-start;gap:7px;padding:5px 0;border-bottom:1px solid var(--border2);}
+.rp-item:last-of-type{border-bottom:none;}
+.rp-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.rp-item-info{flex:1;min-width:0;}
+.rp-item-name{font-size:11px;font-weight:600;color:var(--text);}
+.rp-item-sub{font-size:9.5px;color:var(--text3);margin-top:1px;}
+.rp-item-acts{display:flex;gap:2px;flex-shrink:0;}
+
+/* Agent History */
+.ah-tabs{display:flex;gap:0;border-bottom:1px solid var(--border2);margin-bottom:6px;}
+.ah-tab{padding:5px 9px;font-size:10.5px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;}
+.ah-tab:hover{color:var(--text2);}
+.ah-tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+.ah-date-lbl{font-size:10px;font-weight:700;color:var(--text2);padding:3px 0 2px;margin-top:3px;}
+.ah-entry{display:flex;align-items:flex-start;gap:6px;padding:5px 6px;border-radius:6px;cursor:pointer;border:1px solid transparent;margin-bottom:2px;}
+.ah-entry:hover{background:var(--bg);border-color:var(--border);}
+.ah-time{font-size:9.5px;color:var(--text3);width:40px;flex-shrink:0;font-family:'JetBrains Mono',monospace;padding-top:2px;}
+.ah-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;background:var(--accent-bg);}
+.ah-main{flex:1;min-width:0;}
+.ah-title{font-size:11px;font-weight:600;color:var(--text);}
+.ah-sub{font-size:9.5px;color:var(--green);margin-top:1px;}
+.ah-sub.missed{color:var(--red);}.ah-sub.neutral{color:var(--text3);}
+.ah-chev{font-size:10px;color:var(--text);flex-shrink:0;margin-top:2px;transition:transform .15s;}
+.ah-chev.rotated{transform:rotate(90deg);}
+.ah-detail{display:none;background:var(--card2);border:1px solid var(--border);border-radius:6px;margin:2px 0 2px 26px;}
+.ah-detail.open{display:block;}
+.ah-dr{display:flex;padding:4px 10px;border-bottom:1px solid var(--border2);font-size:10.5px;}
+.ah-dr:last-child{border-bottom:none;}
+.ah-dk{color:var(--text3);width:110px;flex-shrink:0;}
+.ah-dv{color:var(--text);font-weight:500;}
+
+/* Task history in right panel */
+.tl-item{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border2);}
+.tl-item:last-child{border-bottom:none;}
+.tl-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.tl-lbl{font-size:11px;color:var(--text);font-weight:500;}
+.tl-t{font-size:9.5px;color:var(--text3);margin-top:1px;}
+
+/* ── CARD ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--shadow-sm);}
+.card-hd{background:var(--card2);border-bottom:1px solid var(--border2);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+.card-title{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:5px;}
+.card-act{font-size:10.5px;color:var(--accent);cursor:pointer;font-weight:600;}
+.card-act:hover{text-decoration:underline;}
+.card-body{padding:12px 14px;}
+
+/* ── FIELDS ── */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.f-row{display:flex;flex-direction:column;gap:1px;}
+.f-lbl{font-size:9px;color:var(--text3);font-weight:500;}
+.f-val{font-size:12px;color:var(--text);font-weight:500;}
+.f-val.g{color:var(--green);}.f-val.a{color:var(--amber);}.f-val.r{color:var(--red);}
+.f-val.tl{color:var(--teal);}.f-val.pu{color:var(--purple);}
+.f-val.mono{font-family:'JetBrains Mono',monospace;font-size:11px;}
+.hdivider{height:1px;background:var(--border2);margin:9px 0;}
+.slabel{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:5px 11px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;white-space:nowrap;transition:all .15s;line-height:1;}
+.btn-p{background:var(--accent);color:#fff;}.btn-p:hover{background:#1D4ED8;}
+.btn-g{background:var(--card2);color:var(--text2);border:1px solid var(--border);}.btn-g:hover{border-color:var(--accent);color:var(--accent);}
+.btn-a{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border);}
+.btn-r{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);}
+.btn-tl{background:var(--teal-bg);color:var(--teal);border:1px solid #BAE6FD;}
+.btn-sm{padding:3px 9px;font-size:10px;}.btn-xs{padding:2px 7px;font-size:9.5px;border-radius:4px;}
+.btn-full{width:100%;}
+
+/* ── TABLES ── */
+.data-table{width:100%;border-collapse:collapse;font-size:11.5px;}
+.data-table th{background:var(--card2);color:var(--text3);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);}
+.data-table td{padding:8px 10px;border-bottom:1px solid var(--border2);color:var(--text);vertical-align:middle;}
+.data-table tbody tr:hover td{background:var(--bg);cursor:pointer;}
+.data-table tbody tr:last-child td{border-bottom:none;}
+.mono{font-family:'JetBrains Mono',monospace;}
+
+/* ── BADGES ── */
+.badge{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;display:inline-block;}
+.b-amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border);}
+.b-green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
+.b-red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);}
+.b-blue{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-light);}
+.b-teal{background:var(--teal-bg);color:var(--teal);border:1px solid #BAE6FD;}
+.b-purple{background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border);}
+.b-gray{background:var(--card2);color:var(--text2);border:1px solid var(--border);}
+.src-self{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-light);}
+.src-assisted{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border);}
+.zoho-ok{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
+.zoho-pend{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border);}
+
+/* ── ORDER DETAIL EXPAND ── */
+.order-detail-row{display:none;background:#EEF5FF;}
+.order-detail-row.open{display:table-row;}
+.order-detail-inner{padding:12px 14px;}
+.detail-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px;}
+.item-row{display:flex;align-items:flex-start;gap:9px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-bottom:4px;}
+.item-ico{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:2px;}
+.item-info{flex:1;min-width:0;}
+.item-name{font-size:12px;font-weight:600;color:var(--text);}
+.item-sub{font-size:10px;color:var(--text3);margin-top:1px;}
+.item-links{display:flex;gap:10px;margin-top:4px;}
+.item-link{font-size:10px;color:var(--accent);cursor:pointer;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:3px;}
+.item-link:hover{text-decoration:underline;}
+.gen-tag{font-size:9px;font-weight:700;background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);border-radius:4px;padding:2px 6px;white-space:nowrap;}
+
+/* ── RETURNS ── */
+.ret-card{background:#FFFBF0;border:1px solid var(--amber-border);border-radius:10px;overflow:hidden;box-shadow:var(--shadow-sm);}
+.ret-hd{background:#FEF3C7;border-bottom:1px solid var(--amber-border);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+.ret-title{font-size:11px;font-weight:700;color:var(--amber);display:flex;align-items:center;gap:6px;}
+.ret-body{padding:12px 14px;}
+.ret-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px;}
+.field-line{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid var(--border2);font-size:11px;}
+.field-line:last-child{border-bottom:none;}
+.fl-l{color:var(--text3);}.fl-r{color:var(--text);font-weight:500;text-align:right;}
+.img-row{display:flex;gap:4px;margin-top:6px;align-items:center;}
+.img-thumb{width:34px;height:34px;background:var(--border2);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;}
+.img-thumb.wh{background:var(--purple-bg);border-color:var(--purple-border);}
+.ret-actions{display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;}
+.l2-lock{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:8px 12px;margin-top:8px;}
+.l2-ico{font-size:16px;flex-shrink:0;}
+.l2-info{flex:1;min-width:0;}
+.l2-title{font-size:11px;font-weight:600;color:var(--text);}
+.l2-sub{font-size:9.5px;color:var(--text3);margin-top:1px;font-family:'JetBrains Mono',monospace;}
+
+/* Return qty breakdown */
+.rqbox{background:#FFFBEB;border:1px solid var(--amber-border);border-radius:7px;padding:9px 10px;margin:7px 0;}
+.rq-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;}
+.rq-cell{text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:5px 3px;}
+.rq-num{font-size:15px;font-weight:800;font-family:'JetBrains Mono',monospace;}
+.rq-lbl{font-size:8.5px;color:var(--text3);margin-top:2px;line-height:1.2;}
+
+/* ── TXN ── */
+.txn-detail-row{display:none;background:var(--accent-bg);}
+.txn-detail-row.open{display:table-row;}
+.txn-detail-inner{padding:12px 14px;}
+.txn-detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+
+/* ── SEARCH ── */
+.search-wrap{display:flex;gap:8px;}
+.search-inp{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 12px;color:var(--text);font-size:12px;font-family:'Inter',sans-serif;outline:none;}
+.search-inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+.search-inp::placeholder{color:var(--text3);}
+input[type="text"],input[type="number"],select,textarea{background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:11.5px;font-family:'Inter',sans-serif;outline:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);}
+select option{background:var(--surface);}
+textarea{resize:vertical;}
+
+/* ── TAB CONTENT ── */
+.tab-content{display:none;}
+.tab-content.active{display:flex;flex-direction:column;gap:10px;}
+.flex-gap{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+
+/* ── DISPOSITION BAR ── */
+.disp-bar{min-height:50px;background:var(--surface);border-top:2px solid var(--amber-border);display:flex;align-items:center;padding:0 20px;gap:8px;flex-shrink:0;position:relative;flex-wrap:nowrap;box-shadow:0 -2px 8px rgba(0,0,0,.05);}
+.disp-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--amber),var(--orange) 50%,transparent);}
+.disp-label{font-size:10px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;display:flex;align-items:center;gap:5px;}
+.disp-sel{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:11px;font-family:'Inter',sans-serif;cursor:pointer;outline:none;height:30px;}
+.disp-sel:focus{border-color:var(--amber);}
+.disp-freetext{height:30px;padding:5px 9px;font-size:11px;border-color:var(--amber-border)!important;display:none;min-width:180px;}
+.disp-freetext.show{display:block;}
+.disp-note{font-size:9.5px;color:var(--amber);background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:5px;padding:2px 9px;white-space:nowrap;display:flex;align-items:center;gap:4px;}
+.d-spacer{flex:1;}
+.save-btn{background:var(--surface);border:1px solid var(--border);color:var(--text2);border-radius:7px;padding:6px 14px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;display:flex;align-items:center;gap:4px;}
+.save-btn:hover{border-color:var(--accent);color:var(--accent);}
+.complete-btn{background:var(--amber);color:#fff;border:none;border-radius:7px;padding:7px 20px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;display:flex;align-items:center;gap:5px;}
+.complete-btn:hover{background:#B45309;}
+
+/* ── MODALS ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,35,64,.45);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;max-height:92vh;overflow-y:auto;box-shadow:var(--shadow-lg);}
+.modal-sm{width:440px;}.modal-md{width:680px;}
+.modal-hd{padding:16px 20px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:1;}
+.modal-title{font-size:15px;font-weight:700;color:var(--text);}
+.modal-close{width:26px;height:26px;background:var(--card2);border:1px solid var(--border);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:13px;}
+.modal-close:hover{border-color:var(--red);color:var(--red);}
+.modal-body{padding:18px 20px;}
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:16px;}
+.metric-card{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:13px;text-align:center;}
+.metric-val{font-size:24px;font-weight:800;color:var(--accent);font-family:'JetBrains Mono',monospace;line-height:1;}
+.metric-lbl{font-size:10px;color:var(--text3);margin-top:4px;}
+.metric-card.green .metric-val{color:var(--green);}
+.metric-card.amber .metric-val{color:var(--amber);}
+.metric-card.teal .metric-val{color:var(--teal);}
+.metric-card.purple .metric-val{color:var(--purple);}
+.chart-area{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:13px;margin-bottom:10px;}
+.chart-title{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
+.bar-chart{display:flex;align-items:flex-end;gap:7px;height:90px;}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
+.bar{background:linear-gradient(180deg,var(--accent),#1D4ED8);border-radius:3px 3px 0 0;width:100%;}
+.bar-lbl{font-size:8.5px;color:var(--text3);}.bar-val{font-size:9px;color:var(--text2);font-family:'JetBrains Mono',monospace;}
+.conn-row{display:flex;align-items:center;gap:10px;background:var(--green-bg);border:1px solid var(--green-border);border-radius:7px;padding:10px 13px;}
+.conn-pct{font-size:26px;font-weight:800;color:var(--green);font-family:'JetBrains Mono',monospace;}
+.conn-bar-bg{flex:1;height:7px;background:#D1FAE5;border-radius:3px;overflow:hidden;}
+.conn-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--teal));border-radius:3px;}
+.pm-hd{background:linear-gradient(135deg,var(--accent-bg),var(--purple-bg));padding:22px;text-align:center;border-bottom:1px solid var(--border);}
+.pm-avatar{width:56px;height:56px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;margin:0 auto 9px;}
+.pm-name{font-size:15px;font-weight:700;color:var(--text);}
+.pm-role{font-size:10.5px;color:var(--purple);margin-top:2px;}
+.pm-body{padding:14px 18px;}
+.pm-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border2);font-size:12px;}
+.pm-row:last-child{border-bottom:none;}
+.pm-key{color:var(--text3);}.pm-val{color:var(--text);font-weight:500;}
+.pm-actions{padding:0 18px 14px;display:flex;gap:8px;}
+
+/* Customer 360 active order section */
+.active-order-hd{background:var(--card2);border:1px solid var(--border2);border-radius:8px 8px 0 0;padding:8px 14px;display:flex;align-items:center;gap:10px;}
+.active-order-tag{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:5px;}
+.flex-right{margin-left:auto;display:flex;gap:6px;}
+
+/* Edge membership table */
+.edge-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px;}
+.edge-table th{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;padding:6px 10px;text-align:left;border-bottom:1px solid var(--border);background:var(--card2);}
+.edge-table td{padding:8px 10px;border-bottom:1px solid var(--border2);color:var(--text);}
+.edge-table tr:last-child td{border-bottom:none;}
+
+/* search result */
+#searchResult{display:none;margin-top:7px;padding:7px 10px;background:var(--accent-bg);border:1px solid var(--accent-light);border-radius:6px;font-size:12px;color:var(--accent);}
+
+/* ── ACTIONS DROPDOWN ── */
+.action-item{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;font-size:11px;color:var(--text);cursor:pointer;gap:8px;}
+.action-item:hover{background:var(--card2);}
+.action-item.action-disabled{color:var(--text3);cursor:not-allowed;opacity:.7;}
+.action-item.action-disabled:hover{background:transparent;}
+.action-item.action-danger{color:var(--red);}
+.action-reason{font-size:9px;color:var(--text3);text-align:right;max-width:120px;line-height:1.3;}
+</style>
+</head>
+<body>
+
+
+<!-- ═══════════════════════════ LOGIN PAGE ═══════════════════════════ -->
+<div id="loginPage" style="position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:36px 40px;width:380px;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;gap:18px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <div style="width:34px;height:34px;background:linear-gradient(135deg,#2563EB,#7C3AED);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;">P</div>
+      <div>
+        <div style="font-size:16px;font-weight:800;color:var(--text);letter-spacing:-.3px;">Polaris</div>
+        <div style="font-size:10px;color:var(--text3);">CX Support v6.0</div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;">Welcome back</div>
+      <div style="font-size:12px;color:var(--text3);">Enter the customer's registered mobile number to continue</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <label style="font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;">Mobile Number</label>
+      <input type="text" id="loginPhone" maxlength="10" placeholder="10-digit mobile number" oninput="this.value=this.value.replace(/\D/g,'')" onkeydown="if(event.key==='Enter')doLogin()" style="width:100%;padding:10px 12px;font-size:14px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-family:'Inter',sans-serif;outline:none;">
+      <div id="loginErr" style="display:none;font-size:11px;color:var(--red);margin-top:2px;"></div>
+    </div>
+    <button onclick="doLogin()" style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;width:100%;">Continue →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+<div class="header">
+  <div class="logo"><div class="logo-icon">P</div>Polaris<span style="color:var(--text3);font-size:10px;font-weight:400;margin-left:2px;">CX Support v6.0</span></div>
+  <div class="hdiv"></div>
+  <div class="status-wrap">
+    <div class="status-pill" id="statusPill" onclick="toggleDrop('statusDrop',event)">
+      <div class="sdot" id="statusDot"></div><span id="statusText">Active</span> ▾
+    </div>
+    <div class="status-dropdown" id="statusDrop">
+      <div class="status-opt" onclick="setStatus('Active','var(--green)','var(--green-border)','var(--green-bg)')">🟢 Active</div>
+      <div class="status-opt" onclick="setStatus('In Break','var(--amber)','var(--amber-border)','var(--amber-bg)')">🟡 In Break</div>
+      <div class="status-opt" onclick="setStatus('Inactive','var(--text3)','var(--border)','var(--card2)')">⚫ Inactive</div>
+    </div>
+  </div>
+  <div class="timer-block"><div class="timer-lbl">Current Task</div><div class="timer-val" id="taskTimer">00:08:42</div></div>
+  <div class="timer-block"><div class="timer-lbl">Avg. Task</div><div class="timer-val">00:06:15</div></div>
+  <div class="h-spacer"></div>
+  <a href="https://in-next.knowmax.ai/platinumrx/decision-tree?" target="_blank" style="text-decoration:none;">
+    <button class="h-btn" style="border-color:var(--red-border);color:var(--red);">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      SOP / FAQ / PRx Policies
+    </button>
+  </a>
+  <div class="role-chip"><div style="width:5px;height:5px;background:var(--accent);border-radius:50%;"></div>L1 Agent View</div>
+
+  
+  </a>
+  <div class="tasks-wrap">
+    <button class="h-btn" onclick="toggleDrop('tasksPopup',event)">⚡ 12 tasks today</button>
+    <div class="tasks-popup" id="tasksPopup">
+      <div class="tasks-pop-hd">My Task Queue</div>
+      <div class="tasks-pop-body">
+        <div class="tq-item tq-active"><div class="tq-bar" style="background:var(--amber);"></div><div class="tq-info"><div class="tq-name">Nikhil Sreenivas</div><div class="tq-sub">Return & Pickup · Missing Qty</div></div><div class="tq-time">Active</div></div>
+        <div class="tq-item"><div class="tq-bar" style="background:var(--red);"></div><div class="tq-info"><div class="tq-name">Priya Sharma</div><div class="tq-sub">Delivery · Delayed</div></div><div class="tq-time">5m</div></div>
+        <div class="tq-item"><div class="tq-bar" style="background:var(--accent);"></div><div class="tq-info"><div class="tq-name">Rahul Mehta</div><div class="tq-sub">Payments · Refund Not Credited</div></div><div class="tq-time">12m</div></div>
+        <div class="tq-item"><div class="tq-bar" style="background:var(--teal);"></div><div class="tq-info"><div class="tq-name">Anjali Kumar</div><div class="tq-sub">Account & App · Login Issue</div></div><div class="tq-time">18m</div></div>
+        <div class="tq-item"><div class="tq-bar" style="background:var(--purple);"></div><div class="tq-info"><div class="tq-name">Vikram Nair</div><div class="tq-sub">Edge Membership · Not Activated</div></div><div class="tq-time">24m</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="avatar-wrap">
+    <div class="avatar" onclick="toggleDrop('profileDrop',event)">RA<div class="avatar-notif"></div></div>
+    <div class="profile-dropdown" id="profileDrop">
+      <div class="profile-header"><div class="profile-name">Rohit Anand</div><div class="profile-meta">Agent ID: AGT-1042 · L1 · CX Operations</div></div>
+      <div class="profile-opt" onclick="openModal('profileModal');closeDrop('profileDrop')">👤 View Profile</div>
+      <div class="profile-opt" style="color:var(--red);">🚪 Logout</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ CONTEXT BAR ═══════════════════════════ -->
+<div class="ctx-bar">
+
+  <!-- CUSTOMER -->
+  <div class="ctx-card c-cust">
+    <div class="cc-label">Customer</div>
+    <div style="display:flex;align-items:flex-start;gap:8px;margin-top:5px;">
+      <div style="width:34px;height:34px;background:linear-gradient(135deg,#2563EB,#7C3AED);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex-shrink:0;color:#fff;margin-top:2px;">NS</div>
+      <div style="min-width:0;">
+        <div style="font-size:13px;font-weight:700;color:var(--text);">Nikhil Sreenivas</div>
+        <div class="cc-sub" style="margin-top:2px;">User ID: 1585494</div>
+        <div class="cc-sub" style="margin-top:1px;">📞 9110721540</div>
+        <div style="margin-top:4px;"><span class="edge-plus"><span>edge</span><span class="ep">+</span></span></div>
+      </div>
+    </div>
+    <div style="margin-top:6px;display:flex;gap:5px;align-items:center;flex-wrap:wrap;">
+      <button onclick="openModal('createTaskModal')" style="font-size:8.5px;font-weight:700;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-light);border-radius:20px;padding:2px 9px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;">+ Create Task</button>
+      <span style="font-size:8.5px;font-weight:700;background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);border-radius:20px;padding:2px 7px;white-space:nowrap;">⚠ Test User</span>
+    </div>
+  </div>
+
+  <!-- ACTIVE ORDER -->
+  <div class="ctx-card c-active" style="flex-direction:column;gap:0;padding:0;overflow:visible;">
+
+    <!-- Smart tab bar -->
+    <div id="activeOrderTabs" style="display:flex;align-items:center;gap:0;overflow-x:auto;border-bottom:1px solid var(--amber-border);padding:0 10px;background:#FEF9EC;border-radius:10px 10px 0 0;flex-shrink:0;">
+      <div onclick="switchActiveTab(0,this)" style="padding:7px 12px;font-size:10px;font-weight:700;color:var(--amber);border-bottom:2px solid var(--amber);white-space:nowrap;cursor:pointer;margin-bottom:-1px;display:flex;align-items:center;gap:5px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--amber);flex-shrink:0;"></div>Order #1969951 — 18/03
+      </div>
+      <div onclick="switchActiveTab(1,this)" style="padding:7px 12px;font-size:10px;font-weight:600;color:var(--text3);border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;margin-bottom:-1px;display:flex;align-items:center;gap:5px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>Return #1967832 — 14/03
+      </div>
+    </div>
+
+    <!-- Tab Panel 0: Order -->
+    <div id="activeTabPanel0" style="display:flex;gap:0;flex:1;min-height:0;padding:10px 13px;">
+
+      <!-- Left: 2-col grid for label/value alignment -->
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-content:start;flex:1;min-width:0;">
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Order ID</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;align-self:center;">1969951</span>
+
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Order Date</span>
+        <div style="display:flex;align-items:center;gap:5px;">
+          <span style="font-size:11px;font-weight:700;color:var(--text);">18 Mar 2026</span>
+          <span style="font-size:8.5px;font-weight:700;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-light);border-radius:4px;padding:1px 6px;">NDD</span>
+        </div>
+
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Status</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">In Transit</span>
+
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Carrier</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">Shadowfax</span>
+
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Carrier Update</span>
+        <span style="font-size:11px;font-weight:700;color:var(--red);align-self:center;">Vantage Input</span>
+      </div>
+
+      <!-- Middle: alert summary -->
+      <div style="display:flex;flex-direction:column;gap:4px;justify-content:center;flex-shrink:0;padding:0 16px;border-left:1px solid var(--amber-border);margin:0 12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:3px;">⚠ Some issue with shipment, requires investigation</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;">
+          <span style="color:var(--text2);white-space:nowrap;">Shipment Status</span>
+          <span style="font-weight:700;color:var(--text);">— In Transit</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;">
+          <span style="color:var(--text2);white-space:nowrap;">Reached Dest. Hub</span>
+          <span style="font-weight:700;color:var(--red);">— No</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;flex-wrap:wrap;">
+          <span style="color:var(--text2);white-space:nowrap;">Last Scan</span>
+          <span style="font-weight:700;color:var(--text);">— NCR Bamnoli DC</span>
+          <span style="font-weight:700;color:var(--red);">— 07 Mar 2026, 08:15 AM</span>
+        </div>
+      </div>
+
+      <!-- Right: Actions dropdown + extra buttons -->
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;justify-content:center;flex-shrink:0;padding-left:16px;border-left:1px solid var(--amber-border);margin-left:0;position:relative;">
+        <button class="ao-btn ao-btn-esc" onclick="openModal('raiseTicketModal')">🔺 Escalate to L2</button>
+        <button class="ao-btn ao-btn-wh" onclick="window.open('https://script.google.com/a/macros/platinumrx.in/s/AKfycbzo13DwLnMDaq5zT8fRtYVgfAYGO4XhJangfpeiExRMBuY_vkVmC_2H-62PMQwS9FWV2g/exec','_blank')">📋 Fill Logistics Escalation</button>
+        <button class="ao-btn ao-btn-ret" onclick="alert('RTO initiated')">🔄 Initiate RTO</button>
+        <div style="position:relative;">
+          <button class="ao-btn ao-btn-wh" onclick="toggleActionsDropdown(event)" id="actionsBtn" style="font-weight:700;padding:6px 14px;font-size:11px;">
+            ⚡ Actions ▾
+          </button>
+          <div id="actionsDropdown" style="display:none;position:fixed;right:20px;top:auto;background:var(--surface);border:1px solid var(--border);border-radius:10px;min-width:260px;z-index:2000;box-shadow:var(--shadow-lg);overflow-y:auto;max-height:70vh;">
+            <div class="action-item" onclick="alert('Order details shared via WhatsApp')">
+              <span>📤 Share Order Details</span>
+            </div>
+            <div class="action-item action-disabled" title="Order cannot be modified once it is processed">
+              <span>✏ Edit Order</span>
+              <span class="action-reason">Not modifiable in transit</span>
+            </div>
+            <div class="action-item action-disabled" title="Patient Name cannot be modified once order is in transit">
+              <span>👤 Edit Patient Name</span>
+              <span class="action-reason">Not modifiable in transit</span>
+            </div>
+            <div class="action-item action-disabled" title="Patient Phone No. cannot be modified once order is in transit">
+              <span>📞 Edit Patient Phone No.</span>
+              <span class="action-reason">Not modifiable in transit</span>
+            </div>
+            <div class="action-item action-disabled" title="Delivery Address cannot be modified once it is in transit">
+              <span>📍 Edit Address</span>
+              <span class="action-reason">Not modifiable in transit</span>
+            </div>
+            <div class="action-item action-disabled" title="Order cannot be cancelled once it is processed. However, CX can reject delivery and place new order with Sales assistance">
+              <span>✕ Cancel Order</span>
+              <span class="action-reason">Cannot cancel; reject delivery instead</span>
+            </div>
+            <div style="height:1px;background:var(--border2);margin:2px 0;"></div>
+            <div class="action-item action-danger" onclick="openModal('raiseTicketModal')">
+              <span>🔺 Escalate to L2</span>
+            </div>
+            <div class="action-item" onclick="window.open('https://script.google.com/a/macros/platinumrx.in/s/AKfycbzo13DwLnMDaq5zT8fRtYVgfAYGO4XhJangfpeiExRMBuY_vkVmC_2H-62PMQwS9FWV2g/exec','_blank')">
+              <span>📋 Fill Logistics Escalation</span>
+            </div>
+            <div style="height:1px;background:var(--border2);margin:2px 0;"></div>
+            <div class="action-item action-disabled" title="Invoice is available after successful order delivery">
+              <span>🧾 Share Invoice</span>
+              <span class="action-reason">Available after delivery</span>
+            </div>
+            <div class="action-item action-disabled" title="Prescription is available after successful order delivery">
+              <span>📋 Share Prescription</span>
+              <span class="action-reason">Available after delivery</span>
+            </div>
+            <div style="height:1px;background:var(--border2);margin:2px 0;"></div>
+            <div class="action-item" onclick="openModal('initiateReturnModal')">
+              <span>↩ Initiate Return</span>
+            </div>
+            <div class="action-item action-danger" onclick="alert('RTO initiated for this shipment')">
+              <span>🔄 Initiate RTO</span>
+            </div>
+            <div class="action-item action-danger" onclick="alert('Escalated to Logistics')">
+              <span>🚚 Escalate to Logistics</span>
+            </div>
+            <div class="action-item action-danger" onclick="alert('Escalated to Warehouse')">
+              <span>🏭 Escalate to Warehouse</span>
+            </div>
+            <div style="height:1px;background:var(--border2);margin:2px 0;"></div>
+            <div class="action-item" onclick="alert('Refund details shared')">
+              <span>💸 Share Refund Details</span>
+            </div>
+            <div class="action-item" onclick="alert('Refund details requested')">
+              <span>📩 Request Refund Details</span>
+            </div>
+            <div class="action-item" onclick="openModal('refundDetailsModal')">
+              <span>➕ Add Refund Details</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Tab Panel 1: Return -->
+    <div id="activeTabPanel1" style="display:none;flex-direction:column;gap:6px;flex:1;min-height:0;padding:10px 13px;">
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-content:start;">
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Order ID</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;align-self:center;">RET-4821</span>
+
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Status</span>
+        <span style="font-size:11px;font-weight:700;color:var(--amber);align-self:center;">Pickup Pending</span>
+
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Refund Mode</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">Source (UPI)</span>
+
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Pickup Window</span>
+        <span style="font-size:11px;font-weight:700;color:var(--red);align-self:center;">By 05 Mar 2026</span>
+
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Refund Amount</span>
+        <span style="font-size:11px;font-weight:700;color:var(--teal);font-family:'JetBrains Mono',monospace;align-self:center;">₹388.43</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ORDER STATS -->
+  <div class="ctx-card c-stats">
+    <div class="cc-label">Order Stats</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:5px;">
+      <div class="stat-cell"><div class="stat-num" style="color:var(--text);">23</div><div class="stat-lbl">Total</div></div>
+      <div class="stat-cell"><div class="stat-num" style="color:var(--green);">18</div><div class="stat-lbl">Delivered</div></div>
+      <div class="stat-cell"><div class="stat-num" style="color:var(--amber);">3</div><div class="stat-lbl">Returned</div></div>
+      <div class="stat-cell"><div class="stat-num" style="color:var(--red);">2</div><div class="stat-lbl">Cancelled</div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:2px;margin-top:5px;">
+      <div class="fl-item">FOD <span class="fl-val-g">06 Apr 2025</span></div>
+      <div class="fl-item">LOD <span class="fl-val-r">11 Mar 2026</span></div>
+    </div>
+  </div>
+
+  
+
+</div>
+
+<!-- ═══════════════════════════ TAB BAR ═══════════════════════════ -->
+<div class="tab-bar">
+  <div class="tab active" onclick="switchTab(0,this)">🔎 Order 360</div>
+  <div class="tab" onclick="switchTab(1,this)">📦 Orders <span class="tc">23</span></div>
+  <div class="tab" onclick="switchTab(2,this)">↩ Returns <span class="tc warn">2 open</span></div>
+  <div class="tab" onclick="switchTab(3,this)">💸 Transactions &amp; Refunds</div>
+  <div class="tab" onclick="switchTab(4,this)">💳 Wallet &amp; Rewards</div>
+  <div class="tab" onclick="switchTab(5,this)">🩺 Consultation &amp; Rx</div>
+  <div class="tab" onclick="switchTab(6,this)">💎 Edge Membership</div>
+  <div class="tab" onclick="switchTab(7,this)">📋 Task History <span class="tc">47</span></div>
+  <div class="tab" onclick="switchTab(8,this)">🕐 Agent History</div>
+</div>
+
+<!-- ═══════════════════════════ MAIN ═══════════════════════════ -->
+<div class="main">
+<div class="cpanel" id="cpanel">
+
+<!-- ─────────── TAB 0: CUSTOMER 360 ─────────── -->
+<div class="tab-content active" id="tab0">
+  <!-- Search -->
+  <div class="card">
+    <div class="card-body" style="padding:9px 14px;">
+      <div class="search-wrap">
+        <input type="text" id="searchBar" class="search-inp" placeholder="🔍 Search by Order ID..." oninput="doSearch(this.value)">
+        <button class="btn btn-p" onclick="doSearch(document.getElementById('searchBar').value)">Search</button>
+      </div>
+      <div id="searchResult"></div>
+    </div>
+  </div>
+  <!-- Active Order card -->
+  <div class="card">
+    <div class="card-hd">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="active-order-tag">📦 Active Order — <span class="mono" style="color:var(--accent);font-size:11px;font-weight:500;">Order ID #1964821</span></div>
+      </div>
+      <div class="flex-right" style="gap:6px;">
+        <button class="btn btn-g btn-sm">🔗 Track</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="detail-grid">
+        <div class="f-row"><div class="f-lbl">Order Status</div><div class="f-val a">In Transit</div></div>
+        <div class="f-row"><div class="f-lbl">Payment Mode</div><div class="f-val">Online · UPI (Prepaid)</div></div>
+        <div class="f-row"><div class="f-lbl">Order Date</div><div class="f-val">22 Feb 2026</div></div>
+        <div class="f-row"><div class="f-lbl">Delivered On</div><div class="f-val g">26 Feb 2026 ✓</div></div>
+        <div class="f-row"><div class="f-lbl">Order Total</div><div class="f-val mono">₹388.43</div></div>
+        <div class="f-row"><div class="f-lbl">Courier / AWB</div><div class="f-val">Delhivery · DEL-9824751</div></div>
+        <div class="f-row"><div class="f-lbl">Order Source</div><div class="flex-gap"><span class="src-self">Self-placed</span></div></div>
+        <div class="f-row"><div class="f-lbl">Zoho Sales Order</div><div class="flex-gap"><span class="zoho-ok">Success — Available ✓</span></div></div>
+      </div>
+      <div class="hdivider"></div>
+      <div class="slabel">Order Items</div>
+      <div class="item-row">
+        <div class="item-ico" style="background:var(--purple-bg);">💊</div>
+        <div class="item-info">
+          <div class="item-name">Levothyroxine 50mcg Tablet (Strip of 30)</div>
+          <div class="item-sub">Generic · Qty: 1 · MRP ₹156.00 · Paid ₹142.00</div>
+          <div class="item-links"><a class="item-link" onclick="openModal('labelModal')">🏷 Label (AWB)</a><a class="item-link" onclick="openModal('subModal')">💊 Substitute Info</a></div>
+        </div>
+        <div class="gen-tag">Generic</div>
+      </div>
+      <div class="item-row">
+        <div class="item-ico" style="background:var(--teal-bg);">🧴</div>
+        <div class="item-info">
+          <div class="item-name">Metformin 500mg Tablet (Strip of 60)</div>
+          <div class="item-sub">Generic · Qty: 2 · MRP ₹264.00 · Paid ₹246.43</div>
+          <div class="item-links"><a class="item-link" onclick="openModal('labelModal')">🏷 Label (AWB)</a><a class="item-link" onclick="openModal('subModal')">💊 Substitute Info</a></div>
+        </div>
+        <div class="gen-tag">Generic</div>
+      </div>
+      <div class="hdivider"></div>
+      <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;">
+        <div class="f-row"><div class="f-lbl">Items MRP</div><div class="f-val mono">₹420.00</div></div>
+        <div class="f-row"><div class="f-lbl">Discount</div><div class="f-val g mono">−₹31.57</div></div>
+        <div class="f-row"><div class="f-lbl">Delivery Fee</div><div class="f-val g mono">₹0.00</div></div>
+        <div class="f-row"><div class="f-lbl">Coupon</div><div class="f-val a">PRX15</div></div>
+        <div style="margin-left:auto;text-align:right;"><div class="f-lbl">Amount Paid</div><div style="font-size:16px;font-weight:800;color:var(--teal);font-family:'JetBrains Mono',monospace;">₹388.43</div></div>
+      </div>
+      <div style="background:var(--card2);border-radius:5px;padding:5px 10px;margin-top:7px;font-size:10.5px;color:var(--text3);display:flex;align-items:center;justify-content:space-between;">
+        <span class="mono">Invoice: <span style="color:var(--accent);cursor:pointer;">Zoho Invoice URL ↗</span></span>
+        <button class="btn btn-tl btn-sm">📄 Send Invoice via WhatsApp →</button>
+      </div>
+
+      <div class="hdivider"></div>
+
+      <!-- ORDER STATUS TIMELINE -->
+      <div class="slabel">Order Status Timeline</div>
+      <div style="display:flex;align-items:flex-start;gap:0;margin-top:6px;overflow-x:auto;padding-bottom:6px;">
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;">✓</div>
+          <div style="font-size:9px;font-weight:700;color:var(--green);margin-top:5px;text-align:center;">Order Created</div>
+          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">22 Feb 2026<br>11:34 AM</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--green);margin-top:13px;min-width:8px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;">✓</div>
+          <div style="font-size:9px;font-weight:700;color:var(--green);margin-top:5px;text-align:center;">Doc Consultation Scheduled</div>
+          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">22 Feb 2026<br>11:40 AM</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--green);margin-top:13px;min-width:8px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;">✓</div>
+          <div style="font-size:9px;font-weight:700;color:var(--green);margin-top:5px;text-align:center;">Order is being Processed</div>
+          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">22 Feb 2026<br>12:05 PM</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--green);margin-top:13px;min-width:8px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;">✓</div>
+          <div style="font-size:9px;font-weight:700;color:var(--green);margin-top:5px;text-align:center;">Ready for Pickup</div>
+          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">23 Feb 2026<br>08:00 AM</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--green);margin-top:13px;min-width:8px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;box-shadow:0 0 0 3px var(--amber-bg);">→</div>
+          <div style="font-size:9px;font-weight:700;color:var(--amber);margin-top:5px;text-align:center;">In Transit</div>
+          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">07 Mar 2026<br>08:15 AM</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--border);margin-top:13px;min-width:8px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">○</div>
+          <div style="font-size:9px;font-weight:700;color:var(--text3);margin-top:5px;text-align:center;">Out for Delivery</div>
+          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">Pending</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--border);margin-top:13px;min-width:8px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">○</div>
+          <div style="font-size:9px;font-weight:700;color:var(--text3);margin-top:5px;text-align:center;">Delivered</div>
+          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">EDD: 19 Mar<br>2026</div>
+        </div>
+
+      </div>
+
+      <div class="hdivider"></div>
+
+      <!-- TRACKING WIDGET -->
+      <div class="slabel">Shipment Tracking</div>
+      <div style="margin-top:6px;border-radius:8px;overflow:hidden;border:1px solid var(--border);">
+        <img src="tracking_widget.png" alt="Shipment Tracking" style="width:100%;display:block;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── TAB 1: ORDERS ─────────── -->
+<div class="tab-content" id="tab1">
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-title">📦 Order History</div>
+      <div style="display:flex;gap:6px;"><input type="text" style="width:170px;" placeholder="🔍 Search Order ID..."><select><option>All Statuses</option><option>Delivered</option><option>In Transit</option><option>Return Initiated</option><option>Cancelled</option></select></div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="data-table">
+	<thead><tr><th></th><th>Order ID</th><th>Details</th><th>Status</th><th>Source</th><th>Date</th><th>Amount</th><th>Track</th></tr></thead>
+        <tbody>
+          <tr onclick="toggleOD('od1',this)"><td><span id="od1-a" style="font-size:10px;color:var(--text3);">▶</span></td><td class="mono">#ORD-4821</td><td><button class="btn btn-g btn-xs" onclick="event.stopPropagation();switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td><span class="badge b-amber">Return Initiated</span></td><td><span class="src-self">Self</span></td><td>22 Feb 2026</td><td class="mono">₹388.43</td><td><button class="btn btn-tl btn-xs" onclick="event.stopPropagation();">🔗</button></td></tr>
+          <tr class="order-detail-row" id="od1"><td colspan="11"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Status</div><div class="f-val a">Return Initiated</div></div><div class="f-row"><div class="f-lbl">Payment</div><div class="f-val">UPI (Prepaid)</div></div><div class="f-row"><div class="f-lbl">Delivery Date</div><div class="f-val g">26 Feb 2026 ✓</div></div><div class="f-row"><div class="f-lbl">Courier / AWB</div><div class="f-val mono">Delhivery · DEL-9824751</div></div><div class="f-row"><div class="f-lbl">Order Source</div><div class="flex-gap"><span class="src-self">Self-placed</span></div></div><div class="f-row"><div class="f-lbl">Zoho Sales Order</div><div class="flex-gap"><span class="zoho-ok">Success — Available ✓</span></div></div></div><div class="slabel">Cart Items</div><div class="item-row"><div class="item-ico" style="background:var(--purple-bg);">💊</div><div class="item-info"><div class="item-name">Levothyroxine 50mcg (Strip of 30)</div><div class="item-sub">Qty:1 · ₹142.00</div></div></div><div class="item-row"><div class="item-ico" style="background:var(--teal-bg);">🧴</div><div class="item-info"><div class="item-name">Metformin 500mg (Strip of 60)</div><div class="item-sub">Qty:2 · ₹246.43</div></div></div><div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-a btn-sm">↩ Initiate Return</button><button class="btn btn-r btn-sm">✕ Cancel Order</button><button class="btn btn-g btn-sm">📄 Get Prescription</button><button class="btn btn-g btn-sm">📋 Get Invoices</button></div></div></td></tr>
+          <tr onclick="toggleOD('od2',this)"><td><span id="od2-a" style="font-size:10px;color:var(--text3);">▶</span></td><td class="mono">#ORD-4710</td><td><button class="btn btn-g btn-xs" onclick="event.stopPropagation();switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td><span class="badge b-red">Cancelled</span></td><td><span class="src-self">Self</span></td><td>10 Feb 2026</td><td class="mono">₹245.00</td><td><button class="btn btn-tl btn-xs" onclick="event.stopPropagation();">🔗</button></td></tr>
+          <tr class="order-detail-row" id="od2"><td colspan="11"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Status</div><div class="f-val r">Cancelled</div></div><div class="f-row"><div class="f-lbl">Payment</div><div class="f-val">COD</div></div><div class="f-row"><div class="f-lbl">Cancel Date</div><div class="f-val">12 Feb 2026</div></div><div class="f-row"><div class="f-lbl">Cancelled By</div><div class="f-val">Customer</div></div></div></div></td></tr>
+          <tr onclick="toggleOD('od3',this)"><td><span id="od3-a" style="font-size:10px;color:var(--text3);">▶</span></td><td class="mono">#ORD-4650</td><td><button class="btn btn-g btn-xs" onclick="event.stopPropagation();switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td><span class="badge b-green">Delivered</span></td><td><span class="src-assisted">Assisted</span></td><td>01 Feb 2026</td><td class="mono">₹512.00</td><td><button class="btn btn-tl btn-xs" onclick="event.stopPropagation();">🔗</button></td></tr>
+          <tr class="order-detail-row" id="od3"><td colspan="11"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Status</div><div class="f-val g">Delivered</div></div><div class="f-row"><div class="f-lbl">Payment</div><div class="f-val">UPI</div></div><div class="f-row"><div class="f-lbl">Delivery Date</div><div class="f-val g">05 Feb 2026</div></div><div class="f-row"><div class="f-lbl">Courier</div><div class="f-val">BlueDart · BD-884210</div></div></div><div style="background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:5px;padding:7px 11px;font-size:11px;color:var(--amber);">⚠ Zoho Pending — medicine being procured. EDD delayed by 1 day.</div></div></td></tr>
+          <tr onclick="toggleOD('od4',this)"><td><span id="od4-a" style="font-size:10px;color:var(--text3);">▶</span></td><td class="mono">#ORD-4480</td><td><button class="btn btn-g btn-xs" onclick="event.stopPropagation();switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td><span class="badge b-blue">In Transit</span></td><td><span class="src-self">Self</span></td><td>18 Jan 2026</td><td class="mono">₹320.00</td><td><button class="btn btn-tl btn-xs" onclick="event.stopPropagation();">🔗</button></td></tr>
+          <tr class="order-detail-row" id="od4"><td colspan="11"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Status</div><div class="f-val" style="color:var(--accent);">In Transit</div></div><div class="f-row"><div class="f-lbl">Payment</div><div class="f-val">Prepaid</div></div><div class="f-row"><div class="f-lbl">EDD</div><div class="f-val a">20 Jan 2026</div></div><div class="f-row"><div class="f-lbl">Courier</div><div class="f-val">Ecom Express</div></div></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── TAB 2: RETURNS ─────────── -->
+<div class="tab-content" id="tab2">
+  <div class="card">
+    <div class="card-hd"><div class="card-title">↩ Return History</div><select><option>All Statuses</option><option>Pickup Pending</option><option>Pickup Initiated</option><option>Refund Processed</option></select></div>
+    <div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>Order ID</th><th>Details</th><th>Return Status</th><th>Refund Amt</th><th>Ship Refund</th><th>Handling</th><th>Transfer Mode</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">#ORD-4821</td><td><button class="btn btn-g btn-xs" onclick="switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td><span class="badge b-amber">Pickup Pending</span></td><td class="mono" style="color:var(--teal);">₹388.43</td><td class="mono">₹0.00</td><td class="mono">₹0.00</td><td>Source (UPI)</td></tr>
+      <tr><td class="mono">#ORD-4280</td><td><button class="btn btn-g btn-xs" onclick="switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td><span class="badge b-teal">Refund Processed</span></td><td class="mono" style="color:var(--teal);">₹245.00</td><td class="mono">₹0.00</td><td class="mono">₹0.00</td><td>PRx Cash</td></tr>
+    </tbody></table></div>
+  </div>
+  <!-- Active Return Detail -->
+  <div class="ret-card">
+    <div class="ret-hd">
+      <div class="ret-title">↩ Active Return — <span class="mono" style="font-size:10px;color:var(--text3);">Order ID #1964821</span> <span class="badge b-amber" style="font-size:9px;">Pickup Pending</span></div>
+      <div style="display:flex;gap:7px;"><span class="badge b-green" style="font-size:9px;">NON-COLD STORAGE ✓</span><span class="badge b-green" style="font-size:9px;">Within 15-day window ✓</span></div>
+    </div>
+    <div class="ret-body">
+      <div class="ret-grid">
+        <div class="f-row"><div class="f-lbl">Delivery Date</div><div class="f-val g">26 Feb 2026</div></div>
+        <div class="f-row"><div class="f-lbl">Item Type</div><div class="f-val">Generic Medicine</div></div>
+        <div class="f-row"><div class="f-lbl">Pickup Window</div><div class="f-val a">By 05 Mar 2026</div></div>
+        <div class="f-row"><div class="f-lbl">Refund Mode</div><div class="f-val">Source (UPI)</div></div>
+        <div class="f-row"><div class="f-lbl">Return Pickup Date</div><div class="f-val a">22 Mar 2026</div></div>
+        <div class="f-row"><div class="f-lbl">Expected Refund Date</div><div class="f-val a">25 Mar 2026</div></div>
+      </div>
+      <div class="slabel">Return Qty Breakdown</div>
+      <div class="rqbox"><div class="rq-grid">
+        <div class="rq-cell"><div class="rq-num">2</div><div class="rq-lbl">Return Qty</div></div>
+        <div class="rq-cell"><div class="rq-num" style="color:var(--green);">1</div><div class="rq-lbl">Approved</div></div>
+        <div class="rq-cell"><div class="rq-num" style="color:var(--red);">1</div><div class="rq-lbl">Rejected due to Damage</div></div>
+        <div class="rq-cell"><div class="rq-num" style="color:var(--amber);">0</div><div class="rq-lbl">Rejected due to Batch No. Mismatch</div></div>
+        <div class="rq-cell"><div class="rq-num" style="color:var(--text3);">0</div><div class="rq-lbl">Rejected due to Other Reason</div></div>
+      </div></div>
+      <div class="hdivider"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div><div class="slabel">Carrier Tracking</div>
+          <div class="field-line"><span class="fl-l">Status</span><span class="fl-r" style="color:var(--amber);">Out for Pickup</span></div>
+          <div class="field-line"><span class="fl-l">Last Scan</span><span class="fl-r">Today 09:14 AM</span></div>
+          <div class="field-line"><span class="fl-l">AWB (Return)</span><span class="fl-r mono">DEL-REV-44210</span></div>
+          <div class="field-line" style="border:none;"><span class="fl-l">Hours Since Scan</span><span class="fl-r g">3h ago ✓</span></div>
+          <button class="btn btn-tl btn-sm btn-full" style="margin-top:6px;">📡 Track Pickup Carrier</button>
+        </div>
+        <div><div class="slabel">Refund Breakdown</div>
+          <div class="field-line"><span class="fl-l">Total Refund</span><span class="fl-r" style="color:var(--teal);font-weight:700;font-family:'JetBrains Mono',monospace;">₹388.43</span></div>
+          <div class="field-line"><span class="fl-l">→ Source (UPI)</span><span class="fl-r">₹388.43</span></div>
+          <div class="field-line"><span class="fl-l">→ PRx Cash</span><span class="fl-r">₹0.00</span></div>
+          <div class="field-line" style="border:none;"><span class="fl-l">UTR Number</span><span class="fl-r a">Pending Pickup</span></div>
+        </div>
+      </div>
+	<div class="hdivider"></div>
+
+      <!-- RETURN STATUS TIMELINE -->
+      <div class="slabel">Return Status Timeline</div>
+      <div style="display:flex;align-items:flex-start;gap:0;margin-top:6px;overflow-x:auto;padding-bottom:6px;">
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:72px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;">✓</div>
+          <div style="font-size:8.5px;font-weight:700;color:var(--green);margin-top:4px;text-align:center;">Return Requested</div>
+          <div style="font-size:7.5px;color:var(--text3);text-align:center;margin-top:1px;">08 Mar<br>10:00 AM</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--green);margin-top:12px;min-width:6px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:72px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;">✓</div>
+          <div style="font-size:8.5px;font-weight:700;color:var(--green);margin-top:4px;text-align:center;">Request Approved</div>
+          <div style="font-size:7.5px;color:var(--text3);text-align:center;margin-top:1px;">08 Mar<br>11:00 AM</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--green);margin-top:12px;min-width:6px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:72px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;">✓</div>
+          <div style="font-size:8.5px;font-weight:700;color:var(--green);margin-top:4px;text-align:center;">Pickup Initiated</div>
+          <div style="font-size:7.5px;color:var(--text3);text-align:center;margin-top:1px;">09 Mar<br>02:00 PM</div>
+        </div>
+        <div style="flex:1;height:2px;background:linear-gradient(90deg,var(--green) 50%,var(--border) 50%);margin-top:12px;min-width:6px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:72px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;box-shadow:0 0 0 3px var(--amber-bg);">→</div>
+          <div style="font-size:8.5px;font-weight:700;color:var(--amber);margin-top:4px;text-align:center;">Pickup Pending</div>
+          <div style="font-size:7.5px;color:var(--text3);text-align:center;margin-top:1px;">Today<br>09:14 AM</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--border);margin-top:12px;min-width:6px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:72px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">○</div>
+          <div style="font-size:8.5px;font-weight:700;color:var(--text3);margin-top:4px;text-align:center;">Return In Transit</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--border);margin-top:12px;min-width:6px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:72px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">○</div>
+          <div style="font-size:8.5px;font-weight:700;color:var(--text3);margin-top:4px;text-align:center;">Return Delivered</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--border);margin-top:12px;min-width:6px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:72px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">○</div>
+          <div style="font-size:8.5px;font-weight:700;color:var(--text3);margin-top:4px;text-align:center;">QC Approved</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--border);margin-top:12px;min-width:6px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:72px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">○</div>
+          <div style="font-size:8.5px;font-weight:700;color:var(--text3);margin-top:4px;text-align:center;">Refund Initiated</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--border);margin-top:12px;min-width:6px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:72px;">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">○</div>
+          <div style="font-size:8.5px;font-weight:700;color:var(--text3);margin-top:4px;text-align:center;">Refund Processed</div>
+        </div>
+
+      </div>
+
+      <div class="hdivider"></div>
+
+      <!-- RETURN TRACKING WIDGET -->
+      <div class="slabel">Shipment Tracking</div>
+      <div style="margin-top:6px;border-radius:8px;overflow:hidden;border:1px solid var(--amber-border);">
+        <img src="tracking_widget.png" alt="Shipment Tracking" style="width:100%;display:block;">
+      </div>
+
+      <div class="hdivider"></div>
+      <div class="slabel" style="margin-top:9px;">CX Uploaded Images</div>
+      <div class="img-row"><div class="img-thumb">🖼</div><div class="img-thumb">🖼</div><span style="font-size:10px;color:var(--accent);cursor:pointer;margin-left:6px;font-weight:600;">Request more via WhatsApp →</span></div>
+      <div class="slabel" style="margin-top:8px;">Warehouse Media (uploaded on receipt)</div>
+      <div class="img-row"><div class="img-thumb">📷</div><div class="img-thumb">📷</div><div class="img-thumb wh">🎬</div><span style="font-size:10px;color:var(--text3);margin-left:6px;">2 WH images · 1 WH video</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+
+      </div>
+      <div class="ret-actions"><button class="btn btn-tl btn-sm" onclick="alert('Showing refund details')">💸 Show Refund Details</button></div>
+      
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── TAB 3: TRANSACTIONS & REFUNDS ─────────── -->
+<div class="tab-content" id="tab3">
+  <div class="card">
+    <div class="card-hd"><div class="card-title">💸 Transaction / Refund History</div><div class="card-act">Export CSV</div></div>
+    <div style="overflow-x:auto;"><table class="data-table" id="txnTable">
+      <thead><tr><th></th><th>Date</th><th>Order ID</th><th>Type</th><th>Amount</th><th>Mode</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr class="txn-row" onclick="toggleTxn('t1',this)"><td><span id="t1-a" style="font-size:10px;color:var(--text3);">▶</span></td><td>08 Mar 2026</td><td class="mono">1964821</td><td><span class="badge b-amber">Refund</span></td><td class="mono">₹388.43</td><td>UPI</td><td><span class="badge b-amber">Pending</span></td></tr>
+        <tr class="txn-detail-row" id="t1"><td colspan="7"><div class="txn-detail-inner"><div class="txn-detail-grid"><div class="f-row"><div class="f-lbl">Refund ID</div><div class="f-val mono">RFD-2026-0481</div></div><div class="f-row"><div class="f-lbl">Linked Transaction</div><div class="f-val mono">TXN-20260222-4821</div></div><div class="f-row"><div class="f-lbl">Refund Date</div><div class="f-val">Pending Pickup</div></div><div class="f-row"><div class="f-lbl">Amount</div><div class="f-val mono tl">₹388.43</div></div><div class="f-row"><div class="f-lbl">Mode</div><div class="f-val">UPI</div></div><div class="f-row"><div class="f-lbl">Breakdown</div><div class="f-val">Source ₹388.43 · PRx Cash ₹0 · Coins 0</div></div></div></div></td></tr>
+        <tr class="txn-row" onclick="toggleTxn('t2',this)"><td><span id="t2-a" style="font-size:10px;color:var(--text3);">▶</span></td><td>22 Feb 2026</td><td class="mono">1964821</td><td><span class="badge b-green">Payment</span></td><td class="mono">₹388.43</td><td>UPI</td><td><span class="badge b-green">Success</span></td></tr>
+        <tr class="txn-detail-row" id="t2"><td colspan="7"><div class="txn-detail-inner"><div class="txn-detail-grid"><div class="f-row"><div class="f-lbl">Transaction ID</div><div class="f-val mono">TXN-20260222-4821</div></div><div class="f-row"><div class="f-lbl">Order ID</div><div class="f-val mono">#ORD-4821</div></div><div class="f-row"><div class="f-lbl">Date-Time</div><div class="f-val">22 Feb 2026, 11:34 AM</div></div><div class="f-row"><div class="f-lbl">Mode</div><div class="f-val">UPI (Prepaid)</div></div><div class="f-row"><div class="f-lbl">Gateway</div><div class="f-val">Razorpay</div></div><div class="f-row"><div class="f-lbl">UTR</div><div class="f-val mono">UTR2402221134987</div></div><div class="f-row"><div class="f-lbl">Status</div><div class="f-val g">Success</div></div><div class="f-row"><div class="f-lbl">Amount</div><div class="f-val mono" style="color:var(--teal);">₹388.43</div></div></div></div></td></tr>
+        <tr class="txn-row" onclick="toggleTxn('t3',this)"><td><span id="t3-a" style="font-size:10px;color:var(--text3);">▶</span></td><td>20 Feb 2026</td><td class="mono">1964710</td><td><span class="badge b-teal">Refund</span></td><td class="mono">₹245.00</td><td>PRx Cash</td><td><span class="badge b-green">Success</span></td></tr>
+        <tr class="txn-detail-row" id="t3"><td colspan="7"><div class="txn-detail-inner"><div class="txn-detail-grid"><div class="f-row"><div class="f-lbl">Refund ID</div><div class="f-val mono">RFD-2026-0471</div></div><div class="f-row"><div class="f-lbl">Mode</div><div class="f-val">PRx Cash</div></div><div class="f-row"><div class="f-lbl">Date-Time</div><div class="f-val">20 Feb 2026, 02:18 PM</div></div><div class="f-row"><div class="f-lbl">Amount</div><div class="f-val mono" style="color:var(--teal);">₹245.00</div></div><div class="f-row"><div class="f-lbl">Breakdown</div><div class="f-val">PRx Cash ₹245.00 · Source ₹0</div></div></div></div></td></tr>
+        <tr class="txn-row" onclick="toggleTxn('t4',this)"><td><span id="t4-a" style="font-size:10px;color:var(--text3);">▶</span></td><td>12 Feb 2026</td><td class="mono">1969951</td><td><span class="badge b-green">Payment</span></td><td class="mono">₹512.00</td><td>UPI</td><td><span class="badge b-green">Success</span></td></tr>
+        <tr class="txn-detail-row" id="t4"><td colspan="7"><div class="txn-detail-inner"><div class="txn-detail-grid"><div class="f-row"><div class="f-lbl">Transaction ID</div><div class="f-val mono">TXN-20260212-4650</div></div><div class="f-row"><div class="f-lbl">Mode</div><div class="f-val">UPI</div></div><div class="f-row"><div class="f-lbl">Date-Time</div><div class="f-val">12 Feb 2026, 09:21 AM</div></div><div class="f-row"><div class="f-lbl">Gateway</div><div class="f-val">Razorpay</div></div><div class="f-row"><div class="f-lbl">UTR</div><div class="f-val mono">UTR2402120921654</div></div><div class="f-row"><div class="f-lbl">Amount</div><div class="f-val mono" style="color:var(--teal);">₹512.00</div></div></div></div></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ─────────── TAB 4: WALLET & REWARDS ─────────── -->
+<div class="tab-content" id="tab4">
+  <div class="card"><div class="card-hd"><div class="card-title">💵 PRx Cash Balance</div></div><div class="card-body">
+    <div style="display:flex;gap:14px;align-items:flex-end;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:30px;">💵</span><div><div class="f-lbl">Available</div><div style="font-size:26px;font-weight:800;color:var(--teal);font-family:'JetBrains Mono',monospace;">₹142.50</div></div></div>
+      <div><div class="f-lbl">Next Expiry</div><div class="f-val a">12 Apr 2026</div></div>
+    </div>
+    <table class="data-table"><thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Credit</th><th>Debit</th><th>Balance</th></tr></thead><tbody>
+      <tr><td>28 Feb 2026</td><td><span class="badge b-green">Credit</span></td><td>Cashback — #ORD-4650</td><td class="mono g">+₹51.20</td><td>—</td><td class="mono">₹142.50</td></tr>
+      <tr><td>15 Feb 2026</td><td><span class="badge b-red">Debit</span></td><td>Applied on #ORD-4580</td><td>—</td><td class="mono r">−₹30.00</td><td class="mono">₹91.30</td></tr>
+      <tr><td>10 Feb 2026</td><td><span class="badge b-green">Credit</span></td><td>Cashback — #ORD-4520</td><td class="mono g">+₹25.00</td><td>—</td><td class="mono">₹121.30</td></tr>
+    </tbody></table>
+  </div></div>
+  <div class="card"><div class="card-hd"><div class="card-title">🪙 PRx Coins</div></div><div class="card-body">
+    <div style="display:flex;gap:18px;margin-bottom:12px;align-items:flex-end;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:26px;">🪙</span><div><div class="f-lbl">Total Coins</div><div style="font-size:22px;font-weight:800;color:var(--purple);font-family:'JetBrains Mono',monospace;">62.86</div></div></div>
+      <div style="display:flex;align-items:center;gap:0;flex-wrap:wrap;flex:1;border:1px solid var(--border);border-radius:8px;background:var(--card2);padding:7px 10px;gap:0;">
+        <div style="display:flex;flex-direction:column;gap:1px;padding:0 10px 0 0;">
+          <div class="f-lbl">Expiring on 10 Apr</div>
+          <div style="font-size:13px;font-weight:700;color:var(--amber);font-family:'JetBrains Mono',monospace;">7.00</div>
+        </div>
+        <div style="width:1px;height:28px;background:var(--border);flex-shrink:0;"></div>
+        <div style="display:flex;flex-direction:column;gap:1px;padding:0 10px;">
+          <div class="f-lbl">Expiring on 15 Apr</div>
+          <div style="font-size:13px;font-weight:700;color:var(--amber);font-family:'JetBrains Mono',monospace;">10.51</div>
+        </div>
+        <div style="width:1px;height:28px;background:var(--border);flex-shrink:0;"></div>
+        <div style="display:flex;flex-direction:column;gap:1px;padding:0 10px;">
+          <div class="f-lbl">Expiring on 20 Apr</div>
+          <div style="font-size:13px;font-weight:700;color:var(--amber);font-family:'JetBrains Mono',monospace;">20.49</div>
+        </div>
+        <div style="width:1px;height:28px;background:var(--border);flex-shrink:0;"></div>
+        <div style="display:flex;flex-direction:column;gap:1px;padding:0 10px;">
+          <div class="f-lbl">Expiring on 25 Apr</div>
+          <div style="font-size:13px;font-weight:700;color:var(--amber);font-family:'JetBrains Mono',monospace;">14.00</div>
+        </div>
+        <div style="width:1px;height:28px;background:var(--border);flex-shrink:0;"></div>
+        <div style="display:flex;flex-direction:column;gap:1px;padding:0 0 0 10px;">
+          <div class="f-lbl">Expiring on 30 Apr</div>
+          <div style="font-size:13px;font-weight:700;color:var(--amber);font-family:'JetBrains Mono',monospace;">11.00</div>
+        </div>
+      </div>
+    </div>
+    <table class="data-table"><thead><tr><th>Date</th><th>Type</th><th>Description</th><th>In</th><th>Out</th><th>Balance</th><th>Expiry</th></tr></thead><tbody>
+      <tr><td>28 Feb 2026</td><td><span class="badge b-green">Credit</span></td><td>Order #ORD-4650</td><td class="mono g">+15.00</td><td>—</td><td class="mono">62.86</td><td class="a">28 Mar 2026</td></tr>
+      <tr><td>20 Feb 2026</td><td><span class="badge b-red">Debit</span></td><td>Applied #ORD-4580</td><td>—</td><td class="mono r">−10.00</td><td class="mono">47.86</td><td>—</td></tr>
+    </tbody></table>
+  </div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+    <div class="card"><div class="card-hd"><div class="card-title">👥 Refer &amp; Earn</div></div><div class="card-body">
+      <div class="f-row" style="margin-bottom:6px;"><div class="f-lbl">Referral Code</div><div class="f-val mono" style="color:var(--accent);">NIKHIL50</div></div>
+      <div class="f-row" style="margin-bottom:6px;"><div class="f-lbl">Total Referrals</div><div class="f-val">4</div></div>
+      <div class="f-row"><div class="f-lbl">Earnings (PRx Coins)</div><div class="f-val">₹350.00 </div></div>
+    </div></div>
+    <div class="card"><div class="card-hd"><div class="card-title">🎟 Coupons</div><div class="card-act">Fetch All</div></div><div class="card-body">
+      <div style="background:var(--green-bg);border:1px solid var(--green-border);border-radius:5px;padding:7px 9px;margin-bottom:5px;"><div style="font-size:12px;font-weight:700;color:var(--green);">PRX15 — 15% off</div><div style="font-size:10px;color:var(--text3);">Min ₹200 · Expires 31 Mar 2026</div></div>
+      <div style="background:var(--accent-bg);border:1px solid var(--accent-light);border-radius:5px;padding:7px 9px;"><div style="font-size:12px;font-weight:700;color:var(--accent);">EDGE50 — ₹50 flat</div><div style="font-size:10px;color:var(--text3);">Edge members · Expires 25 Mar 2026</div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ─────────── TAB 5: CONSULTATION & RX ─────────── -->
+<div class="tab-content" id="tab5">
+  <div class="card"><div class="card-hd"><div class="card-title">🩺 Consultation History</div><div class="card-act">Book New Consultation</div></div>
+    <div style="overflow-x:auto;"><table class="data-table">
+      <thead><tr><th></th><th>Date</th><th>Type</th><th>Status</th><th>Outcome</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr onclick="toggleOD('c1',this)"><td><span id="c1-a" style="font-size:10px;color:var(--text3);">▶</span></td><td>15 Feb 2026</td><td><span class="badge b-blue">Pre-Order</span></td><td><span class="badge b-green">Completed</span></td><td>Prescription issued</td><td><button class="btn btn-g btn-xs" onclick="event.stopPropagation();">View</button></td></tr>
+        <tr class="order-detail-row" id="c1"><td colspan="6"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Doctor</div><div class="f-val">Dr. Sunita Rao</div></div><div class="f-row"><div class="f-lbl">Speciality</div><div class="f-val">Endocrinology</div></div><div class="f-row"><div class="f-lbl">Duration</div><div class="f-val">18 mins</div></div><div class="f-row"><div class="f-lbl">Consult Type</div><div class="f-val">Pre-Order</div></div></div></div></td></tr>
+        <tr onclick="toggleOD('c2',this)"><td><span id="c2-a" style="font-size:10px;color:var(--text3);">▶</span></td><td>20 Jan 2026</td><td><span class="badge b-purple">Edge</span></td><td><span class="badge b-red">Missed</span></td><td>—</td><td><button class="btn btn-g btn-xs" onclick="event.stopPropagation();">Rebook</button></td></tr>
+        <tr class="order-detail-row" id="c2"><td colspan="6"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Doctor</div><div class="f-val">Dr. Amitabh Sen</div></div><div class="f-row"><div class="f-lbl">Speciality</div><div class="f-val">General</div></div><div class="f-row"><div class="f-lbl">Consult Type</div><div class="f-val">Edge Benefit</div></div><div class="f-row"><div class="f-lbl">Missed Reason</div><div class="f-val r">Customer unavailable</div></div></div></div></td></tr>
+        <tr onclick="toggleOD('c3',this)"><td><span id="c3-a" style="font-size:10px;color:var(--text3);">▶</span></td><td>05 Dec 2025</td><td><span class="badge b-purple">Post-Order</span></td><td><span class="badge b-green">Completed</span></td><td>Follow-up advised</td><td><button class="btn btn-g btn-xs" onclick="event.stopPropagation();">View</button></td></tr>
+        <tr class="order-detail-row" id="c3"><td colspan="6"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Doctor</div><div class="f-val">Dr. Priya Nair</div></div><div class="f-row"><div class="f-lbl">Speciality</div><div class="f-val">Internal Medicine</div></div><div class="f-row"><div class="f-lbl">Duration</div><div class="f-val">12 mins</div></div><div class="f-row"><div class="f-lbl">Consult Type</div><div class="f-val">Post-Order</div></div></div></div></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="card"><div class="card-hd"><div class="card-title">📋 Prescription History (Rx Orders)</div><div class="card-act">View all Rx</div></div>
+    <div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>Date</th><th>Order ID</th><th>Prescription</th><th>Status</th><th>Approved By</th><th>Actions</th></tr></thead>
+    <tbody>
+      <tr><td>22 Feb 2026</td><td class="mono">#ORD-4821</td><td>Levothyroxine + Metformin</td><td><span class="badge b-green">Approved</span></td><td>Pharmacist</td><td><div style="display:flex;gap:4px;"><button class="btn btn-g btn-xs">View</button><button class="btn btn-tl btn-xs">📲 Send</button></div></td></tr>
+      <tr><td>01 Feb 2026</td><td class="mono">#ORD-4650</td><td>Thyroid panel</td><td><span class="badge b-green">Approved</span></td><td>Dr. Rao</td><td><div style="display:flex;gap:4px;"><button class="btn btn-g btn-xs">View</button><button class="btn btn-tl btn-xs">📲 Send</button></div></td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+<!-- ─────────── TAB 6: EDGE MEMBERSHIP ─────────── -->
+<div class="tab-content" id="tab6">
+  <div class="card"><div class="card-hd"><div class="card-title">💎 Edge Membership Details</div></div><div class="card-body">
+    <div class="detail-grid">
+      <div class="f-row"><div class="f-lbl">Status</div><div class="f-val g">Active ✓</div></div>
+      <div class="f-row"><div class="f-lbl">Purchase Date</div><div class="f-val">24 Dec 2025</div></div>
+      <div class="f-row"><div class="f-lbl">Start Date</div><div class="f-val">25 Dec 2025</div></div>
+      <div class="f-row"><div class="f-lbl">Expiry Date</div><div class="f-val a">25 Mar 2026</div></div>
+      <div class="f-row"><div class="f-lbl">Plan</div><div class="f-val">3 Months · ₹59</div></div>
+      <div class="f-row"><div class="f-lbl">Free Deliveries</div><div class="f-val r">3 / 3 Used</div></div>
+      <div class="f-row"><div class="f-lbl">Free Consultations</div><div class="f-val g">0 / 1 Used </div></div>
+      <div class="f-row"><div class="f-lbl">Membership Cycle</div><div class="f-val">25 Dec 2025 – 25 Mar 2026</div></div>
+      <div class="f-row" style="grid-column: span 2; margin-top: 4px;">
+        <button class="btn btn-a btn-sm" style="width: fit-content;"><svg width="12" height="12" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Renew  Edge+ @ INR 59 / 3 months</button>
+      </div>
+    </div>
+    <div class="hdivider"></div>
+    <table class="edge-table">
+  <thead>
+    <tr>
+      <th style="width:20px;"></th>
+      <th>Benefit</th>
+      <th>Used</th>
+      <th>Quota</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Free Deliveries — expandable -->
+    <tr onclick="toggleEdgeAccordion('edgeDeliv','edgeDelivChev',this)" style="cursor:pointer;user-select:none;">
+      <td><span id="edgeDelivChev" style="font-size:10px;color:var(--text3);display:inline-block;transition:transform .18s;">▶</span></td>
+      <td>Free Deliveries</td>
+      <td>3</td>
+      <td>3</td>
+      <td><span class="badge b-red">Exhausted</span></td>
+    </tr>
+    <tr id="edgeDeliv" style="display:none;">
+      <td colspan="5" style="padding:0;background:var(--bg);">
+        <div style="padding:8px 12px 10px 32px;">
+          <table style="width:100%;border-collapse:collapse;font-size:11px;">
+            <thead><tr>
+              <th style="text-align:left;font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:4px 8px;background:var(--card2);border-bottom:1px solid var(--border);">Order ID</th>
+              <th style="text-align:left;font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:4px 8px;background:var(--card2);border-bottom:1px solid var(--border);">Order Date</th>
+              <th style="text-align:left;font-size:9px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:4px 8px;background:var(--card2);border-bottom:1px solid var(--border);"></th>
+            </tr></thead>
+            <tbody>
+              <tr style="background:var(--accent-bg);">
+                <td style="padding:7px 8px;border-bottom:1px solid var(--border2);font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--accent);">1725375</td>
+                <td style="padding:7px 8px;border-bottom:1px solid var(--border2);">28 Feb 2026</td>
+                <td style="padding:7px 8px;border-bottom:1px solid var(--border2);"><button class="btn btn-g btn-xs">View Order</button></td>
+              </tr>
+              <tr style="background:var(--accent-bg);">
+                <td style="padding:7px 8px;border-bottom:1px solid var(--border2);font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--accent);">1686732</td>
+                <td style="padding:7px 8px;border-bottom:1px solid var(--border2);">03 Mar 2026</td>
+                <td style="padding:7px 8px;border-bottom:1px solid var(--border2);"><button class="btn btn-g btn-xs">View Order</button></td>
+              </tr>
+              <tr style="background:var(--accent-bg);">
+                <td style="padding:7px 8px;font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--accent);">1455877</td>
+                <td style="padding:7px 8px;">17 Mar 2026</td>
+                <td style="padding:7px 8px;"><button class="btn btn-g btn-xs">View Order</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </td>
+    </tr>
+    <!-- Free Consultations — NOT expandable, 0 used, show Share Booking URL -->
+    <tr>
+      <td></td>
+      <td>Free Consultations</td>
+      <td>0</td>
+      <td>1</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span class="badge b-green">Available</span>
+          <button class="btn btn-tl btn-xs" onclick="alert('Consultation booking URL copied!')" style="font-size:9px;white-space:nowrap;"><svg width="12" height="12" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Share Booking URL</button>
+        </div>
+      </td>
+    </tr>
+    <!-- 10% Cashback per Order — expandable -->
+    <tr onclick="toggleEdgeAccordion('edgeCashback','edgeCashbackChev',this)" style="cursor:pointer;user-select:none;">
+      <td><span id="edgeCashbackChev" style="font-size:10px;color:var(--text3);display:inline-block;transition:transform .18s;">▶</span></td>
+      <td>10% Cashback per Order</td>
+      <td>Active</td>
+      <td>Ongoing</td>
+      <td><span class="badge b-green">Active</span></td>
+    </tr>
+    <tr id="edgeCashback" style="display:none;">
+      <td colspan="5" style="padding:0;background:var(--bg);">
+        <div style="padding:10px 12px 10px 32px;">
+          <div style="display:flex;align-items:center;gap:10px;background:var(--green-bg);border:1px solid var(--green-border);border-radius:7px;padding:9px 13px;width:fit-content;">
+            <span style="font-size:18px;">🪙</span>
+            <div>
+              <div style="font-size:9px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Cashback Earnings</div>
+              <div style="font-size:15px;font-weight:800;color:var(--green);font-family:'JetBrains Mono',monospace;">35 PRx Coins</div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    
+  </div></div>
+</div>
+
+<!-- ─────────── TAB 7: TASK HISTORY ─────────── -->
+<div class="tab-content" id="tab7">
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-title">📋 Task History <span id="taskCountLbl" style="font-weight:400;color:var(--text3);">(47 total)</span></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <select id="fCat" onchange="filterTasks()">
+          <option value="">All Categories</option>
+          <option>Return &amp; Pickup</option><option>Delivery Issues</option><option>Payments &amp; Refunds</option>
+          <option>Account &amp; App</option><option>Order Management</option>
+          <option>Wallet &amp; Rewards</option><option>Edge Membership</option><option>Consultation &amp; Medicine</option>
+        </select>
+        <select id="fOut" onchange="filterTasks()">
+          <option value="">All Outcomes</option><option>FCR</option><option>L2 Escalation</option><option>Sales Transfer</option>
+        </select>
+        <button class="btn btn-p btn-sm" onclick="openModal('raiseTicketModal')">+ New Task</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>Task ID</th><th>Date</th><th>Category</th><th>Sub-Disposition</th><th>Outcome</th><th>Agent</th><th>VOC</th></tr></thead>
+    <tbody id="taskBody">
+      <tr data-cat="Return &amp; Pickup" data-out="L2 Escalation"><td class="mono">#T-7841</td><td>06 Mar 2026</td><td>Return &amp; Pickup</td><td>Missing/Less Qty</td><td><span class="badge b-amber">L2 Escalation</span></td><td>Rohit A.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
+      <tr data-cat="Delivery Issues" data-out="FCR"><td class="mono">#T-7210</td><td>28 Feb 2026</td><td>Delivery Issues</td><td>Delayed</td><td><span class="badge b-green">FCR</span></td><td>Rohit A.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
+      <tr data-cat="Payments &amp; Refunds" data-out="L2 Escalation"><td class="mono">#T-6980</td><td>20 Feb 2026</td><td>Payments &amp; Refunds</td><td>Refund Not Credited</td><td><span class="badge b-amber">L2 Escalation</span></td><td>Meena S.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
+      <tr data-cat="Account &amp; App" data-out="FCR"><td class="mono">#T-6720</td><td>12 Feb 2026</td><td>Account &amp; App</td><td>Profile Update</td><td><span class="badge b-green">FCR</span></td><td>Rohit A.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
+      <tr data-cat="Order Management" data-out="FCR"><td class="mono">#T-6510</td><td>05 Feb 2026</td><td>Order Management</td><td>Cancellation Request</td><td><span class="badge b-green">FCR</span></td><td>Priya K.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
+      <tr data-cat="Edge Membership" data-out="Sales Transfer"><td class="mono">#T-6220</td><td>28 Jan 2026</td><td>Edge Membership</td><td>Free Delivery Not Working</td><td><span class="badge b-teal">Sales Transfer</span></td><td>Rohit A.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
+      <tr data-cat="Wallet &amp; Rewards" data-out="FCR"><td class="mono">#T-5980</td><td>18 Jan 2026</td><td>Wallet &amp; Rewards</td><td>Cashback Not Credited</td><td><span class="badge b-green">FCR</span></td><td>Meena S.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+<!-- ─────────── TAB 8: AGENT HISTORY ─────────── -->
+<div class="tab-content" id="tab8">
+  <div class="card">
+    <div class="card-hd"><div class="card-title">🕐 Agent History</div></div>
+    <div class="card-body" style="padding:0;">
+
+      <!-- Row 1: L1 / L2 / Sales primary tabs -->
+      <div id="ah-primary-tabs" style="display:flex;align-items:center;gap:0;padding:0 14px;border-bottom:1px solid var(--border);background:var(--card2);">
+        <div class="ah-tab active" onclick="switchAHPrimary('l1',this)" style="padding:10px 14px;font-size:12px;font-weight:700;">L1</div>
+        <div class="ah-tab" onclick="switchAHPrimary('l2',this)" style="padding:10px 14px;font-size:12px;font-weight:700;">L2</div>
+        <div class="ah-tab" onclick="switchAHPrimary('sales',this)" style="padding:10px 14px;font-size:12px;font-weight:700;">Sales</div>
+      </div>
+
+      <!-- L1 SECTION -->
+      <div id="ah-section-l1">
+        <!-- Row 2: All / Calls / Chat / Disposition sub-tabs for L1 -->
+        <div class="ah-tabs" style="padding:0 14px;border-bottom:1px solid var(--border2);display:flex;">
+          <div class="ah-tab active" onclick="switchAHSub('l1','all',this)" style="padding:8px 12px;">All</div>
+          <div class="ah-tab" onclick="switchAHSub('l1','calls',this)" style="padding:8px 12px;">Calls</div>
+          <div class="ah-tab" onclick="switchAHSub('l1','chat',this)" style="padding:8px 12px;">Chat</div>
+          <div class="ah-tab" onclick="switchAHSub('l1','disp',this)" style="padding:8px 12px;">Disposition</div>
+        </div>
+        <!-- L1 All -->
+        <div id="ah-l1-all" style="padding:10px 14px;max-height:460px;overflow-y:auto;">
+          <div class="ah-date-lbl">Wed 11 Mar 2026</div>
+          <div class="ah-entry" onclick="toggleAH('ah-l1-a1',this)">
+            <div class="ah-time">10:22</div><div class="ah-dot">💬</div>
+            <div class="ah-main"><div class="ah-title">WhatsApp Msg Sales</div><div class="ah-sub">Delivered</div></div>
+            <div class="ah-chev" id="ah-l1-a1c">›</div>
+          </div>
+          <div class="ah-detail" id="ah-l1-a1">
+            <div class="ah-dr"><span class="ah-dk">Phone</span><span class="ah-dv">9110721540</span></div>
+            <div class="ah-dr"><span class="ah-dk">Message Type</span><span class="ah-dv">Interactive</span></div>
+            <div class="ah-dr"><span class="ah-dk">Status</span><span class="ah-dv" style="color:var(--amber);">Not Logged In</span></div>
+            <div class="ah-dr"><span class="ah-dk">Timestamp</span><span class="ah-dv mono">11/03/2026 10:22</span></div>
+          </div>
+          <div class="ah-entry" onclick="toggleAH('ah-l1-a2',this)">
+            <div class="ah-time">09:48</div><div class="ah-dot">📞</div>
+            <div class="ah-main"><div class="ah-title">Outgoing Call</div><div class="ah-sub">Connected</div></div>
+            <div class="ah-chev" id="ah-l1-a2c">›</div>
+          </div>
+          <div class="ah-detail" id="ah-l1-a2">
+            <div class="ah-dr"><span class="ah-dk">Call Status</span><span class="ah-dv">Connected</span></div>
+            <div class="ah-dr"><span class="ah-dk">Phone</span><span class="ah-dv">9110721540</span></div>
+            <div class="ah-dr"><span class="ah-dk">Duration</span><span class="ah-dv">4m 32s</span></div>
+            <div class="ah-dr"><span class="ah-dk">Recording</span><span class="ah-dv" style="color:var(--accent);cursor:pointer;">▶ Play</span></div>
+          </div>
+          <div class="ah-date-lbl">Tue 10 Mar 2026</div>
+          <div class="ah-entry" onclick="toggleAH('ah-l1-a3',this)">
+            <div class="ah-time">14:04</div><div class="ah-dot" style="background:var(--green-bg);">📋</div>
+            <div class="ah-main"><div class="ah-title">DISPOSED_TASK</div><div class="ah-sub neutral">Cart link shared</div></div>
+            <div class="ah-chev" id="ah-l1-a3c">›</div>
+          </div>
+          <div class="ah-detail" id="ah-l1-a3">
+            <div class="ah-dr"><span class="ah-dk">Type</span><span class="ah-dv">DISPOSED_TASK</span></div>
+            <div class="ah-dr"><span class="ah-dk">Remark</span><span class="ah-dv">Cart link shared</span></div>
+            <div class="ah-dr"><span class="ah-dk">Agent</span><span class="ah-dv">Rohit Anand</span></div>
+          </div>
+          <div class="ah-entry" onclick="toggleAH('ah-l1-a4',this)">
+            <div class="ah-time">11:07</div><div class="ah-dot" style="background:var(--red-bg);">📞</div>
+            <div class="ah-main"><div class="ah-title">Outgoing Call</div><div class="ah-sub missed">Missed</div></div>
+            <div class="ah-chev" id="ah-l1-a4c">›</div>
+          </div>
+          <div class="ah-detail" id="ah-l1-a4">
+            <div class="ah-dr"><span class="ah-dk">Call Status</span><span class="ah-dv" style="color:var(--red);">Missed</span></div>
+            <div class="ah-dr"><span class="ah-dk">Phone</span><span class="ah-dv">9110721540</span></div>
+            <div class="ah-dr"><span class="ah-dk">Timestamp</span><span class="ah-dv mono">10/03/2026 11:07</span></div>
+          </div>
+        </div>
+        <!-- L1 Calls -->
+        <div id="ah-l1-calls" style="display:none;padding:10px 14px;max-height:460px;overflow-y:auto;">
+          <div class="ah-date-lbl">Wed 11 Mar 2026</div>
+          <div class="ah-entry" onclick="toggleAH('ah-l1-c1',this)">
+            <div class="ah-time">09:48</div><div class="ah-dot">📞</div>
+            <div class="ah-main"><div class="ah-title">Outgoing Call</div><div class="ah-sub">Connected</div></div>
+            <div class="ah-chev" id="ah-l1-c1c">›</div>
+          </div>
+          <div class="ah-detail" id="ah-l1-c1">
+            <div class="ah-dr"><span class="ah-dk">Status</span><span class="ah-dv">Connected</span></div>
+            <div class="ah-dr"><span class="ah-dk">Duration</span><span class="ah-dv">4m 32s</span></div>
+            <div class="ah-dr"><span class="ah-dk">Recording</span><span class="ah-dv" style="color:var(--accent);">▶ Play</span></div>
+          </div>
+          <div class="ah-date-lbl">Tue 10 Mar 2026</div>
+          <div class="ah-entry">
+            <div class="ah-time">11:07</div><div class="ah-dot" style="background:var(--red-bg);">📞</div>
+            <div class="ah-main"><div class="ah-title">Outgoing Call</div><div class="ah-sub missed">Missed</div></div>
+          </div>
+        </div>
+        <!-- L1 Chat -->
+        <div id="ah-l1-chat" style="display:none;padding:10px 14px;max-height:460px;overflow-y:auto;">
+          <div class="ah-date-lbl">Wed 11 Mar 2026</div>
+          <div class="ah-entry" onclick="toggleAH('ah-l1-ch1',this)">
+            <div class="ah-time">10:22</div><div class="ah-dot">💬</div>
+            <div class="ah-main"><div class="ah-title">WhatsApp Msg Sales</div><div class="ah-sub">Delivered</div></div>
+            <div class="ah-chev" id="ah-l1-ch1c">›</div>
+          </div>
+          <div class="ah-detail" id="ah-l1-ch1">
+            <div class="ah-dr"><span class="ah-dk">Customer</span><span class="ah-dv">Nikhil Sreenivas</span></div>
+            <div class="ah-dr"><span class="ah-dk">Message</span><span class="ah-dv">Sorry you people pack less quantity</span></div>
+            <div class="ah-dr"><span class="ah-dk">WhatsApp No.</span><span class="ah-dv">919035052967</span></div>
+            <div class="ah-dr"><span class="ah-dk">Status</span><span class="ah-dv" style="color:var(--amber);">Not Logged In</span></div>
+          </div>
+        </div>
+        <!-- L1 Disposition -->
+        <div id="ah-l1-disp" style="display:none;padding:12px 14px;max-height:460px;overflow-y:auto;">
+          <table class="data-table">
+            <thead><tr><th>Task ID</th><th>Date</th><th>Category</th><th>Sub-Disposition</th><th>Outcome</th><th>Agent</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">#T-7841</td><td>06 Mar 2026</td><td>Return &amp; Pickup</td><td>Missing/Less Qty</td><td><span class="badge b-amber">L2 Escalation</span></td><td>Rohit A.</td></tr>
+              <tr><td class="mono">#T-7210</td><td>28 Feb 2026</td><td>Delivery Issues</td><td>Delayed</td><td><span class="badge b-green">FCR</span></td><td>Rohit A.</td></tr>
+              <tr><td class="mono">#T-6980</td><td>20 Feb 2026</td><td>Payments &amp; Refunds</td><td>Refund Not Credited</td><td><span class="badge b-amber">L2 Escalation</span></td><td>Meena S.</td></tr>
+              <tr><td class="mono">#T-6720</td><td>12 Feb 2026</td><td>Account &amp; App</td><td>Profile Update</td><td><span class="badge b-green">FCR</span></td><td>Rohit A.</td></tr>
+              <tr><td class="mono">#T-6510</td><td>05 Feb 2026</td><td>Order Management</td><td>Cancellation Request</td><td><span class="badge b-green">FCR</span></td><td>Priya K.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- L2 SECTION -->
+      <div id="ah-section-l2" style="display:none;">
+        <div class="ah-tabs" style="padding:0 14px;border-bottom:1px solid var(--border2);display:flex;">
+          <div class="ah-tab active" onclick="switchAHSub('l2','all',this)" style="padding:8px 12px;">All</div>
+          <div class="ah-tab" onclick="switchAHSub('l2','calls',this)" style="padding:8px 12px;">Calls</div>
+          <div class="ah-tab" onclick="switchAHSub('l2','chat',this)" style="padding:8px 12px;">Chat</div>
+          <div class="ah-tab" onclick="switchAHSub('l2','disp',this)" style="padding:8px 12px;">Disposition</div>
+        </div>
+        <!-- L2 All -->
+        <div id="ah-l2-all" style="padding:10px 14px;max-height:460px;overflow-y:auto;">
+          <div class="ah-date-lbl">Mon 06 Mar 2026</div>
+          <div class="ah-entry" onclick="toggleAH('ah-l2-a1',this)">
+            <div class="ah-time">10:15</div><div class="ah-dot">📞</div>
+            <div class="ah-main"><div class="ah-title">Outgoing Call</div><div class="ah-sub">Connected</div></div>
+            <div class="ah-chev" id="ah-l2-a1c">›</div>
+          </div>
+          <div class="ah-detail" id="ah-l2-a1">
+            <div class="ah-dr"><span class="ah-dk">Call Status</span><span class="ah-dv">Connected</span></div>
+            <div class="ah-dr"><span class="ah-dk">Duration</span><span class="ah-dv">7m 14s</span></div>
+            <div class="ah-dr"><span class="ah-dk">Recording</span><span class="ah-dv" style="color:var(--accent);cursor:pointer;">▶ Play</span></div>
+          </div>
+          <div class="ah-date-lbl">Thu 20 Feb 2026</div>
+          <div class="ah-entry" onclick="toggleAH('ah-l2-a2',this)">
+            <div class="ah-time">14:30</div><div class="ah-dot" style="background:var(--green-bg);">📋</div>
+            <div class="ah-main"><div class="ah-title">DISPOSED_TASK</div><div class="ah-sub neutral">Refund escalated</div></div>
+            <div class="ah-chev" id="ah-l2-a2c">›</div>
+          </div>
+          <div class="ah-detail" id="ah-l2-a2">
+            <div class="ah-dr"><span class="ah-dk">Type</span><span class="ah-dv">DISPOSED_TASK</span></div>
+            <div class="ah-dr"><span class="ah-dk">Remark</span><span class="ah-dv">Refund escalated to L2</span></div>
+            <div class="ah-dr"><span class="ah-dk">Agent</span><span class="ah-dv">Meena S.</span></div>
+          </div>
+        </div>
+        <!-- L2 Calls -->
+        <div id="ah-l2-calls" style="display:none;padding:10px 14px;max-height:460px;overflow-y:auto;">
+          <div class="ah-date-lbl">Mon 06 Mar 2026</div>
+          <div class="ah-entry" onclick="toggleAH('ah-l2-c1',this)">
+            <div class="ah-time">10:15</div><div class="ah-dot">📞</div>
+            <div class="ah-main"><div class="ah-title">Outgoing Call</div><div class="ah-sub">Connected</div></div>
+            <div class="ah-chev" id="ah-l2-c1c">›</div>
+          </div>
+          <div class="ah-detail" id="ah-l2-c1">
+            <div class="ah-dr"><span class="ah-dk">Status</span><span class="ah-dv">Connected</span></div>
+            <div class="ah-dr"><span class="ah-dk">Duration</span><span class="ah-dv">7m 14s</span></div>
+            <div class="ah-dr"><span class="ah-dk">Recording</span><span class="ah-dv" style="color:var(--accent);">▶ Play</span></div>
+          </div>
+        </div>
+        <!-- L2 Chat -->
+        <div id="ah-l2-chat" style="display:none;padding:10px 14px;max-height:460px;overflow-y:auto;">
+          <div style="padding:20px 0;text-align:center;font-size:11px;color:var(--text3);">No chat history for L2</div>
+        </div>
+        <!-- L2 Disposition -->
+        <div id="ah-l2-disp" style="display:none;padding:12px 14px;max-height:460px;overflow-y:auto;">
+          <table class="data-table">
+            <thead><tr><th>Task ID</th><th>Date</th><th>Category</th><th>Sub-Disposition</th><th>Outcome</th><th>Agent</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">#T-7841</td><td>06 Mar 2026</td><td>Return &amp; Pickup</td><td>Missing/Less Qty</td><td><span class="badge b-amber">L2 Escalation</span></td><td>Rohit A.</td></tr>
+              <tr><td class="mono">#T-6980</td><td>20 Feb 2026</td><td>Payments &amp; Refunds</td><td>Refund Not Credited</td><td><span class="badge b-amber">L2 Escalation</span></td><td>Meena S.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SALES SECTION -->
+      <div id="ah-section-sales" style="display:none;">
+        <div class="ah-tabs" style="padding:0 14px;border-bottom:1px solid var(--border2);display:flex;">
+          <div class="ah-tab active" onclick="switchAHSub('sales','all',this)" style="padding:8px 12px;">All</div>
+          <div class="ah-tab" onclick="switchAHSub('sales','calls',this)" style="padding:8px 12px;">Calls</div>
+          <div class="ah-tab" onclick="switchAHSub('sales','chat',this)" style="padding:8px 12px;">Chat</div>
+          <div class="ah-tab" onclick="switchAHSub('sales','disp',this)" style="padding:8px 12px;">Disposition</div>
+        </div>
+        <!-- Sales All -->
+        <div id="ah-sales-all" style="padding:10px 14px;max-height:460px;overflow-y:auto;">
+          <div class="ah-date-lbl">Tue 28 Jan 2026</div>
+          <div class="ah-entry" onclick="toggleAH('ah-s-a1',this)">
+            <div class="ah-time">11:20</div><div class="ah-dot">📞</div>
+            <div class="ah-main"><div class="ah-title">Outgoing Call</div><div class="ah-sub">Connected</div></div>
+            <div class="ah-chev" id="ah-s-a1c">›</div>
+          </div>
+          <div class="ah-detail" id="ah-s-a1">
+            <div class="ah-dr"><span class="ah-dk">Call Status</span><span class="ah-dv">Connected</span></div>
+            <div class="ah-dr"><span class="ah-dk">Duration</span><span class="ah-dv">3m 05s</span></div>
+            <div class="ah-dr"><span class="ah-dk">Recording</span><span class="ah-dv" style="color:var(--accent);cursor:pointer;">▶ Play</span></div>
+          </div>
+          <div class="ah-entry" onclick="toggleAH('ah-s-a2',this)">
+            <div class="ah-time">11:28</div><div class="ah-dot" style="background:var(--green-bg);">📋</div>
+            <div class="ah-main"><div class="ah-title">DISPOSED_TASK</div><div class="ah-sub neutral">Transferred to Sales</div></div>
+            <div class="ah-chev" id="ah-s-a2c">›</div>
+          </div>
+          <div class="ah-detail" id="ah-s-a2">
+            <div class="ah-dr"><span class="ah-dk">Type</span><span class="ah-dv">DISPOSED_TASK</span></div>
+            <div class="ah-dr"><span class="ah-dk">Remark</span><span class="ah-dv">Transferred to Sales</span></div>
+            <div class="ah-dr"><span class="ah-dk">Agent</span><span class="ah-dv">Rohit Anand</span></div>
+          </div>
+        </div>
+        <!-- Sales Calls -->
+        <div id="ah-sales-calls" style="display:none;padding:10px 14px;max-height:460px;overflow-y:auto;">
+          <div class="ah-date-lbl">Tue 28 Jan 2026</div>
+          <div class="ah-entry" onclick="toggleAH('ah-s-c1',this)">
+            <div class="ah-time">11:20</div><div class="ah-dot">📞</div>
+            <div class="ah-main"><div class="ah-title">Outgoing Call</div><div class="ah-sub">Connected</div></div>
+            <div class="ah-chev" id="ah-s-c1c">›</div>
+          </div>
+          <div class="ah-detail" id="ah-s-c1">
+            <div class="ah-dr"><span class="ah-dk">Status</span><span class="ah-dv">Connected</span></div>
+            <div class="ah-dr"><span class="ah-dk">Duration</span><span class="ah-dv">3m 05s</span></div>
+            <div class="ah-dr"><span class="ah-dk">Recording</span><span class="ah-dv" style="color:var(--accent);">▶ Play</span></div>
+          </div>
+        </div>
+        <!-- Sales Chat -->
+        <div id="ah-sales-chat" style="display:none;padding:10px 14px;max-height:460px;overflow-y:auto;">
+          <div style="padding:20px 0;text-align:center;font-size:11px;color:var(--text3);">No chat history for Sales</div>
+        </div>
+       <!-- Sales Disposition -->
+        <div id="ah-sales-disp" style="display:none;padding:12px 14px;max-height:460px;overflow-y:auto;">
+          <table class="data-table">
+            <thead><tr><th>Task ID</th><th>Date</th><th>Category</th><th>Sub-Disposition</th><th>Outcome</th><th>Agent</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">#T-6220</td><td>28 Jan 2026</td><td>Edge Membership</td><td>Free Delivery Not Working</td><td><span class="badge b-teal">Sales Transfer</span></td><td>Rohit A.</td></tr>
+              <tr><td class="mono">#T-5980</td><td>18 Jan 2026</td><td>Wallet &amp; Rewards</td><td>Cashback Not Credited</td><td><span class="badge b-green">FCR</span></td><td>Meena S.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div><!-- /cpanel -->
+
+<!-- ═══════════════════════════ RIGHT PANEL ═══════════════════════════ -->
+<div class="rpanel">
+
+  <!-- USER INFORMATION -->
+  <div class="rp-section">
+    <div class="rp-header" onclick="toggleRP(this)">
+      <div class="rp-title">👤 User Information</div>
+      <div class="rp-right"><span class="rp-chev">›</span></div>
+    </div>
+    <div class="rp-body">
+      <div class="ui-grid">
+        <div class="ui-row"><div class="ui-lbl">User ID</div><div class="ui-val mono">1585494</div></div>
+        <div class="ui-row"><div class="ui-lbl">Member Since</div><div class="ui-val">01 May 2025</div></div>
+        <div class="ui-row"><div class="ui-lbl">Phone</div><div class="ui-val mono">9110721540</div></div>
+        <div class="ui-row"><div class="ui-lbl">Email</div><div class="ui-val" style="font-size:10px;word-break:break-all;">nikhil.s@gmail.com</div></div>
+        <div class="ui-row"><div class="ui-lbl">User Type</div><div class="ui-val pu">Chronic</div></div>
+        <div class="ui-row"><div class="ui-lbl">Last Pincode</div><div class="ui-val">560068</div></div>
+        <div class="ui-row"><div class="ui-lbl">Therapeutic</div><div class="ui-val">HORMONES</div></div>
+        <div class="ui-row"><div class="ui-lbl">Generic/Ethical</div><div class="ui-val">Generic</div></div>
+        <div class="ui-row"><div class="ui-lbl">Self Orders</div><div class="ui-val">23</div></div>
+        <div class="ui-row"><div class="ui-lbl">Assisted Orders</div><div class="ui-val">0</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADDRESSES -->
+  <div class="rp-section">
+    <div class="rp-header" onclick="toggleRP(this)">
+      <div class="rp-title">📍 Addresses</div>
+      <div class="rp-right"><span class="rp-add" onclick="event.stopPropagation();alert('Add address')">+ Add</span><span class="rp-chev">›</span></div>
+    </div>
+    <div class="rp-body">
+      <div class="rp-item">
+        <div class="rp-dot" style="background:var(--green);"></div>
+        <div class="rp-item-info"><div class="rp-item-name">Home — HSR Layout</div><div class="rp-item-sub">Bengaluru, KA · 560068</div></div>
+        <div class="rp-item-acts"><button class="btn btn-g btn-xs">✏</button><button class="btn btn-r btn-xs">🗑</button></div>
+      </div>
+      <div class="rp-item">
+        <div class="rp-dot" style="background:var(--text3);"></div>
+        <div class="rp-item-info"><div class="rp-item-name">Office — Prestige Tech Park</div><div class="rp-item-sub">Bengaluru, KA · 560103</div></div>
+        <div class="rp-item-acts"><button class="btn btn-g btn-xs">✏</button><button class="btn btn-r btn-xs">🗑</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PATIENTS -->
+  <div class="rp-section">
+    <div class="rp-header" onclick="toggleRP(this)">
+      <div class="rp-title">🧑‍⚕️ Patients</div>
+      <div class="rp-right"><span class="rp-add" onclick="event.stopPropagation();alert('Add patient')">+ Add</span><span class="rp-chev">›</span></div>
+    </div>
+    <div class="rp-body">
+      <div class="rp-item" style="border-bottom:none;">
+        <div class="rp-dot" style="background:var(--accent);"></div>
+        <div class="rp-item-info"><div class="rp-item-name">Nikhil Sreenivas</div><div class="rp-item-sub">22Y · Male</div></div>
+        <div class="rp-item-acts"><button class="btn btn-g btn-xs">✏</button></div>
+      </div>
+    </div>
+  </div>
+
+
+</div><!-- /rpanel -->
+</div><!-- /main -->
+
+<!-- ═══════════════════════════ DISPOSITION BAR ═══════════════════════════ -->
+<div class="disp-bar">
+  <div class="disp-label">📋 Disposition</div>
+  <select class="disp-sel" id="dispCat" onchange="updateDispSub()">
+    <option>Return &amp; Pickup</option><option>Delivery Issues</option><option>Payments &amp; Refunds</option>
+    <option>Order Management</option><option>Account &amp; App</option>
+    <option>Edge Membership</option><option>Wallet &amp; Rewards</option><option>Consultation &amp; Medicine</option>
+  </select>
+  <select class="disp-sel" id="dispSub" style="min-width:210px;" onchange="checkFreeText()"></select>
+  <textarea class="disp-freetext" id="dispFree" placeholder="Explain the issue..."></textarea>
+  <select class="disp-sel" style="min-width:190px;">
+    <option>Had a Conversation</option>
+    <option selected>Ticket Raised — L2 Escalation</option>
+    <option>FCR — Resolved at L1</option>
+    <option>Transferred to Sales</option>
+    <option>MyRx Escalation</option>
+  </select>
+  <div class="disp-note">⚡ Auto-filled · Confirm before closing</div>
+  <div class="d-spacer"></div>
+  <button class="save-btn">💾 Save Draft</button>
+  <button class="complete-btn">✓ Complete Task</button>
+</div>
+
+<!-- ═══════════════════════════ MODALS ═══════════════════════════ -->
+
+<!-- Raise Ticket Modal -->
+<div class="modal-overlay" id="raiseTicketModal" onclick="closeOnOv(event,'raiseTicketModal')">
+  <div class="modal modal-sm">
+    <div class="modal-hd"><div class="modal-title">🎫 Raise New Ticket</div><div class="modal-close" onclick="closeModal('raiseTicketModal')">✕</div></div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:11px;">
+        <div><div class="f-lbl" style="margin-bottom:3px;">Subject</div><input type="text" style="width:100%;" value="Missing quantity — #ORD-4821"></div>
+        <div><div class="f-lbl" style="margin-bottom:3px;">Category</div>
+          <select style="width:100%;" id="rtCat" onchange="updateRtSub()">
+            <option>Return &amp; Pickup</option><option>Delivery Issues</option><option>Payments &amp; Refunds</option>
+            <option>Order Management</option><option>Account &amp; App</option><option>Edge Membership</option>
+            <option>Wallet &amp; Rewards</option><option>Consultation &amp; Medicine</option>
+          </select>
+        </div>
+        <div><div class="f-lbl" style="margin-bottom:3px;">Issue Type</div><select style="width:100%;" id="rtSub"></select></div>
+        <div><div class="f-lbl" style="margin-bottom:3px;">Linked Order ID</div><input type="text" style="width:100%;" value="#ORD-4821"></div>
+        <div><div class="f-lbl" style="margin-bottom:3px;">Remarks</div><textarea style="width:100%;height:68px;" placeholder="Add context..."></textarea></div>
+        <button class="btn btn-p btn-full" style="font-size:12.5px;padding:9px;" onclick="closeModal('raiseTicketModal');alert('Ticket raised!')">🎫 Raise Ticket</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Daily Modal -->
+
+
+<!-- Profile Modal -->
+<div class="modal-overlay" id="profileModal" onclick="closeOnOv(event,'profileModal')">
+  <div class="modal modal-sm">
+    <div class="modal-hd"><div class="modal-title">👤 Agent Profile</div><div class="modal-close" onclick="closeModal('profileModal')">✕</div></div>
+    <div class="pm-hd"><div class="pm-avatar">RA</div><div class="pm-name">Rohit Anand</div><div class="pm-role">L1 Agent · CX Operations</div></div>
+    <div class="pm-body">
+      <div class="pm-row"><span class="pm-key">Agent ID</span><span class="pm-val">AGT-1042</span></div>
+      <div class="pm-row"><span class="pm-key">Tenure</span><span class="pm-val">14 months</span></div>
+      <div class="pm-row"><span class="pm-key">FCR Rate (lifetime)</span><span class="pm-val" style="color:var(--green);">78.4%</span></div>
+      <div class="pm-row"><span class="pm-key">Avg Task Time</span><span class="pm-val">6m 15s</span></div>
+      <div class="pm-row"><span class="pm-key">Tasks (this month)</span><span class="pm-val">187</span></div>
+    </div>
+    <div class="pm-actions"><button class="btn btn-g btn-sm">🔑 Change Password</button><button class="btn btn-r btn-sm" onclick="closeModal('profileModal')">🚪 Logout</button></div>
+  </div>
+</div>
+
+<!-- Label Modal -->
+<div class="modal-overlay" id="labelModal" onclick="closeOnOv(event,'labelModal')">
+  <div class="modal modal-sm">
+    <div class="modal-hd"><div class="modal-title">🏷 Shipping Label (AWB)</div><div class="modal-close" onclick="closeModal('labelModal')">✕</div></div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="f-row"><div class="f-lbl">Courier</div><div class="f-val">Delhivery</div></div>
+        <div class="f-row"><div class="f-lbl">AWB Number</div><div class="f-val mono">DEL-9824751</div></div>
+        <div class="f-row"><div class="f-lbl">Destination Pin</div><div class="f-val">560068</div></div>
+        <div class="f-row"><div class="f-lbl">Item Count</div><div class="f-val">2 items</div></div>
+        <div class="f-row"><div class="f-lbl">Weight</div><div class="f-val">0.42 kg</div></div>
+        <div class="f-row"><div class="f-lbl">EDD</div><div class="f-val g">26 Feb 2026</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Substitute Modal -->
+<div class="modal-overlay" id="subModal" onclick="closeOnOv(event,'subModal')">
+  <div class="modal modal-sm">
+    <div class="modal-hd"><div class="modal-title">💊 Substitute Info</div><div class="modal-close" onclick="closeModal('subModal')">✕</div></div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div class="f-row"><div class="f-lbl">Branded Name</div><div class="f-val">Thyronorm 50mcg</div></div>
+        <div class="f-row"><div class="f-lbl">Generic Name</div><div class="f-val">Levothyroxine 50mcg</div></div>
+        <div class="f-row"><div class="f-lbl">Molecule</div><div class="f-val">Levothyroxine Sodium</div></div>
+        <div class="f-row"><div class="f-lbl">Strength</div><div class="f-val">50 mcg</div></div>
+        <div class="f-row"><div class="f-lbl">Manufacturer</div><div class="f-val">Abbott / Generic Co.</div></div>
+        <div class="f-row"><div class="f-lbl">Price Difference</div><div class="f-val g">Save ~9%</div></div>
+      </div>
+      <div style="background:var(--green-bg);border:1px solid var(--green-border);border-radius:6px;padding:9px 12px;font-size:11px;color:var(--green);">✓ Same molecule, strength, and medicinal effects.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ISSUE TREE */
+const IT = {
+  'Return & Pickup':['Missing or less quantity received','Different item delivered','Expired or near expiry','Damaged packaging','Spilled or broken contents','Defective device or accessory','Wrong item ordered','Pickup delayed or refused','No longer needed','Issue not listed'],
+  'Delivery Issues':['Delayed or likely to be delayed','Early delivery request','Marked delivered but not received','Unable to track shipment','Unprofessional behavior','Address change request','Shipment rejected — damage or tampering','Alternate number updation request','Issue not listed'],
+  'Payments & Refunds':['Amount deducted but order not placed','Amount deducted twice','Refund not credited to account','Incorrect amount refunded','Delay in processing refund','Error while making payment','Change COD to Prepaid request','Unable to add refund details','Issue not listed'],
+  'Order Management':['Unable to place a new order','Prescription rejected or failed to upload','Coupon code not working','Cancellation request for full order','Modification of items in order','Invoice copy request','Order cancelled or edited without permission','Prescription uploaded but order not placed','Issue not listed'],
+  'Account & App':['Unable to login','Profile updation request','App or website not working','Stop promotional communication request','Account deletion request','Issue not listed'],
+  'Edge Membership':['Fee paid but membership not activated','Free delivery benefit not working','Free consultation benefit not working','Renewal related query','Cancellation of membership request','Issue not listed'],
+  'Wallet & Rewards':['Cashback not credited after order','PRx Coins expired incorrectly','Referral earning not credited','Unable to apply wallet balance','Query about Refer and Earn','Issue not listed'],
+  'Consultation & Medicine':['Doctor did not call or call was missed','Doctor consultation was unsatisfactory','Prescription copy request','Dosage or usage related query','Side-effect or reaction reported','Availability or price related query','Query about substitutes','Issue not listed'],
+};
+function fillSel(id, cat) {
+  const e = document.getElementById(id); if(!e) return;
+  const c = cat.replace(/&amp;/g,'&');
+  e.innerHTML = (IT[c]||[]).map(s=>`<option>${s}</option>`).join('');
+}
+function updateDispSub(){ fillSel('dispSub',document.getElementById('dispCat').value); checkFreeText(); }
+function checkFreeText(){ document.getElementById('dispFree').classList.toggle('show', document.getElementById('dispSub').value==='Issue not listed'); }
+function updateRtSub(){ fillSel('rtSub',document.getElementById('rtCat').value); }
+
+/* SEARCH */
+const ORDERS = {'#ORD-4821':'Delivered · ₹388.43 · 22 Feb 2026','#ORD-4710':'Cancelled · ₹245.00 · 10 Feb 2026','#ORD-4650':'Delivered · ₹512.00 · 01 Feb 2026','#ORD-4480':'In Transit · ₹320.00 · 18 Jan 2026'};
+const RETURNS = {'#RET-4821':'Pickup Pending · ₹388.43 · linked to #ORD-4821','#RET-4280':'Refund Processed · ₹245.00 · linked to #ORD-4280'};
+function doSearch(v) {
+  const q = v.trim().toUpperCase();
+  const el = document.getElementById('searchResult');
+  if(!q){ el.style.display='none'; return; }
+  const om = Object.keys(ORDERS).find(k=>k.toUpperCase().includes(q));
+  const rm = Object.keys(RETURNS).find(k=>k.toUpperCase().includes(q));
+  el.style.display='block';
+  el.style.background=''; el.style.borderColor=''; el.style.color='';
+  if(om){ el.innerHTML=`<strong>Order found:</strong> ${om} — ${ORDERS[om]}`; }
+  else if(rm){ el.innerHTML=`<strong>Return found:</strong> ${rm} — ${RETURNS[rm]}`; }
+  else{ el.style.background='var(--red-bg)'; el.style.borderColor='var(--red-border)'; el.style.color='var(--red)'; el.innerHTML=`No result for "${v}"`; setTimeout(()=>{ el.style.display='none'; },2000); }
+}
+
+/* TAB SWITCHING */
+function switchTab(idx,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab'+idx).classList.add('active');
+}
+
+/* ORDER EXPAND */
+function toggleOD(id){
+  const dr=document.getElementById(id);
+  const open=dr.classList.contains('open');
+  document.querySelectorAll('.order-detail-row').forEach(r=>r.classList.remove('open'));
+  document.querySelectorAll('[id$="-a"]').forEach(a=>{if(a)a.textContent='▶';});
+  if(!open){ dr.classList.add('open'); const a=document.getElementById(id+'-a'); if(a)a.textContent='▼'; }
+}
+
+/* TXN EXPAND */
+function toggleTxn(id){
+  const dr=document.getElementById(id);
+  const open=dr.classList.contains('open');
+  document.querySelectorAll('.txn-detail-row').forEach(r=>r.classList.remove('open'));
+  document.querySelectorAll('[id^="t"][id$="-a"]').forEach(a=>{if(a)a.textContent='▶';});
+  if(!open){ dr.classList.add('open'); const a=document.getElementById(id+'-a'); if(a)a.textContent='▼'; }
+}
+
+/* RIGHT PANEL ACCORDION */
+function toggleRP(header){
+  const body=header.nextElementSibling;
+  const chev=header.querySelector('.rp-chev');
+  const isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  header.classList.toggle('open',!isOpen);
+  if(chev) chev.classList.toggle('open',!isOpen);
+}
+
+/* DROPDOWNS */
+const DROPS=['statusDrop','profileDrop','tasksPopup'];
+function toggleDrop(id,e){ e.stopPropagation(); const was=document.getElementById(id).classList.contains('open'); DROPS.forEach(d=>{const el=document.getElementById(d);if(el)el.classList.remove('open');}); if(!was)document.getElementById(id).classList.add('open'); }
+function closeDrop(id){ document.getElementById(id).classList.remove('open'); }
+document.addEventListener('click',()=>DROPS.forEach(d=>{const el=document.getElementById(d);if(el)el.classList.remove('open');}));
+
+/* STATUS */
+function setStatus(label,color,border,bg){ document.getElementById('statusText').textContent=label; const p=document.getElementById('statusPill'),d=document.getElementById('statusDot'); d.style.background=color; p.style.color=color; p.style.borderColor=border; p.style.background=bg; closeDrop('statusDrop'); }
+
+/* MODALS */
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+function closeOnOv(e,id){ if(e.target===document.getElementById(id))closeModal(id); }
+
+/* AGENT HISTORY TABS */
+const AH_PANELS=['ahAll','ahCall','ahChat','ahDisp'];
+function switchAH(panelId,el){ document.querySelectorAll('.ah-tab').forEach(t=>t.classList.remove('active')); AH_PANELS.forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';}); el.classList.add('active'); document.getElementById(panelId).style.display='block'; }
+function toggleAH(id,entryEl){ const det=document.getElementById(id); const chev=document.getElementById(id+'c'); const open=det.classList.contains('open'); det.classList.toggle('open',!open); if(entryEl)entryEl.classList.toggle('ah-exp',!open); if(chev)chev.classList.toggle('rotated',!open); }
+
+/* TASK FILTER */
+function filterTasks(){ const cat=document.getElementById('fCat').value.replace(/&amp;/g,'&'); const out=document.getElementById('fOut').value; let n=0; document.querySelectorAll('#taskBody tr').forEach(r=>{ const rc=(r.dataset.cat||'').replace(/&amp;/g,'&'),ro=(r.dataset.out||''); const show=(!cat||rc===cat)&&(!out||ro===out); r.style.display=show?'':'none'; if(show)n++; }); document.getElementById('taskCountLbl').textContent=`(${n} shown)`; }
+
+/* TIMER */
+let secs=522;
+function tick(){ secs++; const h=String(Math.floor(secs/3600)).padStart(2,'0'),m=String(Math.floor((secs%3600)/60)).padStart(2,'0'),s=String(secs%60).padStart(2,'0'); document.getElementById('taskTimer').textContent=h+':'+m+':'+s; }
+setInterval(tick,1000);
+
+window.onload=function(){
+  fillSel('dispSub',document.getElementById('dispCat').value);
+  fillSel('rtSub',document.getElementById('rtCat').value);
+};
+</script>
+
+<!-- Edit Order Modal -->
+<div class="modal-overlay" id="editOrderModal" onclick="closeOnOv(event,'editOrderModal')">
+  <div class="modal modal-md">
+    <div class="modal-hd"><div class="modal-title">✏ Edit Order — #ORD-4821</div><div class="modal-close" onclick="closeModal('editOrderModal')">✕</div></div>
+    <div class="modal-body">
+      <div style="margin-bottom:12px;font-size:11px;color:var(--text3);">Select items to modify. Changes will update the bill amount immediately.</div>
+      <div id="editOrderItems">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;background:var(--card2);">
+          <div style="width:36px;height:36px;background:var(--purple-bg);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">💊</div>
+          <div style="flex:1;"><div style="font-size:12px;font-weight:600;">Levothyroxine 50mcg Tablet (Strip of 30)</div><div style="font-size:10px;color:var(--text3);">MRP ₹156.00 · Paid ₹142.00</div></div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:10px;color:var(--text3);">Qty:</span>
+            <button onclick="changeQty('q1',-1)" style="width:22px;height:22px;border:1px solid var(--border);border-radius:4px;background:var(--surface);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;">−</button>
+            <span id="q1" style="font-size:12px;font-weight:700;min-width:16px;text-align:center;">1</span>
+            <button onclick="changeQty('q1',1)" style="width:22px;height:22px;border:1px solid var(--border);border-radius:4px;background:var(--surface);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;">+</button>
+          </div>
+          <div style="font-size:11px;font-weight:700;color:var(--teal);width:60px;text-align:right;" id="p1">₹142.00</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;background:var(--card2);">
+          <div style="width:36px;height:36px;background:var(--teal-bg);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🧴</div>
+          <div style="flex:1;"><div style="font-size:12px;font-weight:600;">Metformin 500mg Tablet (Strip of 60)</div><div style="font-size:10px;color:var(--text3);">MRP ₹264.00 · Paid ₹123.22 each</div></div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:10px;color:var(--text3);">Qty:</span>
+            <button onclick="changeQty('q2',-1)" style="width:22px;height:22px;border:1px solid var(--border);border-radius:4px;background:var(--surface);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;">−</button>
+            <span id="q2" style="font-size:12px;font-weight:700;min-width:16px;text-align:center;">2</span>
+            <button onclick="changeQty('q2',1)" style="width:22px;height:22px;border:1px solid var(--border);border-radius:4px;background:var(--surface);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;">+</button>
+          </div>
+          <div style="font-size:11px;font-weight:700;color:var(--teal);width:60px;text-align:right;" id="p2">₹246.43</div>
+        </div>
+      </div>
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:9px 13px;margin-top:8px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text3);">Subtotal</span><span id="editSubtotal" style="font-weight:600;">₹388.43</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="font-weight:700;">Total Payable</span><span id="editTotal" style="font-weight:800;color:var(--teal);font-family:'JetBrains Mono',monospace;">₹388.43</span></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px;">
+        <button class="btn btn-g btn-sm" onclick="closeModal('editOrderModal')">Cancel</button>
+        <button class="btn btn-p" style="flex:1;" onclick="closeModal('editOrderModal');alert('Order updated successfully!')">✓ Confirm Edit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Address Modal -->
+<div class="modal-overlay" id="editAddressModal" onclick="closeOnOv(event,'editAddressModal')">
+  <div class="modal modal-sm">
+    <div class="modal-hd"><div class="modal-title">📍 Edit Delivery Address</div><div class="modal-close" onclick="closeModal('editAddressModal')">✕</div></div>
+    <div class="modal-body">
+      <div style="background:var(--accent-bg);border:1px solid var(--accent-light);border-radius:7px;padding:9px 12px;margin-bottom:14px;font-size:11px;color:var(--accent);">Current: Home — HSR Layout, Bengaluru, KA · 560068</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div><div class="f-lbl" style="margin-bottom:3px;">Address Line 1</div><input type="text" style="width:100%;" value="14/2, 5th Cross, HSR Layout"></div>
+        <div><div class="f-lbl" style="margin-bottom:3px;">Address Line 2</div><input type="text" style="width:100%;" value="Sector 6"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div><div class="f-lbl" style="margin-bottom:3px;">City</div><input type="text" style="width:100%;" value="Bengaluru"></div>
+          <div><div class="f-lbl" style="margin-bottom:3px;">Pincode</div><input type="text" style="width:100%;" value="560068"></div>
+        </div>
+        <div><div class="f-lbl" style="margin-bottom:3px;">State</div><input type="text" style="width:100%;" value="Karnataka"></div>
+        <div><div class="f-lbl" style="margin-bottom:3px;">Alternate Phone</div><input type="text" style="width:100%;" placeholder="Optional"></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px;">
+        <button class="btn btn-g btn-sm" onclick="closeModal('editAddressModal')">Cancel</button>
+        <button class="btn btn-p" style="flex:1;" onclick="closeModal('editAddressModal');alert('Address updated successfully!')">✓ Update Address</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Initiate Return Modal -->
+<div class="modal-overlay" id="initiateReturnModal" onclick="closeOnOv(event,'initiateReturnModal')">
+  <div class="modal modal-md">
+    <div class="modal-hd"><div class="modal-title">↩ Initiate Return — #ORD-4821</div><div class="modal-close" onclick="closeModal('initiateReturnModal')">✕</div></div>
+    <div class="modal-body">
+      <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border2);">Return Section</div>
+      <!-- Item 1 -->
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;background:var(--card2);">
+        <input type="checkbox" checked style="margin-top:3px;width:14px;height:14px;cursor:pointer;accent-color:var(--red);">
+        <div style="width:52px;height:52px;background:#eee;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">💊</div>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:600;">Levothyroxine 50mcg Tablet (Strip of 30)</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:1px;">Generic · Strip of 30 tablets</div>
+          <div style="font-size:11px;font-weight:700;color:var(--teal);margin-top:3px;">₹142.00 <span style="text-decoration:line-through;color:var(--text3);font-weight:400;font-size:10px;">₹156.00</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 10px;cursor:pointer;" onclick="document.getElementById('retImg1').click()">
+            <span style="font-size:18px;">📷</span>
+            <span style="font-size:9px;color:var(--text3);">Upload img</span>
+            <input type="file" id="retImg1" accept="image/*" style="display:none;">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:3px;">
+            <div class="f-lbl">Reason for Return</div>
+            <select style="width:140px;font-size:10.5px;"><option>No Longer Needed</option><option>Damaged</option><option>Wrong Item</option><option>Expired</option><option>Missing Qty</option></select>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;">
+            <div class="f-lbl">Qty</div>
+            <input type="number" value="1" min="1" max="1" style="width:50px;font-size:11px;">
+          </div>
+        </div>
+      </div>
+      <!-- Item 2 -->
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;background:var(--card2);">
+        <input type="checkbox" style="margin-top:3px;width:14px;height:14px;cursor:pointer;accent-color:var(--red);">
+        <div style="width:52px;height:52px;background:#eee;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🧴</div>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:600;">Metformin 500mg Tablet (Strip of 60)</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:1px;">Generic · Strip of 60 tablets</div>
+          <div style="font-size:11px;font-weight:700;color:var(--teal);margin-top:3px;">₹246.43 <span style="text-decoration:line-through;color:var(--text3);font-weight:400;font-size:10px;">₹264.00</span></div>
+          <div style="margin-top:4px;"><span style="font-size:9px;background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border);border-radius:3px;padding:1px 5px;">Rx</span></div>
+        </div>
+        <div style="font-size:10px;color:var(--text3);padding-top:4px;">Qty: 2</div>
+      </div>
+      <!-- Item 3 -->
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;background:var(--card2);">
+        <input type="checkbox" style="margin-top:3px;width:14px;height:14px;cursor:pointer;accent-color:var(--red);">
+        <div style="width:52px;height:52px;background:#eee;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">💊</div>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:600;">Rosuvastatin 10mg Tablet (Strip of 30)</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:1px;">Generic · Strip of 30 tablets</div>
+          <div style="font-size:11px;font-weight:700;color:var(--teal);margin-top:3px;">₹153.10 <span style="text-decoration:line-through;color:var(--text3);font-weight:400;font-size:10px;">₹175.00</span></div>
+          <div style="margin-top:4px;"><span style="font-size:9px;background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border);border-radius:3px;padding:1px 5px;">Rx</span></div>
+        </div>
+        <div style="font-size:10px;color:var(--text3);padding-top:4px;">Qty: 3</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-g btn-sm" onclick="closeModal('initiateReturnModal')">Cancel</button>
+        <button class="btn btn-r" style="flex:1;font-size:12px;" onclick="closeModal('initiateReturnModal');alert('Return initiated successfully!')">↩ RETURN</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function changeQty(qId, delta) {
+  const el = document.getElementById(qId);
+  const prices = {q1: 142.00, q2: 123.215};
+  let qty = parseInt(el.textContent) + delta;
+  if (qty < 0) qty = 0;
+  el.textContent = qty;
+  const pEl = document.getElementById(qId.replace('q','p'));
+  pEl.textContent = '₹' + (prices[qId] * qty).toFixed(2);
+  const t = (prices.q1 * parseInt(document.getElementById('q1').textContent)) +
+            (prices.q2 * parseInt(document.getElementById('q2').textContent));
+  document.getElementById('editSubtotal').textContent = '₹' + t.toFixed(2);
+  document.getElementById('editTotal').textContent = '₹' + t.toFixed(2);
+}
+</script>
+<!-- Create Task Modal -->
+<div class="modal-overlay" id="createTaskModal" onclick="closeOnOv(event,'createTaskModal')">
+  <div class="modal modal-sm">
+    <div class="modal-hd">
+      <div class="modal-title">➕ Create Task</div>
+      <div class="modal-close" onclick="closeModal('createTaskModal')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <div class="f-lbl" style="margin-bottom:6px;">Select Task Type</div>
+          <select id="createTaskType" style="width:100%;font-size:12px;padding:8px 10px;">
+            <option value="">— Choose task type —</option>
+            <option>Chat Sales</option>
+            <option>Chat Support</option>
+            <option>Missed Call Sales</option>
+            <option>Missed Call Support</option>
+            <option>UploadRX Chat Sales</option>
+          </select>
+        </div>
+        <button class="btn btn-p btn-full" style="font-size:12.5px;padding:9px;" onclick="doCreateTask()">➕ Create Task</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function doCreateTask() {
+  var sel = document.getElementById('createTaskType');
+  if (!sel.value) { alert('Please select a task type first.'); return; }
+  alert('Task created: ' + sel.value);
+  sel.value = '';
+  closeModal('createTaskModal');
+}
+function toggleEdgeAccordion(id, chevId, rowEl) {
+  const detail = document.getElementById(id);
+  const chev = document.getElementById(chevId);
+  const isOpen = detail.style.display !== 'none';
+  detail.style.display = isOpen ? 'none' : 'table-row';
+  if (chev) {
+    chev.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
+    chev.style.color = isOpen ? 'var(--text3)' : 'var(--accent)';
+  }
+  if (rowEl) rowEl.style.background = isOpen ? '' : 'var(--accent-bg)';
+}
+
+function toggleActionsDropdown(e) {
+  e.stopPropagation();
+  var dd = document.getElementById('actionsDropdown');
+  var btn = document.getElementById('actionsBtn');
+  var isOpen = dd.style.display !== 'none';
+  if (isOpen) { dd.style.display = 'none'; return; }
+  var rect = btn.getBoundingClientRect();
+  dd.style.display = 'block';
+  dd.style.top = (rect.bottom + 4) + 'px';
+  dd.style.right = (window.innerWidth - rect.right) + 'px';
+}
+document.addEventListener('click', function() {
+  var dd = document.getElementById('actionsDropdown');
+  if (dd) dd.style.display = 'none';
+});
+
+function doLogin() {
+  var val = document.getElementById('loginPhone').value.trim();
+  var err = document.getElementById('loginErr');
+  err.style.display = 'none';
+  if (val.length !== 10) {
+    err.textContent = 'Phone number should be 10 digits.';
+    err.style.display = 'block';
+    return;
+  }
+  if (val !== '9717866924') {
+    err.textContent = 'No user with this phone number exists.';
+    err.style.display = 'block';
+    return;
+  }
+  document.getElementById('loginPage').style.display = 'none';
+}
+
+function switchAHTab(panelId, el) {
+  var panels = ['aht-l1','aht-l2','aht-sales','aht-zoho'];
+  panels.forEach(function(id) {
+    var p = document.getElementById(id);
+    if (p) p.style.display = 'none';
+  });
+  document.getElementById(panelId).style.display = 'block';
+  var tabs = el.parentElement.querySelectorAll('.ah-tab');
+  tabs.forEach(function(t) { t.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+function switchAHMain(panelId, el) {
+  var panels = ['ahm-all','ahm-calls','ahm-chat','ahm-disp','ahm-l1','ahm-l2','ahm-sales'];
+  panels.forEach(function(id) {
+    var p = document.getElementById(id);
+    if (p) p.style.display = 'none';
+  });
+  var target = document.getElementById(panelId);
+  if (target) target.style.display = 'block';
+  var tabs = el.parentElement.querySelectorAll('.ah-tab');
+  tabs.forEach(function(t) { t.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+function switchAHPrimary(section, el) {
+  ['l1','l2','sales'].forEach(function(s) {
+    var sec = document.getElementById('ah-section-' + s);
+    if (sec) sec.style.display = 'none';
+  });
+  document.getElementById('ah-section-' + section).style.display = 'block';
+  var tabs = document.getElementById('ah-primary-tabs').querySelectorAll('.ah-tab');
+  tabs.forEach(function(t) { t.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+function switchAHSub(section, sub, el) {
+  var subIds = ['all','calls','chat','disp'];
+  subIds.forEach(function(s) {
+    var p = document.getElementById('ah-' + section + '-' + s);
+    if (p) p.style.display = 'none';
+  });
+  document.getElementById('ah-' + section + '-' + sub).style.display = 'block';
+  var tabs = el.parentElement.querySelectorAll('.ah-tab');
+  tabs.forEach(function(t) { t.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+function switchActiveTab(idx, el) {
+  document.querySelectorAll('#activeOrderTabs > div').forEach(function(t,i) {
+    t.style.color = i === idx ? 'var(--amber)' : 'var(--text3)';
+    t.style.borderBottomColor = i === idx ? 'var(--amber)' : 'transparent';
+    t.style.fontWeight = i === idx ? '700' : '600';
+  });
+  document.getElementById('activeTabPanel0').style.display = idx === 0 ? 'flex' : 'none';
+  document.getElementById('activeTabPanel1').style.display = idx === 1 ? 'flex' : 'none';
+}
+</script>
+</body>
+</html>
