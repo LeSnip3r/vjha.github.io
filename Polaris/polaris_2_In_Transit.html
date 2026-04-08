@@ -488,6 +488,7 @@ textarea{resize:vertical;}
     <div style="margin-top:6px;display:flex;gap:5px;align-items:center;flex-wrap:wrap;">
       <button onclick="openModal('createTaskModal')" style="font-size:8.5px;font-weight:700;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-light);border-radius:20px;padding:2px 9px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;">+ Create Task</button>
       <span style="font-size:8.5px;font-weight:700;background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);border-radius:20px;padding:2px 7px;white-space:nowrap;">⚠ Test User</span>
+      <button onclick="document.getElementById('loginPage').style.display='flex';" style="font-size:8.5px;font-weight:700;background:var(--card2);color:var(--text2);border:1px solid var(--border);border-radius:20px;padding:2px 9px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;">🔄 Switch Customer</button>
     </div>
   </div>
 
@@ -694,163 +695,8 @@ textarea{resize:vertical;}
       <div id="searchResult"></div>
     </div>
   </div>
-  <!-- Active Order card -->
-  <div class="card">
-    <div class="card-hd">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <div class="active-order-tag">📦 Active Order — <span class="mono" style="color:var(--accent);font-size:11px;font-weight:500;">Order ID #1964821</span></div>
-      </div>
-      <div class="flex-right" style="gap:6px;">
-        <button class="btn btn-g btn-sm">🔗 Track</button>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="detail-grid">
-        <div class="f-row"><div class="f-lbl">Order Status</div><div class="f-val a">In Transit</div></div>
-        <div class="f-row"><div class="f-lbl">Payment Mode</div><div class="f-val">Online · UPI (Prepaid)</div></div>
-        <div class="f-row"><div class="f-lbl">Order Date</div><div class="f-val">22 Feb 2026</div></div>
-        <div class="f-row"><div class="f-lbl">Delivered On</div><div class="f-val g">26 Feb 2026 ✓</div></div>
-        <div class="f-row"><div class="f-lbl">Order Total</div><div class="f-val mono">₹388.43</div></div>
-        <div class="f-row"><div class="f-lbl">Courier / AWB</div><div class="f-val">Delhivery · DEL-9824751</div></div>
-        <div class="f-row"><div class="f-lbl">Order Source</div><div class="flex-gap"><span class="src-self">Self-placed</span></div></div>
-        <div class="f-row"><div class="f-lbl">Zoho Sales Order</div><div class="flex-gap"><span class="zoho-ok">Success — Available ✓</span></div></div>
-      </div>
-      <div class="hdivider"></div>
-      <div class="slabel">Order Items</div>
-      <div class="item-row">
-        <div class="item-ico" style="background:var(--purple-bg);">💊</div>
-        <div class="item-info">
-          <div class="item-name">Levothyroxine 50mcg Tablet (Strip of 30)</div>
-          <div class="item-sub">Generic · Qty: 1 · MRP ₹156.00 · Paid ₹142.00</div>
-          <div class="item-links"><a class="item-link" onclick="openModal('labelModal')">🏷 Label (AWB)</a><a class="item-link" onclick="openModal('subModal')">💊 Substitute Info</a></div>
-        </div>
-        <div class="gen-tag">Generic</div>
-      </div>
-      <div class="item-row">
-        <div class="item-ico" style="background:var(--teal-bg);">🧴</div>
-        <div class="item-info">
-          <div class="item-name">Metformin 500mg Tablet (Strip of 60)</div>
-          <div class="item-sub">Generic · Qty: 2 · MRP ₹264.00 · Paid ₹246.43</div>
-          <div class="item-links"><a class="item-link" onclick="openModal('labelModal')">🏷 Label (AWB)</a><a class="item-link" onclick="openModal('subModal')">💊 Substitute Info</a></div>
-        </div>
-        <div class="gen-tag">Generic</div>
-      </div>
-      <div class="hdivider"></div>
-      <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;">
-        <div class="f-row"><div class="f-lbl">Items MRP</div><div class="f-val mono">₹420.00</div></div>
-        <div class="f-row"><div class="f-lbl">Discount</div><div class="f-val g mono">−₹31.57</div></div>
-        <div class="f-row"><div class="f-lbl">Delivery Fee</div><div class="f-val g mono">₹0.00</div></div>
-        <div class="f-row"><div class="f-lbl">Coupon</div><div class="f-val a">PRX15</div></div>
-        <div style="margin-left:auto;text-align:right;"><div class="f-lbl">Amount Paid</div><div style="font-size:16px;font-weight:800;color:var(--teal);font-family:'JetBrains Mono',monospace;">₹388.43</div></div>
-      </div>
-      <div style="background:var(--card2);border-radius:5px;padding:5px 10px;margin-top:7px;font-size:10.5px;color:var(--text3);display:flex;align-items:center;justify-content:space-between;">
-        <span class="mono">Invoice: <span style="color:var(--accent);cursor:pointer;">Zoho Invoice URL ↗</span></span>
-        <button class="btn btn-tl btn-sm">📄 Send Invoice via WhatsApp →</button>
-      </div>
 
-      <div class="hdivider"></div>
-
-      <!-- ORDER STATUS TIMELINE -->
-      <div class="slabel">Order Status Timeline</div>
-      <div style="display:flex;align-items:flex-start;gap:0;margin-top:6px;overflow-x:auto;padding-bottom:6px;">
-
-        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
-          <div style="width:26px;height:26px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;">✓</div>
-          <div style="font-size:9px;font-weight:700;color:var(--green);margin-top:5px;text-align:center;">Order Created</div>
-          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">22 Feb 2026<br>11:34 AM</div>
-        </div>
-        <div style="flex:1;height:2px;background:var(--green);margin-top:13px;min-width:8px;"></div>
-
-        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
-          <div style="width:26px;height:26px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;">✓</div>
-          <div style="font-size:9px;font-weight:700;color:var(--green);margin-top:5px;text-align:center;">Doc Consultation Scheduled</div>
-          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">22 Feb 2026<br>11:40 AM</div>
-        </div>
-        <div style="flex:1;height:2px;background:var(--green);margin-top:13px;min-width:8px;"></div>
-
-        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
-          <div style="width:26px;height:26px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;">✓</div>
-          <div style="font-size:9px;font-weight:700;color:var(--green);margin-top:5px;text-align:center;">Order is being Processed</div>
-          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">22 Feb 2026<br>12:05 PM</div>
-        </div>
-        <div style="flex:1;height:2px;background:var(--green);margin-top:13px;min-width:8px;"></div>
-
-        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
-          <div style="width:26px;height:26px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;">✓</div>
-          <div style="font-size:9px;font-weight:700;color:var(--green);margin-top:5px;text-align:center;">Ready for Pickup</div>
-          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">23 Feb 2026<br>08:00 AM</div>
-        </div>
-        <div style="flex:1;height:2px;background:var(--green);margin-top:13px;min-width:8px;"></div>
-
-        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
-          <div style="width:26px;height:26px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;box-shadow:0 0 0 3px var(--amber-bg);">→</div>
-          <div style="font-size:9px;font-weight:700;color:var(--amber);margin-top:5px;text-align:center;">In Transit</div>
-          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">07 Mar 2026<br>08:15 AM</div>
-        </div>
-        <div style="flex:1;height:2px;background:var(--border);margin-top:13px;min-width:8px;"></div>
-
-        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
-          <div style="width:26px;height:26px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">○</div>
-          <div style="font-size:9px;font-weight:700;color:var(--text3);margin-top:5px;text-align:center;">Out for Delivery</div>
-          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">Pending</div>
-        </div>
-        <div style="flex:1;height:2px;background:var(--border);margin-top:13px;min-width:8px;"></div>
-
-        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
-          <div style="width:26px;height:26px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">○</div>
-          <div style="font-size:9px;font-weight:700;color:var(--text3);margin-top:5px;text-align:center;">Delivered</div>
-          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">EDD: 19 Mar<br>2026</div>
-        </div>
-
-      </div>
-
-      <div class="hdivider"></div>
-
-      <!-- TRACKING WIDGET -->
-      <div class="slabel">Shipment Tracking</div>
-      <div style="margin-top:6px;border-radius:8px;overflow:hidden;border:1px solid var(--border);">
-        <img src="tracking_widget.png" alt="Shipment Tracking" style="width:100%;display:block;">
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ─────────── TAB 1: ORDERS ─────────── -->
-<div class="tab-content" id="tab1">
-  <div class="card">
-    <div class="card-hd">
-      <div class="card-title">📦 Order History</div>
-      <div style="display:flex;gap:6px;"><input type="text" style="width:170px;" placeholder="🔍 Search Order ID..."><select><option>All Statuses</option><option>Delivered</option><option>In Transit</option><option>Return Initiated</option><option>Cancelled</option></select></div>
-    </div>
-    <div style="overflow-x:auto;">
-      <table class="data-table">
-	<thead><tr><th></th><th>Order ID</th><th>Details</th><th>Status</th><th>Source</th><th>Date</th><th>Amount</th><th>Track</th></tr></thead>
-        <tbody>
-          <tr onclick="toggleOD('od1',this)"><td><span id="od1-a" style="font-size:10px;color:var(--text3);">▶</span></td><td class="mono">#ORD-4821</td><td><button class="btn btn-g btn-xs" onclick="event.stopPropagation();switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td><span class="badge b-amber">Return Initiated</span></td><td><span class="src-self">Self</span></td><td>22 Feb 2026</td><td class="mono">₹388.43</td><td><button class="btn btn-tl btn-xs" onclick="event.stopPropagation();">🔗</button></td></tr>
-          <tr class="order-detail-row" id="od1"><td colspan="11"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Status</div><div class="f-val a">Return Initiated</div></div><div class="f-row"><div class="f-lbl">Payment</div><div class="f-val">UPI (Prepaid)</div></div><div class="f-row"><div class="f-lbl">Delivery Date</div><div class="f-val g">26 Feb 2026 ✓</div></div><div class="f-row"><div class="f-lbl">Courier / AWB</div><div class="f-val mono">Delhivery · DEL-9824751</div></div><div class="f-row"><div class="f-lbl">Order Source</div><div class="flex-gap"><span class="src-self">Self-placed</span></div></div><div class="f-row"><div class="f-lbl">Zoho Sales Order</div><div class="flex-gap"><span class="zoho-ok">Success — Available ✓</span></div></div></div><div class="slabel">Cart Items</div><div class="item-row"><div class="item-ico" style="background:var(--purple-bg);">💊</div><div class="item-info"><div class="item-name">Levothyroxine 50mcg (Strip of 30)</div><div class="item-sub">Qty:1 · ₹142.00</div></div></div><div class="item-row"><div class="item-ico" style="background:var(--teal-bg);">🧴</div><div class="item-info"><div class="item-name">Metformin 500mg (Strip of 60)</div><div class="item-sub">Qty:2 · ₹246.43</div></div></div><div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;"><button class="btn btn-a btn-sm">↩ Initiate Return</button><button class="btn btn-r btn-sm">✕ Cancel Order</button><button class="btn btn-g btn-sm">📄 Get Prescription</button><button class="btn btn-g btn-sm">📋 Get Invoices</button></div></div></td></tr>
-          <tr onclick="toggleOD('od2',this)"><td><span id="od2-a" style="font-size:10px;color:var(--text3);">▶</span></td><td class="mono">#ORD-4710</td><td><button class="btn btn-g btn-xs" onclick="event.stopPropagation();switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td><span class="badge b-red">Cancelled</span></td><td><span class="src-self">Self</span></td><td>10 Feb 2026</td><td class="mono">₹245.00</td><td><button class="btn btn-tl btn-xs" onclick="event.stopPropagation();">🔗</button></td></tr>
-          <tr class="order-detail-row" id="od2"><td colspan="11"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Status</div><div class="f-val r">Cancelled</div></div><div class="f-row"><div class="f-lbl">Payment</div><div class="f-val">COD</div></div><div class="f-row"><div class="f-lbl">Cancel Date</div><div class="f-val">12 Feb 2026</div></div><div class="f-row"><div class="f-lbl">Cancelled By</div><div class="f-val">Customer</div></div></div></div></td></tr>
-          <tr onclick="toggleOD('od3',this)"><td><span id="od3-a" style="font-size:10px;color:var(--text3);">▶</span></td><td class="mono">#ORD-4650</td><td><button class="btn btn-g btn-xs" onclick="event.stopPropagation();switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td><span class="badge b-green">Delivered</span></td><td><span class="src-assisted">Assisted</span></td><td>01 Feb 2026</td><td class="mono">₹512.00</td><td><button class="btn btn-tl btn-xs" onclick="event.stopPropagation();">🔗</button></td></tr>
-          <tr class="order-detail-row" id="od3"><td colspan="11"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Status</div><div class="f-val g">Delivered</div></div><div class="f-row"><div class="f-lbl">Payment</div><div class="f-val">UPI</div></div><div class="f-row"><div class="f-lbl">Delivery Date</div><div class="f-val g">05 Feb 2026</div></div><div class="f-row"><div class="f-lbl">Courier</div><div class="f-val">BlueDart · BD-884210</div></div></div><div style="background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:5px;padding:7px 11px;font-size:11px;color:var(--amber);">⚠ Zoho Pending — medicine being procured. EDD delayed by 1 day.</div></div></td></tr>
-          <tr onclick="toggleOD('od4',this)"><td><span id="od4-a" style="font-size:10px;color:var(--text3);">▶</span></td><td class="mono">#ORD-4480</td><td><button class="btn btn-g btn-xs" onclick="event.stopPropagation();switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td><span class="badge b-blue">In Transit</span></td><td><span class="src-self">Self</span></td><td>18 Jan 2026</td><td class="mono">₹320.00</td><td><button class="btn btn-tl btn-xs" onclick="event.stopPropagation();">🔗</button></td></tr>
-          <tr class="order-detail-row" id="od4"><td colspan="11"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Status</div><div class="f-val" style="color:var(--accent);">In Transit</div></div><div class="f-row"><div class="f-lbl">Payment</div><div class="f-val">Prepaid</div></div><div class="f-row"><div class="f-lbl">EDD</div><div class="f-val a">20 Jan 2026</div></div><div class="f-row"><div class="f-lbl">Courier</div><div class="f-val">Ecom Express</div></div></div></div></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- ─────────── TAB 2: RETURNS ─────────── -->
-<div class="tab-content" id="tab2">
-  <div class="card">
-    <div class="card-hd"><div class="card-title">↩ Return History</div><select><option>All Statuses</option><option>Pickup Pending</option><option>Pickup Initiated</option><option>Refund Processed</option></select></div>
-    <div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>Order ID</th><th>Details</th><th>Return Status</th><th>Refund Amt</th><th>Ship Refund</th><th>Handling</th><th>Transfer Mode</th></tr></thead>
-    <tbody>
-      <tr><td class="mono">#ORD-4821</td><td><button class="btn btn-g btn-xs" onclick="switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td><span class="badge b-amber">Pickup Pending</span></td><td class="mono" style="color:var(--teal);">₹388.43</td><td class="mono">₹0.00</td><td class="mono">₹0.00</td><td>Source (UPI)</td></tr>
-      <tr><td class="mono">#ORD-4280</td><td><button class="btn btn-g btn-xs" onclick="switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td><span class="badge b-teal">Refund Processed</span></td><td class="mono" style="color:var(--teal);">₹245.00</td><td class="mono">₹0.00</td><td class="mono">₹0.00</td><td>PRx Cash</td></tr>
-    </tbody></table></div>
-  </div>
-  <!-- Active Return Detail -->
+<!-- Active Return Detail -->
   <div class="ret-card">
     <div class="ret-hd">
       <div class="ret-title">↩ Active Return — <span class="mono" style="font-size:10px;color:var(--text3);">Order ID #1964821</span> <span class="badge b-amber" style="font-size:9px;">Pickup Pending</span></div>
@@ -974,6 +820,180 @@ textarea{resize:vertical;}
       
     </div>
   </div>
+
+  <!-- Active Order card -->
+  <div class="card">
+    <div class="card-hd">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="active-order-tag">📦 Active Order — <span class="mono" style="color:var(--accent);font-size:11px;font-weight:500;">Order ID #1964821</span></div>
+      </div>
+      <div class="flex-right" style="gap:6px;">
+        <button class="btn btn-g btn-sm">🔗 Track</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="detail-grid">
+        <div class="f-row"><div class="f-lbl">Order Status</div><div class="f-val a">In Transit</div></div>
+        <div class="f-row"><div class="f-lbl">Payment Mode</div><div class="f-val">Online · UPI (Prepaid)</div></div>
+        <div class="f-row"><div class="f-lbl">Order Date</div><div class="f-val">22 Feb 2026</div></div>
+        <div class="f-row"><div class="f-lbl">Delivered On</div><div class="f-val g">26 Feb 2026 ✓</div></div>
+        <div class="f-row"><div class="f-lbl">Order Total</div><div class="f-val mono">₹388.43</div></div>
+        <div class="f-row"><div class="f-lbl">Courier / AWB</div><div class="f-val">Delhivery · DEL-9824751</div></div>
+        <div class="f-row"><div class="f-lbl">Order Source</div><div class="flex-gap"><span class="src-self">Self-placed</span></div></div>
+        <div class="f-row"><div class="f-lbl">Zoho Sales Order</div><div class="flex-gap"><span class="zoho-ok">Success — Available ✓</span></div></div>
+        <div class="f-row"><div class="f-lbl">Patient Name</div><div class="f-val">Nikhil Sreenivas</div></div>
+        <div class="f-row"><div class="f-lbl">Patient Phone No.</div><div class="f-val mono">9110721540</div></div>
+        <div class="f-row"><div class="f-lbl">Patient Address</div><div class="f-val">Home — HSR Layout, Bengaluru, KA 560068</div></div>
+        <div class="f-row"><div class="f-lbl">Age / Gender</div><div class="f-val">22Y · Male</div></div>
+        <div class="f-row"><div class="f-lbl">Gupshup Chat</div><div class="f-val"><a href="#" style="color:var(--accent);font-weight:600;text-decoration:none;">Open Chat ↗</a></div></div>
+        <div class="f-row"><div class="f-lbl">Doctor Status</div><div class="f-val g">RX Valid ✓</div></div>
+      </div>
+      <div class="hdivider"></div>
+      <div class="slabel">Order Items</div>
+      <div class="item-row">
+        <div class="item-ico" style="background:var(--purple-bg);">💊</div>
+        <div class="item-info">
+          <div class="item-name">Levothyroxine 50mcg Tablet (Strip of 30)</div>
+          <div class="item-sub">Generic · Qty: 1 · MRP ₹156.00 · Paid ₹142.00</div>
+          <div class="item-links"><a class="item-link" onclick="openModal('labelModal')">🏷 Label (AWB)</a><a class="item-link" onclick="openModal('subModal')">💊 Substitute Info</a></div>
+        </div>
+        <div class="gen-tag">Generic</div>
+      </div>
+      <div class="item-row">
+        <div class="item-ico" style="background:var(--teal-bg);">🧴</div>
+        <div class="item-info">
+          <div class="item-name">Metformin 500mg Tablet (Strip of 60)</div>
+          <div class="item-sub">Generic · Qty: 2 · MRP ₹264.00 · Paid ₹246.43</div>
+          <div class="item-links"><a class="item-link" onclick="openModal('labelModal')">🏷 Label (AWB)</a><a class="item-link" onclick="openModal('subModal')">💊 Substitute Info</a></div>
+        </div>
+        <div class="gen-tag">Generic</div>
+      </div>
+      <div class="hdivider"></div>
+      <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;">
+        <div class="f-row"><div class="f-lbl">Items MRP</div><div class="f-val mono">₹420.00</div></div>
+        <div class="f-row"><div class="f-lbl">Total Savings</div><div class="f-val g mono">−₹31.57</div></div>
+        <div class="f-row"><div class="f-lbl">Delivery Fee</div><div class="f-val g mono">₹0.00</div></div>
+        <div class="f-row"><div class="f-lbl">Coupon</div><div class="f-val a">PRX15</div></div>
+        <div style="margin-left:auto;text-align:right;"><div class="f-lbl">Amount Paid</div><div style="font-size:16px;font-weight:800;color:var(--teal);font-family:'JetBrains Mono',monospace;">₹388.43</div></div>
+      </div>
+      <div style="background:var(--card2);border-radius:5px;padding:5px 10px;margin-top:7px;font-size:10.5px;color:var(--text3);display:flex;align-items:center;justify-content:space-between;">
+        <span class="mono">Invoice: <span style="color:var(--accent);cursor:pointer;">Zoho Invoice URL ↗</span></span>
+        <button class="btn btn-tl btn-sm">📄 Send Invoice via WhatsApp →</button>
+      </div>
+      <div style="margin-top:8px;">
+        <button class="btn btn-a btn-sm" onclick="openModal('initiateReturnModal')">↩ Initiate Return</button>
+      </div>
+
+      <div class="hdivider"></div>
+
+      <!-- ORDER STATUS TIMELINE -->
+      <div class="slabel">Order Status Timeline</div>
+      <div style="display:flex;align-items:flex-start;gap:0;margin-top:6px;overflow-x:auto;padding-bottom:6px;">
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;">✓</div>
+          <div style="font-size:9px;font-weight:700;color:var(--green);margin-top:5px;text-align:center;">Order Created</div>
+          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">22 Feb 2026<br>11:34 AM</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--green);margin-top:13px;min-width:8px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;">✓</div>
+          <div style="font-size:9px;font-weight:700;color:var(--green);margin-top:5px;text-align:center;">Doc Consultation Scheduled</div>
+          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">22 Feb 2026<br>11:40 AM</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--green);margin-top:13px;min-width:8px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;">✓</div>
+          <div style="font-size:9px;font-weight:700;color:var(--green);margin-top:5px;text-align:center;">Order is being Processed</div>
+          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">22 Feb 2026<br>12:05 PM</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--green);margin-top:13px;min-width:8px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;">✓</div>
+          <div style="font-size:9px;font-weight:700;color:var(--green);margin-top:5px;text-align:center;">Ready for Pickup</div>
+          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">23 Feb 2026<br>08:00 AM</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--green);margin-top:13px;min-width:8px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;box-shadow:0 0 0 3px var(--amber-bg);">→</div>
+          <div style="font-size:9px;font-weight:700;color:var(--amber);margin-top:5px;text-align:center;">In Transit</div>
+          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">07 Mar 2026<br>08:15 AM</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--border);margin-top:13px;min-width:8px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">○</div>
+          <div style="font-size:9px;font-weight:700;color:var(--text3);margin-top:5px;text-align:center;">Out for Delivery</div>
+          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">Pending</div>
+        </div>
+        <div style="flex:1;height:2px;background:var(--border);margin-top:13px;min-width:8px;"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:80px;">
+          <div style="width:26px;height:26px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">○</div>
+          <div style="font-size:9px;font-weight:700;color:var(--text3);margin-top:5px;text-align:center;">Delivered</div>
+          <div style="font-size:8px;color:var(--text3);text-align:center;margin-top:2px;">EDD: 19 Mar<br>2026</div>
+        </div>
+
+      </div>
+
+      <div class="hdivider"></div>
+
+      <!-- TRACKING WIDGET -->
+      <div class="slabel">Shipment Tracking</div>
+      <div style="margin-top:6px;border-radius:8px;overflow:hidden;border:1px solid var(--border);">
+        <img src="tracking_widget.png" alt="Shipment Tracking" style="width:100%;display:block;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── TAB 1: ORDERS ─────────── -->
+<div class="tab-content" id="tab1">
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-title">📦 Order History</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <input type="text" style="width:160px;" placeholder="🔍 Search Order ID...">
+        <input type="text" style="width:160px;" placeholder="🔍 Search by Order Date...">
+        <select><option>All Statuses</option><option>Delivered</option><option>In Transit</option><option>Return Initiated</option><option>Cancelled</option></select>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="data-table">
+        <thead><tr><th>Order ID</th><th>Details</th><th>Status</th><th>Source</th><th>Order Placed on</th><th>Amount</th><th>Track</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">#ORD-4821</td><td><button class="btn btn-g btn-xs" onclick="switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td><span class="badge b-amber">Return Initiated</span></td><td><span class="src-self">Self</span></td><td>22 Feb 2026</td><td class="mono">₹388.43</td><td><button class="btn btn-tl btn-xs">🔗</button></td></tr>
+          <tr><td class="mono">#ORD-4710</td><td><button class="btn btn-g btn-xs" onclick="switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td><span class="badge b-red">Cancelled</span></td><td><span class="src-self">Self</span></td><td>10 Feb 2026</td><td class="mono">₹245.00</td><td><button class="btn btn-tl btn-xs">🔗</button></td></tr>
+          <tr><td class="mono">#ORD-4650</td><td><button class="btn btn-g btn-xs" onclick="switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td><span class="badge b-green">Delivered</span></td><td><span class="src-assisted">Assisted</span></td><td>01 Feb 2026</td><td class="mono">₹512.00</td><td><button class="btn btn-tl btn-xs">🔗</button></td></tr>
+          <tr><td class="mono">#ORD-4480</td><td><button class="btn btn-g btn-xs" onclick="switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td><span class="badge b-blue">In Transit</span></td><td><span class="src-self">Self</span></td><td>18 Jan 2026</td><td class="mono">₹320.00</td><td><button class="btn btn-tl btn-xs">🔗</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── TAB 2: RETURNS ─────────── -->
+<div class="tab-content" id="tab2">
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-title">↩ Return History</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <input type="text" style="width:160px;" placeholder="🔍 Search by Order ID...">
+        <input type="text" style="width:180px;" placeholder="🔍 Search by Return Requested Date...">
+        <select><option>All Statuses</option><option>Pickup Pending</option><option>Pickup Initiated</option><option>Refund Processed</option></select>
+      </div>
+    </div>
+    <div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>Order ID</th><th>Details</th><th>Return Requested on</th><th>Return Status</th><th>Refund Amt</th><th>Ship Refund</th><th>Handling</th><th>Transfer Mode</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">#ORD-4821</td><td><button class="btn btn-g btn-xs" onclick="switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td>08 Mar 2026</td><td><span class="badge b-amber">Pickup Pending</span></td><td class="mono" style="color:var(--teal);">₹388.43</td><td class="mono">₹0.00</td><td class="mono">₹0.00</td><td>Source (UPI)</td></tr>
+      <tr><td class="mono">#ORD-4280</td><td><button class="btn btn-g btn-xs" onclick="switchTab(0,document.querySelector('.tab'))">View in Order360</button></td><td>15 Feb 2026</td><td><span class="badge b-teal">Refund Processed</span></td><td class="mono" style="color:var(--teal);">₹245.00</td><td class="mono">₹0.00</td><td class="mono">₹0.00</td><td>PRx Cash</td></tr>
+    </tbody></table></div>
+  </div>
+  
 </div>
 
 <!-- ─────────── TAB 3: TRANSACTIONS & REFUNDS ─────────── -->
@@ -1061,22 +1081,22 @@ textarea{resize:vertical;}
 <div class="tab-content" id="tab5">
   <div class="card"><div class="card-hd"><div class="card-title">🩺 Consultation History</div><div class="card-act">Book New Consultation</div></div>
     <div style="overflow-x:auto;"><table class="data-table">
-      <thead><tr><th></th><th>Date</th><th>Type</th><th>Status</th><th>Outcome</th><th>Actions</th></tr></thead>
+      <thead><tr><th></th><th>Date</th><th>Type</th><th>Status</th></tr></thead>
       <tbody>
-        <tr onclick="toggleOD('c1',this)"><td><span id="c1-a" style="font-size:10px;color:var(--text3);">▶</span></td><td>15 Feb 2026</td><td><span class="badge b-blue">Pre-Order</span></td><td><span class="badge b-green">Completed</span></td><td>Prescription issued</td><td><button class="btn btn-g btn-xs" onclick="event.stopPropagation();">View</button></td></tr>
-        <tr class="order-detail-row" id="c1"><td colspan="6"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Doctor</div><div class="f-val">Dr. Sunita Rao</div></div><div class="f-row"><div class="f-lbl">Speciality</div><div class="f-val">Endocrinology</div></div><div class="f-row"><div class="f-lbl">Duration</div><div class="f-val">18 mins</div></div><div class="f-row"><div class="f-lbl">Consult Type</div><div class="f-val">Pre-Order</div></div></div></div></td></tr>
-        <tr onclick="toggleOD('c2',this)"><td><span id="c2-a" style="font-size:10px;color:var(--text3);">▶</span></td><td>20 Jan 2026</td><td><span class="badge b-purple">Edge</span></td><td><span class="badge b-red">Missed</span></td><td>—</td><td><button class="btn btn-g btn-xs" onclick="event.stopPropagation();">Rebook</button></td></tr>
-        <tr class="order-detail-row" id="c2"><td colspan="6"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Doctor</div><div class="f-val">Dr. Amitabh Sen</div></div><div class="f-row"><div class="f-lbl">Speciality</div><div class="f-val">General</div></div><div class="f-row"><div class="f-lbl">Consult Type</div><div class="f-val">Edge Benefit</div></div><div class="f-row"><div class="f-lbl">Missed Reason</div><div class="f-val r">Customer unavailable</div></div></div></div></td></tr>
-        <tr onclick="toggleOD('c3',this)"><td><span id="c3-a" style="font-size:10px;color:var(--text3);">▶</span></td><td>05 Dec 2025</td><td><span class="badge b-purple">Post-Order</span></td><td><span class="badge b-green">Completed</span></td><td>Follow-up advised</td><td><button class="btn btn-g btn-xs" onclick="event.stopPropagation();">View</button></td></tr>
-        <tr class="order-detail-row" id="c3"><td colspan="6"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Doctor</div><div class="f-val">Dr. Priya Nair</div></div><div class="f-row"><div class="f-lbl">Speciality</div><div class="f-val">Internal Medicine</div></div><div class="f-row"><div class="f-lbl">Duration</div><div class="f-val">12 mins</div></div><div class="f-row"><div class="f-lbl">Consult Type</div><div class="f-val">Post-Order</div></div></div></div></td></tr>
+        <tr onclick="toggleOD('c1',this)"><td><span id="c1-a" style="font-size:10px;color:var(--text3);">▶</span></td><td>15 Feb 2026, 17:00</td><td><span class="badge b-blue">Pre-Order</span></td><td><span class="badge b-green">Completed</span></td></tr>
+        <tr class="order-detail-row" id="c1"><td colspan="4"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Consultation ID</div><div class="f-val mono">481032</div></div><div class="f-row"><div class="f-lbl">Doctor</div><div class="f-val">Dr. Sunita Rao</div></div><div class="f-row"><div class="f-lbl">Duration</div><div class="f-val">18 mins</div></div><div class="f-row"><div class="f-lbl">Consult Type</div><div class="f-val">Pre-Order</div></div><div class="f-row"><div class="f-lbl">Call Recording</div><div class="f-val"><span style="color:var(--accent);cursor:pointer;font-weight:600;">▶ Play</span></div></div></div></div></td></tr>
+        <tr onclick="toggleOD('c2',this)"><td><span id="c2-a" style="font-size:10px;color:var(--text3);">▶</span></td><td>20 Jan 2026, 11:00</td><td><span class="badge b-purple">Edge</span></td><td><span class="badge b-red">Missed</span></td></tr>
+        <tr class="order-detail-row" id="c2"><td colspan="4"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Consultation ID</div><div class="f-val mono">479811</div></div><div class="f-row"><div class="f-lbl">Doctor</div><div class="f-val">Not Assigned</div></div><div class="f-row"><div class="f-lbl">Consult Type</div><div class="f-val">Edge Benefit</div></div><div class="f-row"><div class="f-lbl">Call Recording</div><div class="f-val"><span style="color:var(--text3);">Not available</span></div></div></div></div></td></tr>
+        <tr onclick="toggleOD('c3',this)"><td><span id="c3-a" style="font-size:10px;color:var(--text3);">▶</span></td><td>05 Dec 2025, 14:00</td><td><span class="badge b-purple">Post-Order</span></td><td><span class="badge b-green">Completed</span></td></tr>
+        <tr class="order-detail-row" id="c3"><td colspan="4"><div class="order-detail-inner"><div class="detail-grid"><div class="f-row"><div class="f-lbl">Consultation ID</div><div class="f-val mono">461204</div></div><div class="f-row"><div class="f-lbl">Doctor</div><div class="f-val">Dr. Priya Nair</div></div><div class="f-row"><div class="f-lbl">Duration</div><div class="f-val">12 mins</div></div><div class="f-row"><div class="f-lbl">Consult Type</div><div class="f-val">Post-Order</div></div><div class="f-row"><div class="f-lbl">Call Recording</div><div class="f-val"><span style="color:var(--accent);cursor:pointer;font-weight:600;">▶ Play</span></div></div></div></div></td></tr>
       </tbody>
     </table></div>
   </div>
-  <div class="card"><div class="card-hd"><div class="card-title">📋 Prescription History (Rx Orders)</div><div class="card-act">View all Rx</div></div>
-    <div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>Date</th><th>Order ID</th><th>Prescription</th><th>Status</th><th>Approved By</th><th>Actions</th></tr></thead>
+  <div class="card"><div class="card-hd"><div class="card-title">📋 Prescription (RX) History</div><div class="card-act">View all Rx</div></div>
+    <div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>Date</th><th>Order ID</th><th>Type</th><th>Status</th><th>Approved By</th><th>Actions</th></tr></thead>
     <tbody>
-      <tr><td>22 Feb 2026</td><td class="mono">#ORD-4821</td><td>Levothyroxine + Metformin</td><td><span class="badge b-green">Approved</span></td><td>Pharmacist</td><td><div style="display:flex;gap:4px;"><button class="btn btn-g btn-xs">View</button><button class="btn btn-tl btn-xs">📲 Send</button></div></td></tr>
-      <tr><td>01 Feb 2026</td><td class="mono">#ORD-4650</td><td>Thyroid panel</td><td><span class="badge b-green">Approved</span></td><td>Dr. Rao</td><td><div style="display:flex;gap:4px;"><button class="btn btn-g btn-xs">View</button><button class="btn btn-tl btn-xs">📲 Send</button></div></td></tr>
+      <tr><td>22 Feb 2026, 14:00</td><td class="mono">1964821</td><td><span class="badge b-blue">MyRx Pre-Order</span></td><td><span class="badge b-green">Approved</span></td><td>MyRx</td><td><div style="display:flex;gap:4px;"><button class="btn btn-g btn-xs">View</button><button class="btn btn-tl btn-xs">📲 Send</button></div></td></tr>
+      <tr><td>01 Feb 2026, 10:58</td><td class="mono">1964650</td><td><span class="badge b-purple">Self-upload</span></td><td><span class="badge b-green">Approved</span></td><td>Internal</td><td><div style="display:flex;gap:4px;"><button class="btn btn-g btn-xs">View</button><button class="btn btn-tl btn-xs">📲 Send</button></div></td></tr>
     </tbody></table></div>
   </div>
 </div>
@@ -1194,26 +1214,23 @@ textarea{resize:vertical;}
       <div class="card-title">📋 Task History <span id="taskCountLbl" style="font-weight:400;color:var(--text3);">(47 total)</span></div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;">
         <select id="fCat" onchange="filterTasks()">
-          <option value="">All Categories</option>
+          <option value="">All Dispositions</option>
           <option>Return &amp; Pickup</option><option>Delivery Issues</option><option>Payments &amp; Refunds</option>
           <option>Account &amp; App</option><option>Order Management</option>
           <option>Wallet &amp; Rewards</option><option>Edge Membership</option><option>Consultation &amp; Medicine</option>
         </select>
-        <select id="fOut" onchange="filterTasks()">
-          <option value="">All Outcomes</option><option>FCR</option><option>L2 Escalation</option><option>Sales Transfer</option>
-        </select>
-        <button class="btn btn-p btn-sm" onclick="openModal('raiseTicketModal')">+ New Task</button>
+        <button class="btn btn-p btn-sm" onclick="openModal('createTaskModal')">+ Create Task</button>
       </div>
     </div>
-    <div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>Task ID</th><th>Date</th><th>Category</th><th>Sub-Disposition</th><th>Outcome</th><th>Agent</th><th>VOC</th></tr></thead>
+    <div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>Task ID</th><th>Date-Time</th><th>Disposition</th><th>Sub-Disposition</th><th>Agent</th><th>VOC</th></tr></thead>
     <tbody id="taskBody">
-      <tr data-cat="Return &amp; Pickup" data-out="L2 Escalation"><td class="mono">#T-7841</td><td>06 Mar 2026</td><td>Return &amp; Pickup</td><td>Missing/Less Qty</td><td><span class="badge b-amber">L2 Escalation</span></td><td>Rohit A.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
-      <tr data-cat="Delivery Issues" data-out="FCR"><td class="mono">#T-7210</td><td>28 Feb 2026</td><td>Delivery Issues</td><td>Delayed</td><td><span class="badge b-green">FCR</span></td><td>Rohit A.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
-      <tr data-cat="Payments &amp; Refunds" data-out="L2 Escalation"><td class="mono">#T-6980</td><td>20 Feb 2026</td><td>Payments &amp; Refunds</td><td>Refund Not Credited</td><td><span class="badge b-amber">L2 Escalation</span></td><td>Meena S.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
-      <tr data-cat="Account &amp; App" data-out="FCR"><td class="mono">#T-6720</td><td>12 Feb 2026</td><td>Account &amp; App</td><td>Profile Update</td><td><span class="badge b-green">FCR</span></td><td>Rohit A.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
-      <tr data-cat="Order Management" data-out="FCR"><td class="mono">#T-6510</td><td>05 Feb 2026</td><td>Order Management</td><td>Cancellation Request</td><td><span class="badge b-green">FCR</span></td><td>Priya K.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
-      <tr data-cat="Edge Membership" data-out="Sales Transfer"><td class="mono">#T-6220</td><td>28 Jan 2026</td><td>Edge Membership</td><td>Free Delivery Not Working</td><td><span class="badge b-teal">Sales Transfer</span></td><td>Rohit A.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
-      <tr data-cat="Wallet &amp; Rewards" data-out="FCR"><td class="mono">#T-5980</td><td>18 Jan 2026</td><td>Wallet &amp; Rewards</td><td>Cashback Not Credited</td><td><span class="badge b-green">FCR</span></td><td>Meena S.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
+      <tr data-cat="Return &amp; Pickup" data-out="L2 Escalation"><td class="mono">10504799</td><td>06 Mar 2026, 22:54</td><td>Return &amp; Pickup</td><td>Missing/Less Qty</td><td>Rohit A.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
+      <tr data-cat="Delivery Issues" data-out="FCR"><td class="mono">10504787</td><td>28 Feb 2026, 21:49</td><td>Delivery Issues</td><td>Delayed</td><td>Rohit A.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
+      <tr data-cat="Payments &amp; Refunds" data-out="L2 Escalation"><td class="mono">10504776</td><td>20 Feb 2026, 20:37</td><td>Payments &amp; Refunds</td><td>Refund Not Credited</td><td>Meena S.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
+      <tr data-cat="Account &amp; App" data-out="FCR"><td class="mono">10504764</td><td>12 Feb 2026, 19:25</td><td>Account &amp; App</td><td>Profile Update</td><td>Rohit A.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
+      <tr data-cat="Order Management" data-out="FCR"><td class="mono">10504759</td><td>05 Feb 2026, 18:36</td><td>Order Management</td><td>Cancellation Request</td><td>Priya K.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
+      <tr data-cat="Edge Membership" data-out="Sales Transfer"><td class="mono">10504748</td><td>28 Jan 2026, 17:51</td><td>Edge Membership</td><td>Free Delivery Not Working</td><td>Rohit A.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
+      <tr data-cat="Wallet &amp; Rewards" data-out="FCR"><td class="mono">10504732</td><td>18 Jan 2026, 16:02</td><td>Wallet &amp; Rewards</td><td>Cashback Not Credited</td><td>Meena S.</td><td><button class="btn btn-g btn-xs">View</button></td></tr>
     </tbody></table></div>
   </div>
 </div>
@@ -1228,6 +1245,7 @@ textarea{resize:vertical;}
         <div class="ah-tab active" onclick="switchAHPrimary('l1',this)" style="padding:10px 14px;font-size:12px;font-weight:700;">L1</div>
         <div class="ah-tab" onclick="switchAHPrimary('l2',this)" style="padding:10px 14px;font-size:12px;font-weight:700;">L2</div>
         <div class="ah-tab" onclick="switchAHPrimary('sales',this)" style="padding:10px 14px;font-size:12px;font-weight:700;">Sales</div>
+        <div class="ah-tab" onclick="switchAHPrimary('zoho',this)" style="padding:10px 14px;font-size:12px;font-weight:700;">Open Zoho Tickets</div>
       </div>
 
       <!-- L1 SECTION -->
@@ -1455,6 +1473,20 @@ textarea{resize:vertical;}
             <tbody>
               <tr><td class="mono">#T-6220</td><td>28 Jan 2026</td><td>Edge Membership</td><td>Free Delivery Not Working</td><td><span class="badge b-teal">Sales Transfer</span></td><td>Rohit A.</td></tr>
               <tr><td class="mono">#T-5980</td><td>18 Jan 2026</td><td>Wallet &amp; Rewards</td><td>Cashback Not Credited</td><td><span class="badge b-green">FCR</span></td><td>Meena S.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ZOHO TICKETS SECTION -->
+      <div id="ah-section-zoho" style="display:none;">
+        <div style="padding:12px 14px;max-height:460px;overflow-y:auto;">
+          <table class="data-table">
+            <thead><tr><th>Disposition</th><th>Sub-Disposition</th><th>Due Date</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Return &amp; Pickup</td><td>Missing or less quantity received</td><td>10 Mar 2026</td><td><span class="badge b-amber">L2 Escalations - LOG</span></td></tr>
+              <tr><td>Payments &amp; Refunds</td><td>Refund not credited to account</td><td>12 Mar 2026</td><td><span class="badge b-blue">Sent for Refund Approval</span></td></tr>
+              <tr><td>Delivery Issues</td><td>Delayed or likely to be delayed</td><td>08 Mar 2026</td><td><span class="badge b-green">Closed</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -1986,7 +2018,7 @@ function switchAHMain(panelId, el) {
 }
 
 function switchAHPrimary(section, el) {
-  ['l1','l2','sales'].forEach(function(s) {
+  ['l1','l2','sales','zoho'].forEach(function(s) {
     var sec = document.getElementById('ah-section-' + s);
     if (sec) sec.style.display = 'none';
   });
