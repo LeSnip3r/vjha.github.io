@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GM Analytics Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #151820;
+    --surface2: #1c2030;
+    --surface3: #232840;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --accent: #6ee7b7;
+    --accent2: #818cf8;
+    --accent3: #fb923c;
+    --accent4: #f472b6;
+    --accent5: #38bdf8;
+    --text: #f1f5f9;
+    --text2: #94a3b8;
+    --text3: #475569;
+    --danger: #f87171;
+    --success: #34d399;
+    --warning: #fbbf24;
+    --card-r: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; min-height: 100vh; overflow-x: hidden; }
+
+  /* Upload screen */
+  #upload-screen {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 40px 20px; position: relative;
+  }
+  .bg-grid {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: linear-gradient(rgba(110,231,183,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(110,231,183,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .bg-glow { position: fixed; inset: 0; pointer-events: none; z-index: 0; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(110,231,183,0.08) 0%, transparent 70%); }
+  .upload-card {
+    position: relative; z-index: 1; max-width: 560px; width: 100%;
+    background: var(--surface); border: 1px solid var(--border2); border-radius: 20px;
+    padding: 48px 44px; text-align: center;
+    box-shadow: 0 0 0 1px rgba(110,231,183,0.05), 0 40px 80px rgba(0,0,0,0.5);
+  }
+  .upload-logo { font-family: 'DM Serif Display', serif; font-size: 13px; color: var(--accent); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 32px; }
+  .upload-title { font-family: 'DM Serif Display', serif; font-size: 36px; color: var(--text); line-height: 1.15; margin-bottom: 10px; }
+  .upload-title em { font-style: italic; color: var(--accent); }
+  .upload-sub { color: var(--text2); font-size: 14px; line-height: 1.6; margin-bottom: 36px; }
+  .drop-zone {
+    border: 1.5px dashed var(--border2); border-radius: 12px; padding: 36px 24px;
+    cursor: pointer; transition: all 0.2s; background: rgba(255,255,255,0.02);
+    position: relative;
+  }
+  .drop-zone:hover, .drop-zone.dragover { border-color: var(--accent); background: rgba(110,231,183,0.04); }
+  .drop-icon { font-size: 32px; margin-bottom: 12px; }
+  .drop-label { font-size: 15px; color: var(--text); font-weight: 500; margin-bottom: 4px; }
+  .drop-hint { font-size: 12px; color: var(--text3); }
+  .drop-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .upload-btn {
+    margin-top: 20px; width: 100%; padding: 14px; background: var(--accent);
+    color: #0d1f17; font-weight: 600; font-size: 14px; border: none;
+    border-radius: 10px; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+    display: none;
+  }
+  .upload-btn:hover { background: #4ade80; transform: translateY(-1px); }
+  .progress-wrap { margin-top: 20px; display: none; }
+  .progress-bar-bg { background: var(--surface3); border-radius: 99px; height: 6px; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; width: 0%; transition: width 0.1s; }
+  .progress-text { font-size: 12px; color: var(--text2); margin-top: 8px; }
+  .upload-meta { margin-top: 24px; font-size: 12px; color: var(--text3); }
+
+  /* Dashboard */
+  #dashboard { display: none; min-height: 100vh; }
+
+  /* Topbar */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,15,20,0.92); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px; height: 58px;
+  }
+  .topbar-brand { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); display: flex; align-items: center; gap: 10px; }
+  .topbar-brand span { color: var(--accent); }
+  .topbar-actions { display: flex; align-items: center; gap: 12px; }
+  .chip { padding: 5px 14px; border-radius: 99px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text2); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip.active { background: var(--accent); color: #0d1f17; border-color: var(--accent); }
+  .reupload-btn { padding: 6px 16px; border-radius: 8px; border: 1px solid var(--border2); background: transparent; color: var(--text2); font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+  .reupload-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .data-badge { font-size: 11px; color: var(--text3); }
+
+  /* Main layout */
+  .main { display: flex; }
+  .sidebar {
+    width: 260px; min-width: 260px; background: var(--surface); border-right: 1px solid var(--border);
+    height: calc(100vh - 58px); overflow-y: auto; position: sticky; top: 58px; padding: 20px 16px;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+  .content { flex: 1; padding: 24px 28px; overflow: hidden; }
+  .filter-section { margin-bottom: 20px; }
+  .filter-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; padding-left: 2px; }
+  .filter-group { display: flex; flex-direction: column; gap: 4px; }
+  .filter-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 8px; cursor: pointer; transition: background 0.1s; user-select: none; }
+  .filter-item:hover { background: var(--surface2); }
+  .filter-item input[type=checkbox] { accent-color: var(--accent); width: 13px; height: 13px; flex-shrink: 0; cursor: pointer; }
+  .filter-item label { font-size: 13px; color: var(--text2); cursor: pointer; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .filter-item .count { font-size: 10px; color: var(--text3); background: var(--surface3); padding: 1px 6px; border-radius: 99px; }
+  .filter-divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+  .filter-date { display: flex; flex-direction: column; gap: 6px; }
+  .filter-date input { background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; color: var(--text); padding: 7px 10px; font-size: 12px; font-family: 'DM Sans', sans-serif; width: 100%; outline: none; }
+  .filter-date input:focus { border-color: var(--accent); }
+  .filter-date label { font-size: 11px; color: var(--text3); }
+  .apply-btn { width: 100%; padding: 9px; border-radius: 8px; background: var(--accent); color: #0d1f17; font-weight: 600; font-size: 13px; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 16px; transition: all 0.15s; }
+  .apply-btn:hover { background: #4ade80; }
+  .reset-btn { width: 100%; padding: 7px; border-radius: 8px; background: transparent; color: var(--text3); font-size: 12px; border: 1px solid var(--border); cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 6px; transition: all 0.15s; }
+  .reset-btn:hover { color: var(--danger); border-color: var(--danger); }
+
+  /* Nav tabs */
+  .tab-nav { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+  .tab-btn { padding: 8px 18px; font-size: 13px; font-weight: 500; color: var(--text2); background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* KPI cards */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .kpi-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--card-r);
+    padding: 18px 20px; position: relative; overflow: hidden; transition: border-color 0.2s;
+  }
+  .kpi-card:hover { border-color: var(--border2); }
+  .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+  .kpi-card.c1::before { background: var(--accent); }
+  .kpi-card.c2::before { background: var(--accent2); }
+  .kpi-card.c3::before { background: var(--accent3); }
+  .kpi-card.c4::before { background: var(--accent4); }
+  .kpi-card.c5::before { background: var(--accent5); }
+  .kpi-card.c6::before { background: var(--warning); }
+  .kpi-label { font-size: 11px; color: var(--text3); font-weight: 500; letter-spacing: 0.5px; margin-bottom: 8px; text-transform: uppercase; }
+  .kpi-value { font-size: 24px; font-weight: 600; color: var(--text); line-height: 1; margin-bottom: 4px; }
+  .kpi-sub { font-size: 11px; color: var(--text3); }
+  .kpi-pill { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 600; margin-top: 4px; }
+  .kpi-pill.up { background: rgba(52,211,153,0.15); color: var(--success); }
+  .kpi-pill.down { background: rgba(248,113,113,0.15); color: var(--danger); }
+
+  /* Chart cards */
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .chart-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .chart-grid-wide { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .chart-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--card-r);
+    padding: 20px 22px;
+  }
+  .chart-card.full { grid-column: 1/-1; }
+  .chart-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+  .chart-title { font-size: 13px; font-weight: 600; color: var(--text); }
+  .chart-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .chart-badge { font-size: 10px; padding: 3px 10px; border-radius: 99px; background: var(--surface3); color: var(--text2); }
+  .chart-wrap { position: relative; }
+  .chart-wrap canvas { max-height: 220px; }
+  .chart-wrap.tall canvas { max-height: 280px; }
+  .chart-wrap.short canvas { max-height: 170px; }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  thead { background: var(--surface2); }
+  th { padding: 10px 14px; text-align: left; font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); white-space: nowrap; cursor: pointer; user-select: none; }
+  th:hover { color: var(--accent); }
+  td { padding: 9px 14px; border-top: 1px solid var(--border); color: var(--text2); white-space: nowrap; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .td-main { color: var(--text); font-weight: 500; }
+  .td-num { font-variant-numeric: tabular-nums; }
+  .td-badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 600; }
+  .badge-rx { background: rgba(129,140,248,0.15); color: var(--accent2); }
+  .badge-nonrx { background: rgba(251,146,60,0.15); color: var(--accent3); }
+  .badge-generic { background: rgba(110,231,183,0.15); color: var(--accent); }
+  .badge-brand { background: rgba(244,114,182,0.15); color: var(--accent4); }
+  .badge-tier1 { background: rgba(110,231,183,0.1); color: var(--accent); }
+  .badge-tier2 { background: rgba(56,189,248,0.1); color: var(--accent5); }
+  .badge-tier3 { background: rgba(251,146,60,0.1); color: var(--accent3); }
+  .badge-others { background: rgba(148,163,184,0.1); color: var(--text2); }
+  .badge-bulk { background: rgba(129,140,248,0.1); color: var(--accent2); }
+  .badge-jit { background: rgba(244,114,182,0.1); color: var(--accent4); }
+  .gm-bar { height: 5px; border-radius: 99px; background: var(--surface3); margin-top: 4px; overflow: hidden; }
+  .gm-fill { height: 100%; border-radius: 99px; }
+  .pagination { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--border); }
+  .pg-info { font-size: 12px; color: var(--text3); }
+  .pg-btns { display: flex; gap: 4px; }
+  .pg-btn { padding: 4px 12px; border-radius: 6px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text2); font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+  .pg-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .pg-btn:disabled { opacity: 0.3; cursor: default; }
+  .pg-btn.active { background: var(--accent); color: #0d1f17; border-color: var(--accent); }
+  .search-box { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-size: 12px; font-family: 'DM Sans', sans-serif; outline: none; width: 220px; }
+  .search-box:focus { border-color: var(--accent); }
+  .table-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .table-controls-left { display: flex; gap: 8px; align-items: center; }
+  .select-sm { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text2); font-size: 12px; font-family: 'DM Sans', sans-serif; outline: none; cursor: pointer; }
+  .select-sm:focus { border-color: var(--accent); }
+
+  /* Loading / empty states */
+  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; color: var(--text3); }
+  .empty-state .icon { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
+  .spinner { width: 32px; height: 32px; border: 3px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-overlay { position: fixed; inset: 0; background: rgba(13,15,20,0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; gap: 16px; }
+  .loading-text { color: var(--text2); font-size: 14px; }
+  .loading-sub { color: var(--text3); font-size: 12px; }
+
+  /* Scatter / inline */
+  .mini-table { width: 100%; font-size: 12px; }
+  .mini-table td { padding: 6px 0; border-top: 1px solid var(--border); color: var(--text2); }
+  .mini-table td:first-child { color: var(--text); font-weight: 500; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mini-table td:last-child { text-align: right; }
+
+  /* Tooltips */
+  .legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+
+  /* Section title */
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .section-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text); }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* Insight cards */
+  .insight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .insight-card { background: var(--surface2); border-radius: 10px; padding: 14px 16px; border: 1px solid var(--border); }
+  .insight-card .label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+  .insight-card .val { font-size: 18px; font-weight: 600; color: var(--text); }
+  .insight-card .desc { font-size: 11px; color: var(--text3); margin-top: 3px; }
+
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .chart-grid, .chart-grid-3, .chart-grid-wide { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .insight-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<!-- UPLOAD SCREEN -->
+<div id="upload-screen">
+  <div class="upload-card">
+    <div class="upload-logo">GM Analytics</div>
+    <h1 class="upload-title">Gross Margin<br><em>Intelligence Suite</em></h1>
+    <p class="upload-sub">Upload your SKU-level GM CSV to unlock deep analysis across drugs, manufacturers, tiers, and time. Handles 300k+ rows.</p>
+    <div class="drop-zone" id="drop-zone">
+      <input type="file" id="file-input" accept=".csv">
+      <div class="drop-icon">📊</div>
+      <div class="drop-label" id="drop-label">Drop your CSV here</div>
+      <div class="drop-hint">or click to browse · any size</div>
+    </div>
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar"></div></div>
+      <div class="progress-text" id="progress-text">Parsing…</div>
+    </div>
+    <div class="upload-meta">Supports: time_key · drug_code · GM · manufacturer · tier · generic · schedule · drug_category · drug_stock_type</div>
+  </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loading-overlay" style="display:none">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loading-text">Processing data…</div>
+  <div class="loading-sub" id="loading-sub"></div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="topbar">
+    <div class="topbar-brand">GM <span>Analytics</span></div>
+    <div class="topbar-actions">
+      <span class="data-badge" id="data-badge"></span>
+      <button class="reupload-btn" onclick="resetToUpload()">↑ New File</button>
+    </div>
+  </div>
+  <div class="main">
+    <!-- SIDEBAR FILTERS -->
+    <aside class="sidebar">
+      <div class="filter-section">
+        <div class="filter-label">Date Range</div>
+        <div class="filter-date">
+          <div><label>From</label><input type="date" id="f-date-from"></div>
+          <div><label>To</label><input type="date" id="f-date-to"></div>
+        </div>
+      </div>
+      <hr class="filter-divider">
+      <div class="filter-section">
+        <div class="filter-label">Drug Category</div>
+        <div class="filter-group" id="f-drug-cat"></div>
+      </div>
+      <hr class="filter-divider">
+      <div class="filter-section">
+        <div class="filter-label">Schedule</div>
+        <div class="filter-group" id="f-schedule"></div>
+      </div>
+      <hr class="filter-divider">
+      <div class="filter-section">
+        <div class="filter-label">Tier</div>
+        <div class="filter-group" id="f-tier"></div>
+      </div>
+      <hr class="filter-divider">
+      <div class="filter-section">
+        <div class="filter-label">Drug Stock Type</div>
+        <div class="filter-group" id="f-stock-type"></div>
+      </div>
+      <hr class="filter-divider">
+      <div class="filter-section">
+        <div class="filter-label">Generic</div>
+        <div class="filter-group" id="f-generic"></div>
+      </div>
+      <hr class="filter-divider">
+      <div class="filter-section">
+        <div class="filter-label">GM% Bucket</div>
+        <div class="filter-group" id="f-gm-bucket"></div>
+      </div>
+      <hr class="filter-divider">
+      <div class="filter-section">
+        <div class="filter-label">Drug Stock Level</div>
+        <div class="filter-group" id="f-drug-stock"></div>
+      </div>
+      <button class="apply-btn" onclick="applyFilters()">Apply Filters</button>
+      <button class="reset-btn" onclick="resetFilters()">Reset All</button>
+    </aside>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <div class="tab-nav">
+        <button class="tab-btn active" onclick="showTab('overview',this)">Overview</button>
+        <button class="tab-btn" onclick="showTab('manufacturer',this)">Manufacturer</button>
+        <button class="tab-btn" onclick="showTab('drug',this)">Drug / SKU</button>
+        <button class="tab-btn" onclick="showTab('gm',this)">GM Deep Dive</button>
+        <button class="tab-btn" onclick="showTab('trends',this)">Trends</button>
+        <button class="tab-btn" onclick="showTab('sku-table',this)">SKU Table</button>
+      </div>
+
+      <!-- OVERVIEW TAB -->
+      <div class="tab-panel active" id="tab-overview">
+        <div class="kpi-grid" id="kpi-grid"></div>
+        <div class="insight-grid" id="insight-grid"></div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Revenue by Tier</div><div class="chart-sub">Contribution per tier</div></div></div>
+            <div class="chart-wrap"><canvas id="ch-tier-revenue"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">GM by Drug Category</div><div class="chart-sub">RX vs Non-RX</div></div></div>
+            <div class="chart-wrap"><canvas id="ch-cat-gm"></canvas></div>
+          </div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Generic vs Brand Split</div><div class="chart-sub">Orders & GM</div></div></div>
+            <div class="chart-wrap short"><canvas id="ch-generic-split"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">OTC vs Non-OTC</div><div class="chart-sub">Revenue distribution</div></div></div>
+            <div class="chart-wrap short"><canvas id="ch-schedule"></canvas></div>
+          </div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Stock Type Distribution</div><div class="chart-sub">BULK vs JIT — GM comparison</div></div></div>
+            <div class="chart-wrap short"><canvas id="ch-stock-type"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">GM% Bucket Distribution</div><div class="chart-sub">SKU count by GM bucket</div></div></div>
+            <div class="chart-wrap short"><canvas id="ch-gm-bucket"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MANUFACTURER TAB -->
+      <div class="tab-panel" id="tab-manufacturer">
+        <div class="chart-grid-wide">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Top 15 Manufacturers by Revenue</div><div class="chart-sub">Sorted descending</div></div></div>
+            <div class="chart-wrap tall"><canvas id="ch-mfr-revenue"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Top 10 Manufacturers by GM%</div><div class="chart-sub">Average gross margin %</div></div></div>
+            <div class="chart-wrap tall"><canvas id="ch-mfr-gmpct"></canvas></div>
+          </div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Manufacturer — Order Count</div><div class="chart-sub">Top 12 by orders</div></div></div>
+            <div class="chart-wrap"><canvas id="ch-mfr-orders"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Manufacturer — SKU Count</div><div class="chart-sub">Unique drug codes per manufacturer</div></div></div>
+            <div class="chart-wrap"><canvas id="ch-mfr-skus"></canvas></div>
+          </div>
+        </div>
+        <div class="chart-card" style="margin-bottom:16px;">
+          <div class="chart-header"><div><div class="chart-title">Manufacturer GM vs Revenue Scatter</div><div class="chart-sub">Bubble = order count · Top 20 manufacturers</div></div></div>
+          <div class="chart-wrap tall"><canvas id="ch-mfr-scatter"></canvas></div>
+        </div>
+      </div>
+
+      <!-- DRUG / SKU TAB -->
+      <div class="tab-panel" id="tab-drug">
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Top 15 Drugs by Revenue</div><div class="chart-sub">display_name</div></div></div>
+            <div class="chart-wrap tall"><canvas id="ch-drug-revenue"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Top 15 Drugs by GM</div><div class="chart-sub">Absolute gross margin</div></div></div>
+            <div class="chart-wrap tall"><canvas id="ch-drug-gm"></canvas></div>
+          </div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Top 15 Drugs by Orders</div><div class="chart-sub">Most frequently ordered</div></div></div>
+            <div class="chart-wrap tall"><canvas id="ch-drug-orders"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Top 15 Drugs by Discount</div><div class="chart-sub">Total discount given</div></div></div>
+            <div class="chart-wrap tall"><canvas id="ch-drug-discount"></canvas></div>
+          </div>
+        </div>
+        <div class="chart-card" style="margin-bottom:16px;">
+          <div class="chart-header"><div><div class="chart-title">Revenue per Quantity — Top 20 Drugs</div><div class="chart-sub">Revenue efficiency</div></div></div>
+          <div class="chart-wrap short"><canvas id="ch-drug-rpq"></canvas></div>
+        </div>
+      </div>
+
+      <!-- GM DEEP DIVE TAB -->
+      <div class="tab-panel" id="tab-gm">
+        <div class="kpi-grid" id="kpi-gm"></div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">GM% Distribution — All SKUs</div><div class="chart-sub">Histogram of gross margin %</div></div></div>
+            <div class="chart-wrap"><canvas id="ch-gm-hist"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">GM by Tier</div><div class="chart-sub">Avg GM% per tier</div></div></div>
+            <div class="chart-wrap"><canvas id="ch-gm-tier"></canvas></div>
+          </div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">GM — Generic vs Brand</div><div class="chart-sub">Avg GM% comparison</div></div></div>
+            <div class="chart-wrap short"><canvas id="ch-gm-generic"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">GM — BULK vs JIT</div><div class="chart-sub">Average GM% by stock type</div></div></div>
+            <div class="chart-wrap short"><canvas id="ch-gm-stocktype"></canvas></div>
+          </div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Discount Impact on GM</div><div class="chart-sub">Avg Discount% vs Avg GM% by tier</div></div></div>
+            <div class="chart-wrap"><canvas id="ch-discount-gm"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">PTR vs Revenue per Qty</div><div class="chart-sub">Pricing efficiency · top 20 drugs</div></div></div>
+            <div class="chart-wrap"><canvas id="ch-ptr-rpq"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRENDS TAB -->
+      <div class="tab-panel" id="tab-trends">
+        <div class="chart-card full" style="margin-bottom:16px;">
+          <div class="chart-header"><div><div class="chart-title">Daily Revenue & GM Trend</div><div class="chart-sub">Dual-axis: Revenue (bars) · GM (line)</div></div></div>
+          <div class="chart-wrap tall"><canvas id="ch-daily-rev-gm"></canvas></div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Daily Order Count</div><div class="chart-sub">Orders per day</div></div></div>
+            <div class="chart-wrap"><canvas id="ch-daily-orders"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Daily GM% Trend</div><div class="chart-sub">Average gross margin % per day</div></div></div>
+            <div class="chart-wrap"><canvas id="ch-daily-gmpct"></canvas></div>
+          </div>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Revenue by Tier Over Time</div><div class="chart-sub">Stacked daily</div></div></div>
+            <div class="chart-wrap tall"><canvas id="ch-tier-trend"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Daily Discount Trend</div><div class="chart-sub">Total discount per day</div></div></div>
+            <div class="chart-wrap tall"><canvas id="ch-daily-discount"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SKU TABLE TAB -->
+      <div class="tab-panel" id="tab-sku-table">
+        <div class="table-controls">
+          <div class="table-controls-left">
+            <input class="search-box" type="text" id="sku-search" placeholder="Search drug name, code, manufacturer…" oninput="skuSearch()">
+            <select class="select-sm" id="sku-sort" onchange="skuSearch()">
+              <option value="Revenue">Sort: Revenue ↓</option>
+              <option value="GM">Sort: GM ↓</option>
+              <option value="order_count">Sort: Orders ↓</option>
+              <option value="gmpct">Sort: GM% ↓</option>
+              <option value="Discount">Sort: Discount ↓</option>
+            </select>
+            <select class="select-sm" id="sku-per-page" onchange="skuSearch()">
+              <option value="25">25 rows</option>
+              <option value="50">50 rows</option>
+              <option value="100">100 rows</option>
+            </select>
+          </div>
+          <span class="pg-info" id="sku-count-label"></span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th onclick="sortSkuTable('display_name')">Drug Name</th>
+                <th onclick="sortSkuTable('drug_code')">Code</th>
+                <th onclick="sortSkuTable('manufacturer_name')">Manufacturer</th>
+                <th onclick="sortSkuTable('tier')">Tier</th>
+                <th onclick="sortSkuTable('drug_category')">Category</th>
+                <th onclick="sortSkuTable('generic')">Generic</th>
+                <th onclick="sortSkuTable('drug_stock_type')">Stock</th>
+                <th onclick="sortSkuTable('order_count')">Orders</th>
+                <th onclick="sortSkuTable('Revenue')">Revenue</th>
+                <th onclick="sortSkuTable('GM')">GM ₹</th>
+                <th onclick="sortSkuTable('gmpct')">GM%</th>
+                <th onclick="sortSkuTable('Discount')">Discount</th>
+              </tr>
+            </thead>
+            <tbody id="sku-tbody"></tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span class="pg-info" id="pg-info"></span>
+          <div class="pg-btns" id="pg-btns"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── State ───────────────────────────────────────────────────────────────────
+let rawData = [];
+let filteredData = [];
+let skuAgg = [];
+let skuFiltered = [];
+let skuPage = 1;
+let skuSortCol = 'Revenue';
+let skuSortAsc = false;
+const charts = {};
+
+const COLORS = ['#6ee7b7','#818cf8','#fb923c','#f472b6','#38bdf8','#fbbf24','#34d399','#a78bfa','#f87171','#4ade80','#c084fc','#67e8f9','#fde68a','#86efac','#fca5a5','#93c5fd'];
+const ACCENT = '#6ee7b7';
+
+// ─── Upload ───────────────────────────────────────────────────────────────────
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change', () => handleFile(fileInput.files[0]));
+
+function handleFile(file) {
+  if (!file) return;
+  document.getElementById('drop-label').textContent = file.name;
+  const pw = document.getElementById('progress-wrap');
+  pw.style.display = 'block';
+  let parsed = 0;
+  const allRows = [];
+
+  Papa.parse(file, {
+    header: true,
+    skipEmptyLines: true,
+    dynamicTyping: true,
+    chunk(results, parser) {
+      allRows.push(...results.data);
+      parsed += results.data.length;
+      const pct = Math.min(95, Math.round(parsed / 1000));
+      document.getElementById('progress-bar').style.width = pct + '%';
+      document.getElementById('progress-text').textContent = `Parsed ${parsed.toLocaleString()} rows…`;
+    },
+    complete() {
+      document.getElementById('progress-bar').style.width = '100%';
+      document.getElementById('progress-text').textContent = `✓ ${allRows.length.toLocaleString()} rows loaded`;
+      setTimeout(() => initDashboard(allRows), 300);
+    },
+    error(err) { alert('Parse error: ' + err.message); }
+  });
+}
+
+function resetToUpload() {
+  document.getElementById('upload-screen').style.display = 'flex';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('progress-wrap').style.display = 'none';
+  document.getElementById('progress-bar').style.width = '0%';
+  document.getElementById('drop-label').textContent = 'Drop your CSV here';
+  fileInput.value = '';
+}
+
+// ─── Init dashboard ───────────────────────────────────────────────────────────
+function initDashboard(data) {
+  showLoading('Building dashboard…', 'Aggregating metrics');
+  rawData = data.map(r => {
+    r.time_key = r.time_key ? String(r.time_key).trim() : '';
+    r.GM = +r.GM || 0;
+    r.Revenue = +r.Revenue || 0;
+    r.order_count = +r.order_count || 0;
+    r.quantity = +r.quantity || 0;
+    r.Discount = +r.Discount || 0;
+    r.PTR = +r.PTR || 0;
+    r.Total_mrp = +r.Total_mrp || 0;
+    r.Revenue_per_qty = +r.Revenue_per_qty || 0;
+    r.gmpct = r.Revenue > 0 ? (r.GM / r.Revenue) * 100 : 0;
+    return r;
+  });
+
+  filteredData = [...rawData];
+  buildFilterUI();
+  buildDashboard();
+  document.getElementById('upload-screen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  document.getElementById('data-badge').textContent = `${rawData.length.toLocaleString()} rows`;
+  hideLoading();
+}
+
+function buildFilterUI() {
+  const dates = rawData.map(r => r.time_key).filter(Boolean).sort();
+  document.getElementById('f-date-from').value = dates[0] || '';
+  document.getElementById('f-date-to').value = dates[dates.length - 1] || '';
+  buildCheckboxFilter('f-drug-cat', 'drug_category');
+  buildCheckboxFilter('f-schedule', 'schedule');
+  buildCheckboxFilter('f-tier', 'tier');
+  buildCheckboxFilter('f-stock-type', 'drug_stock_type');
+  buildCheckboxFilter('f-generic', 'generic', v => v === true || v === 'true' ? 'Generic' : 'Brand');
+  buildCheckboxFilter('f-gm-bucket', 'GM%_BUCKET');
+  buildCheckboxFilter('f-drug-stock', 'drug_stock');
+}
+
+function buildCheckboxFilter(containerId, field, labelFn) {
+  const container = document.getElementById(containerId);
+  const counts = {};
+  rawData.forEach(r => {
+    const v = String(r[field] ?? 'Unknown');
+    counts[v] = (counts[v] || 0) + 1;
+  });
+  container.innerHTML = Object.entries(counts)
+    .sort((a,b) => b[1]-a[1])
+    .map(([v, c]) => {
+      const label = labelFn ? labelFn(v) : v;
+      return `<div class="filter-item">
+        <input type="checkbox" id="cb-${containerId}-${v}" value="${v}" checked onchange="scheduleFilter()">
+        <label for="cb-${containerId}-${v}">${label}</label>
+        <span class="count">${c.toLocaleString()}</span>
+      </div>`;
+    }).join('');
+}
+
+let filterTimer;
+function scheduleFilter() { clearTimeout(filterTimer); filterTimer = setTimeout(applyFilters, 800); }
+
+function applyFilters() {
+  const dateFrom = document.getElementById('f-date-from').value;
+  const dateTo = document.getElementById('f-date-to').value;
+  const getChecked = (containerId) => [...document.querySelectorAll(`#${containerId} input:checked`)].map(i => i.value);
+  const cats = getChecked('f-drug-cat');
+  const schedules = getChecked('f-schedule');
+  const tiers = getChecked('f-tier');
+  const stockTypes = getChecked('f-stock-type');
+  const generics = getChecked('f-generic');
+  const gmBuckets = getChecked('f-gm-bucket');
+  const drugStocks = getChecked('f-drug-stock');
+
+  filteredData = rawData.filter(r => {
+    if (dateFrom && r.time_key < dateFrom) return false;
+    if (dateTo && r.time_key > dateTo) return false;
+    if (!cats.includes(String(r.drug_category ?? 'Unknown'))) return false;
+    if (!schedules.includes(String(r.schedule ?? 'Unknown'))) return false;
+    if (!tiers.includes(String(r.tier ?? 'Unknown'))) return false;
+    if (!stockTypes.includes(String(r.drug_stock_type ?? 'Unknown'))) return false;
+    const gLabel = (r.generic === true || r.generic === 'true') ? 'Generic' : 'Brand';
+    if (!generics.includes(gLabel) && !generics.includes(String(r.generic))) return false;
+    if (!gmBuckets.includes(String(r['GM%_BUCKET'] ?? 'Unknown'))) return false;
+    if (!drugStocks.includes(String(r.drug_stock ?? 'Unknown'))) return false;
+    return true;
+  });
+  buildDashboard();
+}
+
+function resetFilters() {
+  document.querySelectorAll('.sidebar input[type=checkbox]').forEach(cb => cb.checked = true);
+  const dates = rawData.map(r => r.time_key).filter(Boolean).sort();
+  document.getElementById('f-date-from').value = dates[0] || '';
+  document.getElementById('f-date-to').value = dates[dates.length - 1] || '';
+  filteredData = [...rawData];
+  buildDashboard();
+}
+
+// ─── Aggregation helpers ──────────────────────────────────────────────────────
+function sum(arr, k) { return arr.reduce((s, r) => s + (+r[k] || 0), 0); }
+function avg(arr, k) { return arr.length ? sum(arr, k) / arr.length : 0; }
+function groupBy(arr, key) {
+  const m = {};
+  arr.forEach(r => { const k = String(r[key] ?? 'Unknown'); (m[k] = m[k] || []).push(r); });
+  return m;
+}
+function fmt(n) { return n >= 1e7 ? (n/1e7).toFixed(2)+'Cr' : n >= 1e5 ? (n/1e5).toFixed(2)+'L' : n >= 1e3 ? (n/1e3).toFixed(1)+'K' : n.toFixed(0); }
+function fmtN(n) { return n.toLocaleString('en-IN', {maximumFractionDigits:2}); }
+
+// ─── Build all charts ─────────────────────────────────────────────────────────
+function buildDashboard() {
+  const d = filteredData;
+  buildKPIs(d);
+  buildInsights(d);
+  buildOverviewCharts(d);
+  buildManufacturerCharts(d);
+  buildDrugCharts(d);
+  buildGMCharts(d);
+  buildTrendCharts(d);
+  buildSKUTable(d);
+}
+
+function buildKPIs(d) {
+  const totalRev = sum(d, 'Revenue');
+  const totalGM = sum(d, 'GM');
+  const totalOrders = sum(d, 'order_count');
+  const totalQty = sum(d, 'quantity');
+  const totalDiscount = sum(d, 'Discount');
+  const avgGMpct = totalRev > 0 ? (totalGM/totalRev)*100 : 0;
+  const uniqueDrugs = new Set(d.map(r => r.drug_code)).size;
+  const uniqueMfr = new Set(d.map(r => r.manufacturer_name)).size;
+
+  document.getElementById('kpi-grid').innerHTML = [
+    { label:'Total Revenue', val:'₹'+fmt(totalRev), sub: fmtN(totalRev), cl:'c1' },
+    { label:'Gross Margin', val:'₹'+fmt(totalGM), sub: 'GM% '+avgGMpct.toFixed(1)+'%', cl:'c2' },
+    { label:'Total Orders', val: fmtN(totalOrders), sub: 'across '+d.length+' SKU-days', cl:'c3' },
+    { label:'Total Qty Sold', val: fmt(totalQty), sub: 'units', cl:'c4' },
+    { label:'Total Discount', val:'₹'+fmt(totalDiscount), sub: ((totalDiscount/sum(d,'Total_mrp'))*100).toFixed(1)+'% of MRP', cl:'c5' },
+    { label:'Avg GM%', val: avgGMpct.toFixed(1)+'%', sub: 'gross margin', cl:'c6' },
+    { label:'Unique Drugs', val: uniqueDrugs.toLocaleString(), sub: 'drug codes', cl:'c1' },
+    { label:'Manufacturers', val: uniqueMfr.toLocaleString(), sub: 'distinct makers', cl:'c2' },
+  ].map(k => `<div class="kpi-card ${k.cl}"><div class="kpi-label">${k.label}</div><div class="kpi-value">${k.val}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
+
+  document.getElementById('kpi-gm').innerHTML = [
+    { label:'Avg GM%', val: avgGMpct.toFixed(2)+'%', cl:'c1' },
+    { label:'Total GM ₹', val:'₹'+fmt(totalGM), cl:'c2' },
+    { label:'Neg GM SKUs', val: d.filter(r=>r.GM<0).length.toLocaleString(), cl:'c5' },
+    { label:'High GM (>40%)', val: d.filter(r=>r.gmpct>40).length.toLocaleString(), cl:'c3' },
+  ].map(k => `<div class="kpi-card ${k.cl}"><div class="kpi-label">${k.label}</div><div class="kpi-value">${k.val}</div></div>`).join('');
+}
+
+function buildInsights(d) {
+  const byMfr = groupBy(d, 'manufacturer_name');
+  const mfrRev = Object.entries(byMfr).map(([k,v]) => [k, sum(v,'Revenue')]).sort((a,b)=>b[1]-a[1]);
+  const byDrug = groupBy(d, 'display_name');
+  const drugGM = Object.entries(byDrug).map(([k,v]) => [k, avg(v,'gmpct')]).sort((a,b)=>b[1]-a[1]);
+  const totalRev = sum(d,'Revenue');
+  const bulkGM = avg(d.filter(r=>String(r.drug_stock_type)==='BULK'), 'gmpct');
+  const jitGM = avg(d.filter(r=>String(r.drug_stock_type)==='JIT'), 'gmpct');
+
+  document.getElementById('insight-grid').innerHTML = [
+    { label:'Top Manufacturer', val: mfrRev[0]?.[0] || '—', desc: mfrRev[0] ? '₹'+fmt(mfrRev[0][1])+' revenue' : '' },
+    { label:'Highest GM% Drug', val: drugGM[0]?.[0]?.slice(0,22) || '—', desc: drugGM[0] ? drugGM[0][1].toFixed(1)+'% avg GM' : '' },
+    { label:'BULK vs JIT GM%', val: bulkGM.toFixed(1)+'% vs '+jitGM.toFixed(1)+'%', desc: 'BULK leads by '+(bulkGM-jitGM).toFixed(1)+'pp' },
+  ].map(i => `<div class="insight-card"><div class="label">${i.label}</div><div class="val">${i.val}</div><div class="desc">${i.desc}</div></div>`).join('');
+}
+
+// ─── Chart helpers ────────────────────────────────────────────────────────────
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+function makeChart(id, type, data, options={}) {
+  destroyChart(id);
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  charts[id] = new Chart(ctx, { type, data, options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 }, boxWidth: 12 } } },
+    scales: type === 'bar' || type === 'line' ? {
+      x: { ticks: { color: '#475569', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { ticks: { color: '#475569', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.06)' } }
+    } : {},
+    ...options
+  }});
+}
+
+function hbar(id, labels, values, color) {
+  makeChart(id, 'bar', {
+    labels,
+    datasets: [{ data: values, backgroundColor: color || COLORS, borderRadius: 5 }]
+  }, { indexAxis: 'y', plugins: { legend: { display: false } }, scales: {
+    x: { ticks: { color: '#475569', font:{size:10} }, grid: { color: 'rgba(255,255,255,0.05)' } },
+    y: { ticks: { color: '#94a3b8', font:{size:10} }, grid: { display: false } }
+  }});
+}
+
+function vbar(id, labels, values, color, label='Value') {
+  makeChart(id, 'bar', {
+    labels,
+    datasets: [{ label, data: values, backgroundColor: color || COLORS, borderRadius: 5 }]
+  }, { plugins: { legend: { display: false } }, scales: {
+    x: { ticks: { color: '#475569', font:{size:10}, maxRotation:40 }, grid: { display: false } },
+    y: { ticks: { color: '#475569', font:{size:10} }, grid: { color: 'rgba(255,255,255,0.05)' } }
+  }});
+}
+
+function doughnut(id, labels, values) {
+  makeChart(id, 'doughnut', {
+    labels,
+    datasets: [{ data: values, backgroundColor: COLORS, borderWidth: 2, borderColor: '#151820' }]
+  }, { cutout: '62%', plugins: { legend: { position: 'right', labels: { color: '#94a3b8', font:{size:11}, boxWidth:10 } } } });
+}
+
+function lineChart(id, labels, datasets) {
+  makeChart(id, 'line', { labels, datasets }, {
+    plugins: { legend: { labels: { color: '#94a3b8', font:{size:11}, boxWidth:10 } } },
+    scales: {
+      x: { ticks: { color: '#475569', font:{size:10} }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { ticks: { color: '#475569', font:{size:10} }, grid: { color: 'rgba(255,255,255,0.05)' } }
+    }
+  });
+}
+
+// ─── Overview charts ──────────────────────────────────────────────────────────
+function buildOverviewCharts(d) {
+  // Revenue by tier
+  const byTier = groupBy(d, 'tier');
+  const tierKeys = Object.keys(byTier).sort();
+  doughnut('ch-tier-revenue', tierKeys, tierKeys.map(k => sum(byTier[k],'Revenue')));
+
+  // GM by drug category
+  const byCat = groupBy(d, 'drug_category');
+  vbar('ch-cat-gm', Object.keys(byCat), Object.values(byCat).map(v => avg(v,'gmpct')), ['#6ee7b7','#818cf8'], 'Avg GM%');
+
+  // Generic split
+  const genGroups = groupBy(d, 'generic');
+  const genLabels = Object.keys(genGroups).map(g => g==='true'||g===true?'Generic':'Brand');
+  const genRevs = Object.values(genGroups).map(v => sum(v,'Revenue'));
+  doughnut('ch-generic-split', genLabels, genRevs);
+
+  // Schedule
+  const schedGroups = groupBy(d, 'schedule');
+  doughnut('ch-schedule', Object.keys(schedGroups), Object.values(schedGroups).map(v => sum(v,'Revenue')));
+
+  // Stock type
+  const stGroups = groupBy(d, 'drug_stock_type');
+  const stLabels = Object.keys(stGroups);
+  makeChart('ch-stock-type', 'bar', {
+    labels: stLabels,
+    datasets: [
+      { label: 'Avg GM%', data: stLabels.map(k => avg(stGroups[k],'gmpct')), backgroundColor: '#6ee7b7', borderRadius:5 },
+      { label: 'Avg Revenue', data: stLabels.map(k => avg(stGroups[k],'Revenue')), backgroundColor: '#818cf8', borderRadius:5 }
+    ]
+  }, { plugins: { legend: { labels: { color:'#94a3b8', font:{size:11} } } }, scales: {
+    x: { ticks:{color:'#475569'}, grid:{display:false} },
+    y: { ticks:{color:'#475569'}, grid:{color:'rgba(255,255,255,0.05)'} }
+  }});
+
+  // GM bucket
+  const gmBuckets = groupBy(d, 'GM%_BUCKET');
+  const bucketOrder = ['0%','0-20%','20-40%','40%'];
+  const sortedBuckets = bucketOrder.filter(b => gmBuckets[b]);
+  const otherBuckets = Object.keys(gmBuckets).filter(b => !bucketOrder.includes(b));
+  const allBuckets = [...sortedBuckets, ...otherBuckets];
+  vbar('ch-gm-bucket', allBuckets, allBuckets.map(k => gmBuckets[k]?.length||0), COLORS, 'SKU-days');
+}
+
+// ─── Manufacturer charts ──────────────────────────────────────────────────────
+function buildManufacturerCharts(d) {
+  const byMfr = groupBy(d, 'manufacturer_name');
+  const mfrList = Object.entries(byMfr).map(([k,v]) => ({
+    name: k.length>22?k.slice(0,20)+'…':k,
+    fullName: k,
+    revenue: sum(v,'Revenue'), gm: sum(v,'GM'), orders: sum(v,'order_count'),
+    gmpct: avg(v,'gmpct'), skus: new Set(v.map(r=>r.drug_code)).size
+  }));
+
+  const top15rev = [...mfrList].sort((a,b)=>b.revenue-a.revenue).slice(0,15);
+  hbar('ch-mfr-revenue', top15rev.map(m=>m.name), top15rev.map(m=>m.revenue), COLORS);
+
+  const top10gm = [...mfrList].sort((a,b)=>b.gmpct-a.gmpct).slice(0,10);
+  hbar('ch-mfr-gmpct', top10gm.map(m=>m.name), top10gm.map(m=>m.gmpct), '#6ee7b7');
+
+  const top12ord = [...mfrList].sort((a,b)=>b.orders-a.orders).slice(0,12);
+  vbar('ch-mfr-orders', top12ord.map(m=>m.name), top12ord.map(m=>m.orders), COLORS, 'Orders');
+
+  const top12sku = [...mfrList].sort((a,b)=>b.skus-a.skus).slice(0,12);
+  vbar('ch-mfr-skus', top12sku.map(m=>m.name), top12sku.map(m=>m.skus), COLORS, 'Unique SKUs');
+
+  // Scatter
+  const top20 = [...mfrList].sort((a,b)=>b.revenue-a.revenue).slice(0,20);
+  destroyChart('ch-mfr-scatter');
+  const ctx = document.getElementById('ch-mfr-scatter');
+  if (ctx) {
+    charts['ch-mfr-scatter'] = new Chart(ctx, {
+      type: 'bubble',
+      data: { datasets: [{ label: 'Manufacturers', data: top20.map((m,i) => ({x:m.revenue, y:m.gmpct, r:Math.max(4,Math.min(25,m.orders/500)), label:m.name})), backgroundColor: COLORS.map(c=>c+'99'), borderColor: COLORS }] },
+      options: { responsive:true, maintainAspectRatio:true,
+        plugins: { legend:{display:false}, tooltip:{ callbacks:{ label(ctx){ const d=ctx.raw; return `${d.label} | Rev: ₹${fmt(d.x)} | GM%: ${d.y.toFixed(1)}%`; } } } },
+        scales: {
+          x: { title:{display:true,text:'Revenue',color:'#475569'}, ticks:{color:'#475569',font:{size:10}}, grid:{color:'rgba(255,255,255,0.04)'} },
+          y: { title:{display:true,text:'GM%',color:'#475569'}, ticks:{color:'#475569',font:{size:10}}, grid:{color:'rgba(255,255,255,0.05)'} }
+        }
+      }
+    });
+  }
+}
+
+// ─── Drug charts ──────────────────────────────────────────────────────────────
+function buildDrugCharts(d) {
+  const byDrug = groupBy(d, 'display_name');
+  const drugList = Object.entries(byDrug).map(([k,v]) => ({
+    name: k.length>22?k.slice(0,20)+'…':k,
+    revenue: sum(v,'Revenue'), gm: sum(v,'GM'), orders: sum(v,'order_count'),
+    discount: sum(v,'Discount'), rpq: avg(v,'Revenue_per_qty')
+  }));
+
+  hbar('ch-drug-revenue', [...drugList].sort((a,b)=>b.revenue-a.revenue).slice(0,15).map(m=>m.name),
+    [...drugList].sort((a,b)=>b.revenue-a.revenue).slice(0,15).map(m=>m.revenue), COLORS);
+  hbar('ch-drug-gm', [...drugList].sort((a,b)=>b.gm-a.gm).slice(0,15).map(m=>m.name),
+    [...drugList].sort((a,b)=>b.gm-a.gm).slice(0,15).map(m=>m.gm), '#6ee7b7');
+  hbar('ch-drug-orders', [...drugList].sort((a,b)=>b.orders-a.orders).slice(0,15).map(m=>m.name),
+    [...drugList].sort((a,b)=>b.orders-a.orders).slice(0,15).map(m=>m.orders), '#818cf8');
+  hbar('ch-drug-discount', [...drugList].sort((a,b)=>b.discount-a.discount).slice(0,15).map(m=>m.name),
+    [...drugList].sort((a,b)=>b.discount-a.discount).slice(0,15).map(m=>m.discount), '#fb923c');
+
+  const top20rpq = [...drugList].sort((a,b)=>b.rpq-a.rpq).slice(0,20);
+  vbar('ch-drug-rpq', top20rpq.map(m=>m.name), top20rpq.map(m=>m.rpq), COLORS, 'Rev/Qty');
+}
+
+// ─── GM deep dive charts ──────────────────────────────────────────────────────
+function buildGMCharts(d) {
+  // Histogram
+  const bins = [-100,-50,-20,0,10,20,30,40,50,60,70,80,90,100,150,200];
+  const binLabels = bins.slice(0,-1).map((b,i)=>`${b}–${bins[i+1]}%`);
+  const binCounts = binLabels.map((_, i) => d.filter(r => r.gmpct>=bins[i] && r.gmpct<bins[i+1]).length);
+  vbar('ch-gm-hist', binLabels, binCounts, d.map((_,i)=>COLORS[i%COLORS.length]), 'SKUs');
+
+  // By tier
+  const byTier = groupBy(d, 'tier');
+  const tierKeys = Object.keys(byTier).sort();
+  vbar('ch-gm-tier', tierKeys, tierKeys.map(k=>avg(byTier[k],'gmpct')), COLORS, 'Avg GM%');
+
+  // Generic vs brand
+  const byGen = groupBy(d, 'generic');
+  const genLabels = Object.keys(byGen).map(g=>g==='true'||g===true?'Generic':'Brand');
+  vbar('ch-gm-generic', genLabels, Object.values(byGen).map(v=>avg(v,'gmpct')), ['#6ee7b7','#f472b6'], 'Avg GM%');
+
+  // Stock type
+  const bySt = groupBy(d, 'drug_stock_type');
+  const stKeys = Object.keys(bySt);
+  vbar('ch-gm-stocktype', stKeys, stKeys.map(k=>avg(bySt[k],'gmpct')), ['#818cf8','#fb923c'], 'Avg GM%');
+
+  // Discount vs GM by tier
+  destroyChart('ch-discount-gm');
+  const ctx1 = document.getElementById('ch-discount-gm');
+  if (ctx1) {
+    charts['ch-discount-gm'] = new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: tierKeys,
+        datasets: [
+          { label:'Avg Discount%', data: tierKeys.map(k=>{ const v=byTier[k]; const mrp=sum(v,'Total_mrp'); return mrp>0?(sum(v,'Discount')/mrp)*100:0; }), backgroundColor:'#f472b6', borderRadius:5 },
+          { label:'Avg GM%', data: tierKeys.map(k=>avg(byTier[k],'gmpct')), backgroundColor:'#6ee7b7', borderRadius:5 }
+        ]
+      },
+      options: { responsive:true, maintainAspectRatio:true, plugins:{ legend:{labels:{color:'#94a3b8',font:{size:11}}} }, scales:{
+        x:{ticks:{color:'#475569'},grid:{display:false}}, y:{ticks:{color:'#475569'},grid:{color:'rgba(255,255,255,0.05)'}}
+      }}
+    });
+  }
+
+  // PTR vs Rev per Qty
+  const byDrug = groupBy(d,'display_name');
+  const top20 = Object.entries(byDrug).map(([k,v])=>({name:k.length>18?k.slice(0,16)+'…':k,ptr:avg(v,'PTR'),rpq:avg(v,'Revenue_per_qty')})).sort((a,b)=>b.rpq-a.rpq).slice(0,20);
+  destroyChart('ch-ptr-rpq');
+  const ctx2 = document.getElementById('ch-ptr-rpq');
+  if (ctx2) {
+    charts['ch-ptr-rpq'] = new Chart(ctx2, {
+      type: 'scatter',
+      data: { datasets:[{ label:'Drugs', data:top20.map(m=>({x:m.ptr,y:m.rpq,name:m.name})), backgroundColor:'#818cf899', borderColor:'#818cf8', pointRadius:6, pointHoverRadius:8 }] },
+      options: { responsive:true, maintainAspectRatio:true, plugins:{legend:{display:false}, tooltip:{callbacks:{label(ctx){return ctx.raw.name+' | PTR:'+ctx.raw.x.toFixed(1)+' | RPQ:'+ctx.raw.y.toFixed(1);}} }},
+        scales:{ x:{title:{display:true,text:'PTR',color:'#475569'},ticks:{color:'#475569'},grid:{color:'rgba(255,255,255,0.04)'}}, y:{title:{display:true,text:'Revenue/Qty',color:'#475569'},ticks:{color:'#475569'},grid:{color:'rgba(255,255,255,0.05)'}} }
+      }
+    });
+  }
+}
+
+// ─── Trend charts ─────────────────────────────────────────────────────────────
+function buildTrendCharts(d) {
+  const byDate = groupBy(d, 'time_key');
+  const dates = Object.keys(byDate).sort();
+  const revByDate = dates.map(k=>sum(byDate[k],'Revenue'));
+  const gmByDate = dates.map(k=>sum(byDate[k],'GM'));
+  const ordByDate = dates.map(k=>sum(byDate[k],'order_count'));
+  const gmpctByDate = dates.map(k=>{ const v=byDate[k]; const r=sum(v,'Revenue'); return r>0?(sum(v,'GM')/r)*100:0; });
+  const discByDate = dates.map(k=>sum(byDate[k],'Discount'));
+  const shortDates = dates.map(d=>d.slice(5));
+
+  // Revenue + GM dual axis
+  destroyChart('ch-daily-rev-gm');
+  const ctx = document.getElementById('ch-daily-rev-gm');
+  if (ctx) {
+    charts['ch-daily-rev-gm'] = new Chart(ctx, {
+      data: {
+        labels: shortDates,
+        datasets: [
+          { type:'bar', label:'Revenue', data:revByDate, backgroundColor:'rgba(110,231,183,0.4)', borderRadius:3, yAxisID:'y' },
+          { type:'line', label:'GM', data:gmByDate, borderColor:'#818cf8', backgroundColor:'transparent', tension:0.4, pointRadius:3, yAxisID:'y2', borderWidth:2 }
+        ]
+      },
+      options: { responsive:true, maintainAspectRatio:true,
+        plugins:{legend:{labels:{color:'#94a3b8',font:{size:11}}}},
+        scales:{
+          x:{ticks:{color:'#475569',font:{size:10}},grid:{color:'rgba(255,255,255,0.03)'}},
+          y:{ticks:{color:'#475569',font:{size:10}},grid:{color:'rgba(255,255,255,0.05)'},title:{display:true,text:'Revenue',color:'#475569'}},
+          y2:{position:'right',ticks:{color:'#475569',font:{size:10}},grid:{display:false},title:{display:true,text:'GM',color:'#475569'}}
+        }
+      }
+    });
+  }
+
+  lineChart('ch-daily-orders', shortDates, [{ label:'Orders', data:ordByDate, borderColor:ACCENT, backgroundColor:'rgba(110,231,183,0.08)', fill:true, tension:0.4, pointRadius:3, borderWidth:2 }]);
+  lineChart('ch-daily-gmpct', shortDates, [{ label:'GM%', data:gmpctByDate, borderColor:'#fb923c', backgroundColor:'rgba(251,146,60,0.08)', fill:true, tension:0.4, pointRadius:3, borderWidth:2 }]);
+  lineChart('ch-daily-discount', shortDates, [{ label:'Discount', data:discByDate, borderColor:'#f472b6', backgroundColor:'rgba(244,114,182,0.08)', fill:true, tension:0.4, pointRadius:3, borderWidth:2 }]);
+
+  // Tier stacked
+  const tiers = [...new Set(d.map(r=>r.tier))].sort();
+  const tierDatasets = tiers.map((t,i) => ({
+    label: t, data: dates.map(k=>{ const v=(byDate[k]||[]).filter(r=>r.tier===t); return sum(v,'Revenue'); }),
+    backgroundColor: COLORS[i], borderRadius:2, stack:'s'
+  }));
+  destroyChart('ch-tier-trend');
+  const ctxTt = document.getElementById('ch-tier-trend');
+  if (ctxTt) {
+    charts['ch-tier-trend'] = new Chart(ctxTt, { type:'bar', data:{ labels:shortDates, datasets:tierDatasets }, options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{legend:{labels:{color:'#94a3b8',font:{size:11}}}},
+      scales:{ x:{ticks:{color:'#475569',font:{size:10}},grid:{display:false}}, y:{ticks:{color:'#475569',font:{size:10}},grid:{color:'rgba(255,255,255,0.05)'}} }
+    }});
+  }
+}
+
+// ─── SKU Table ────────────────────────────────────────────────────────────────
+function buildSKUTable(d) {
+  const byDrug = groupBy(d, 'drug_code');
+  skuAgg = Object.entries(byDrug).map(([code, rows]) => {
+    const r0 = rows[0];
+    return {
+      display_name: r0.display_name || '—',
+      drug_code: code,
+      manufacturer_name: r0.manufacturer_name || '—',
+      tier: r0.tier || '—',
+      drug_category: r0.drug_category || '—',
+      generic: r0.generic,
+      drug_stock_type: r0.drug_stock_type || '—',
+      order_count: sum(rows,'order_count'),
+      Revenue: sum(rows,'Revenue'),
+      GM: sum(rows,'GM'),
+      gmpct: (() => { const rev=sum(rows,'Revenue'); return rev>0?(sum(rows,'GM')/rev)*100:0; })(),
+      Discount: sum(rows,'Discount'),
+    };
+  });
+  skuSearch();
+}
+
+function skuSearch() {
+  const q = (document.getElementById('sku-search')?.value||'').toLowerCase();
+  const sortKey = document.getElementById('sku-sort')?.value || 'Revenue';
+  const perPage = +(document.getElementById('sku-per-page')?.value||25);
+
+  skuFiltered = skuAgg.filter(r =>
+    !q || r.display_name.toLowerCase().includes(q) ||
+    String(r.drug_code).includes(q) ||
+    r.manufacturer_name.toLowerCase().includes(q)
+  );
+
+  skuFiltered.sort((a,b) => skuSortAsc ? a[skuSortCol]-b[skuSortCol] : b[skuSortCol]-a[skuSortCol]);
+  if (sortKey && sortKey !== skuSortCol) {
+    skuSortCol = sortKey; skuSortAsc = false;
+    skuFiltered.sort((a,b) => b[skuSortCol]-a[skuSortCol]);
+  }
+
+  skuPage = 1;
+  renderSKUPage(perPage);
+}
+
+function sortSkuTable(col) {
+  skuSortAsc = skuSortCol === col ? !skuSortAsc : false;
+  skuSortCol = col;
+  const perPage = +(document.getElementById('sku-per-page')?.value||25);
+  if (typeof skuFiltered[0]?.[col] === 'number') {
+    skuFiltered.sort((a,b) => skuSortAsc ? a[col]-b[col] : b[col]-a[col]);
+  } else {
+    skuFiltered.sort((a,b) => skuSortAsc ? String(a[col]).localeCompare(String(b[col])) : String(b[col]).localeCompare(String(a[col])));
+  }
+  renderSKUPage(perPage);
+}
+
+function renderSKUPage(perPage) {
+  const total = skuFiltered.length;
+  const totalPages = Math.ceil(total/perPage);
+  skuPage = Math.max(1, Math.min(skuPage, totalPages));
+  const start = (skuPage-1)*perPage;
+  const page = skuFiltered.slice(start, start+perPage);
+  const maxGM = Math.max(...skuAgg.map(r=>r.GM));
+
+  document.getElementById('sku-count-label').textContent = `${total.toLocaleString()} unique drugs`;
+  document.getElementById('pg-info').textContent = `Showing ${start+1}–${Math.min(start+perPage,total)} of ${total.toLocaleString()}`;
+
+  function tierBadge(t) {
+    const cls = t==='Tier 1'?'badge-tier1':t==='Tier 2'?'badge-tier2':t==='Tier 3'?'badge-tier3':'badge-others';
+    return `<span class="td-badge ${cls}">${t}</span>`;
+  }
+  function gmColor(pct) {
+    if (pct < 0) return '#f87171';
+    if (pct < 20) return '#fbbf24';
+    if (pct < 40) return '#38bdf8';
+    return '#6ee7b7';
+  }
+
+  document.getElementById('sku-tbody').innerHTML = page.map(r => `<tr>
+    <td class="td-main" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.display_name}">${r.display_name}</td>
+    <td class="td-num">${r.drug_code}</td>
+    <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text2)" title="${r.manufacturer_name}">${r.manufacturer_name}</td>
+    <td>${tierBadge(r.tier)}</td>
+    <td><span class="td-badge ${r.drug_category==='RX'?'badge-rx':'badge-nonrx'}">${r.drug_category}</span></td>
+    <td><span class="td-badge ${r.generic===true||r.generic==='true'?'badge-generic':'badge-brand'}">${r.generic===true||r.generic==='true'?'Gen':'Brand'}</span></td>
+    <td><span class="td-badge ${r.drug_stock_type==='BULK'?'badge-bulk':'badge-jit'}">${r.drug_stock_type}</span></td>
+    <td class="td-num">${r.order_count.toLocaleString()}</td>
+    <td class="td-num">₹${fmt(r.Revenue)}</td>
+    <td class="td-num" style="color:${r.GM<0?'var(--danger)':'var(--success)'}">₹${fmt(r.GM)}</td>
+    <td class="td-num">
+      <span style="color:${gmColor(r.gmpct)}">${r.gmpct.toFixed(1)}%</span>
+      <div class="gm-bar"><div class="gm-fill" style="width:${Math.max(0,Math.min(100,r.gmpct))}%;background:${gmColor(r.gmpct)}"></div></div>
+    </td>
+    <td class="td-num">₹${fmt(r.Discount)}</td>
+  </tr>`).join('');
+
+  // Pagination
+  const pgBtns = document.getElementById('pg-btns');
+  const pages = [];
+  if (totalPages <= 7) { for(let i=1;i<=totalPages;i++) pages.push(i); }
+  else {
+    pages.push(1);
+    if (skuPage > 3) pages.push('…');
+    for(let i=Math.max(2,skuPage-1);i<=Math.min(totalPages-1,skuPage+1);i++) pages.push(i);
+    if (skuPage < totalPages-2) pages.push('…');
+    pages.push(totalPages);
+  }
+  pgBtns.innerHTML = `<button class="pg-btn" ${skuPage<=1?'disabled':''} onclick="goPage(${skuPage-1})">←</button>`
+    + pages.map(p => p==='…' ? `<button class="pg-btn" disabled>…</button>` : `<button class="pg-btn${p===skuPage?' active':''}" onclick="goPage(${p})">${p}</button>`).join('')
+    + `<button class="pg-btn" ${skuPage>=totalPages?'disabled':''} onclick="goPage(${skuPage+1})">→</button>`;
+}
+
+function goPage(p) {
+  skuPage = p;
+  const perPage = +(document.getElementById('sku-per-page')?.value||25);
+  renderSKUPage(perPage);
+}
+
+// ─── Tab switching ────────────────────────────────────────────────────────────
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── Loading ──────────────────────────────────────────────────────────────────
+function showLoading(text, sub) {
+  document.getElementById('loading-overlay').style.display = 'flex';
+  document.getElementById('loading-text').textContent = text;
+  document.getElementById('loading-sub').textContent = sub || '';
+}
+function hideLoading() {
+  document.getElementById('loading-overlay').style.display = 'none';
+}
+</script>
+</body>
+</html>
