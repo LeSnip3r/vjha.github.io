@@ -475,7 +475,10 @@ textarea{resize:vertical;}
 
   <!-- CUSTOMER -->
   <div class="ctx-card c-cust">
-    <div class="cc-label">Customer</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="cc-label">Customer</div>
+      <button onclick="document.getElementById('loginPage').style.display='flex';" style="font-size:8px;font-weight:700;background:var(--card2);color:var(--text2);border:1px solid var(--border);border-radius:20px;padding:2px 7px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;">🔄 Switch</button>
+    </div>
     <div style="display:flex;align-items:flex-start;gap:8px;margin-top:5px;">
       <div style="width:34px;height:34px;background:linear-gradient(135deg,#2563EB,#7C3AED);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex-shrink:0;color:#fff;margin-top:2px;">NS</div>
       <div style="min-width:0;">
@@ -488,70 +491,72 @@ textarea{resize:vertical;}
     <div style="margin-top:6px;display:flex;gap:5px;align-items:center;flex-wrap:wrap;">
       <button onclick="openModal('createTaskModal')" style="font-size:8.5px;font-weight:700;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-light);border-radius:20px;padding:2px 9px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;">+ Create Task</button>
       <span style="font-size:8.5px;font-weight:700;background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);border-radius:20px;padding:2px 7px;white-space:nowrap;">⚠ Test User</span>
-      <button onclick="document.getElementById('loginPage').style.display='flex';" style="font-size:8.5px;font-weight:700;background:var(--card2);color:var(--text2);border:1px solid var(--border);border-radius:20px;padding:2px 9px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;">🔄 Switch Customer</button>
     </div>
   </div>
 
   <!-- ACTIVE ORDER -->
   <div class="ctx-card c-active" style="flex-direction:column;gap:0;padding:0;overflow:visible;">
 
-    <!-- Smart tab bar -->
+   <!-- Smart tab bar -->
     <div id="activeOrderTabs" style="display:flex;align-items:center;gap:0;overflow-x:auto;border-bottom:1px solid var(--amber-border);padding:0 10px;background:#FEF9EC;border-radius:10px 10px 0 0;flex-shrink:0;">
       <div onclick="switchActiveTab(0,this)" style="padding:7px 12px;font-size:10px;font-weight:700;color:var(--amber);border-bottom:2px solid var(--amber);white-space:nowrap;cursor:pointer;margin-bottom:-1px;display:flex;align-items:center;gap:5px;">
         <div style="width:6px;height:6px;border-radius:50%;background:var(--amber);flex-shrink:0;"></div>Order #1969951 — 18/03
       </div>
       <div onclick="switchActiveTab(1,this)" style="padding:7px 12px;font-size:10px;font-weight:600;color:var(--text3);border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;margin-bottom:-1px;display:flex;align-items:center;gap:5px;">
-        <div style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>Return #1967832 — 14/03
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;"></div>Order #1968372 — 18/03
+      </div>
+      <div onclick="switchActiveTab(2,this)" style="padding:7px 12px;font-size:10px;font-weight:600;color:var(--text3);border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;margin-bottom:-1px;display:flex;align-items:center;gap:5px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;"></div>Order #1967351 — 18/03
+      </div>
+      <div onclick="switchActiveTab(3,this)" style="padding:7px 12px;font-size:10px;font-weight:600;color:var(--text3);border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;margin-bottom:-1px;display:flex;align-items:center;gap:5px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>Order #1955803 — 18/03
+      </div>
+      <div onclick="switchActiveTab(4,this)" style="padding:7px 12px;font-size:10px;font-weight:600;color:var(--text3);border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;margin-bottom:-1px;display:flex;align-items:center;gap:5px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>Return #1966034 — 18/03
+      </div>
+      <div onclick="switchActiveTab(5,this)" style="padding:7px 12px;font-size:10px;font-weight:600;color:var(--text3);border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;margin-bottom:-1px;display:flex;align-items:center;gap:5px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>Return #1965981 — 18/03
+      </div>
+      <div onclick="switchActiveTab(6,this)" style="padding:7px 12px;font-size:10px;font-weight:600;color:var(--text3);border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;margin-bottom:-1px;display:flex;align-items:center;gap:5px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>Return #1964771 — 18/03
+      </div>
+      <div onclick="switchActiveTab(7,this)" style="padding:7px 12px;font-size:10px;font-weight:600;color:var(--text3);border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;margin-bottom:-1px;display:flex;align-items:center;gap:5px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>Return #1964771 — 18/03
+      </div>
+      <div onclick="switchActiveTab(8,this)" style="padding:7px 12px;font-size:10px;font-weight:600;color:var(--text3);border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;margin-bottom:-1px;display:flex;align-items:center;gap:5px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>Return #1964771 — 18/03
       </div>
     </div>
 
-    <!-- Tab Panel 0: Order -->
+    <!-- Tab Panel 0: Order #1969951 — In Transit with issue -->
     <div id="activeTabPanel0" style="display:flex;gap:0;flex:1;min-height:0;padding:10px 13px;">
-
-      <!-- Left: 2-col grid for label/value alignment -->
       <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-content:start;flex:1;min-width:0;">
         <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Order ID</span>
         <span style="font-size:11px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;align-self:center;">1969951</span>
-
         <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Order Date</span>
         <div style="display:flex;align-items:center;gap:5px;">
           <span style="font-size:11px;font-weight:700;color:var(--text);">18 Mar 2026</span>
           <span style="font-size:8.5px;font-weight:700;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-light);border-radius:4px;padding:1px 6px;">NDD</span>
         </div>
-
         <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Status</span>
         <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">In Transit</span>
-
         <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Carrier</span>
         <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">Shadowfax</span>
-
         <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Carrier Update</span>
         <span style="font-size:11px;font-weight:700;color:var(--red);align-self:center;">Vantage Input</span>
       </div>
-
-      <!-- Middle: alert summary -->
       <div style="display:flex;flex-direction:column;gap:4px;justify-content:center;flex-shrink:0;padding:0 16px;border-left:1px solid var(--amber-border);margin:0 12px;">
         <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:3px;">⚠ Some issue with shipment, requires investigation</div>
-        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;">
-          <span style="color:var(--text2);white-space:nowrap;">Shipment Status</span>
-          <span style="font-weight:700;color:var(--text);">— In Transit</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;">
-          <span style="color:var(--text2);white-space:nowrap;">Reached Dest. Hub</span>
-          <span style="font-weight:700;color:var(--red);">— No</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;flex-wrap:wrap;">
-          <span style="color:var(--text2);white-space:nowrap;">Last Scan</span>
-          <span style="font-weight:700;color:var(--text);">— NCR Bamnoli DC</span>
-          <span style="font-weight:700;color:var(--red);">— 07 Mar 2026, 08:15 AM</span>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Shipment Status</span><span style="font-weight:700;color:var(--text);">— In Transit</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Reached Dest. Hub</span><span style="font-weight:700;color:var(--red);">— No</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;flex-wrap:wrap;"><span style="color:var(--text2);white-space:nowrap;">Last Scan</span><span style="font-weight:700;color:var(--text);">— NCR Bamnoli DC</span><span style="font-weight:700;color:var(--red);">— 07 Mar 2026, 08:15 AM</span></div>
+        <div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;">
+          <button class="ao-btn ao-btn-esc" onclick="openModal('raiseTicketModal')">🔺 Escalate to L2</button>
+          <button class="ao-btn ao-btn-wh" onclick="window.open('https://script.google.com/a/macros/platinumrx.in/s/AKfycbzo13DwLnMDaq5zT8fRtYVgfAYGO4XhJangfpeiExRMBuY_vkVmC_2H-62PMQwS9FWV2g/exec','_blank')">📋 Fill Logistics Escalation</button>
+          <button class="ao-btn ao-btn-ret" onclick="alert('RTO initiated')">🔄 Initiate RTO</button>
         </div>
       </div>
-
-      <!-- Right: Actions dropdown + extra buttons -->
       <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;justify-content:center;flex-shrink:0;padding-left:16px;border-left:1px solid var(--amber-border);margin-left:0;position:relative;">
-        <button class="ao-btn ao-btn-esc" onclick="openModal('raiseTicketModal')">🔺 Escalate to L2</button>
-        <button class="ao-btn ao-btn-wh" onclick="window.open('https://script.google.com/a/macros/platinumrx.in/s/AKfycbzo13DwLnMDaq5zT8fRtYVgfAYGO4XhJangfpeiExRMBuY_vkVmC_2H-62PMQwS9FWV2g/exec','_blank')">📋 Fill Logistics Escalation</button>
-        <button class="ao-btn ao-btn-ret" onclick="alert('RTO initiated')">🔄 Initiate RTO</button>
         <div style="position:relative;">
           <button class="ao-btn ao-btn-wh" onclick="toggleActionsDropdown(event)" id="actionsBtn" style="font-weight:700;padding:6px 14px;font-size:11px;">
             ⚡ Actions ▾
@@ -625,23 +630,230 @@ textarea{resize:vertical;}
 
     </div>
 
-    <!-- Tab Panel 1: Return -->
-    <div id="activeTabPanel1" style="display:none;flex-direction:column;gap:6px;flex:1;min-height:0;padding:10px 13px;">
-      <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-content:start;">
+    <!-- Tab Panel 1: Order #1968372 — Processing (with doc consult) -->
+    <div id="activeTabPanel1" style="display:none;flex:1;min-height:0;padding:10px 13px;gap:0;">
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-content:start;flex:1;min-width:0;">
         <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Order ID</span>
-        <span style="font-size:11px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;align-self:center;">RET-4821</span>
-
+        <span style="font-size:11px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;align-self:center;">1968372</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Order Date</span>
+        <div style="display:flex;align-items:center;gap:5px;"><span style="font-size:11px;font-weight:700;color:var(--text);">18 Mar 2026</span><span style="font-size:8.5px;font-weight:700;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-light);border-radius:4px;padding:1px 6px;">NDD</span></div>
         <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Status</span>
-        <span style="font-size:11px;font-weight:700;color:var(--amber);align-self:center;">Pickup Pending</span>
+        <span style="font-size:11px;font-weight:700;color:var(--accent);align-self:center;">Processing</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Payment Mode</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">Prepaid · UPI</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Zoho SO Status</span>
+        <div style="display:flex;align-items:center;gap:5px;"><span style="font-size:11px;font-weight:700;color:var(--green);align-self:center;">Success ✓</span><button onclick="openModal('editHistoryModal')" style="font-size:8.5px;font-weight:700;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-light);border-radius:20px;padding:2px 9px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;">🕐 Edit History</button></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;justify-content:center;flex-shrink:0;padding:0 16px;border-left:1px solid var(--amber-border);margin:0 12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:3px;">ℹ Order being processed</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Doc Consult</span><span style="font-weight:700;color:var(--green);">— Completed</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Rx Status</span><span style="font-weight:700;color:var(--green);">— Approved</span></div>
+        <div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;">
+          <button class="ao-btn ao-btn-esc" onclick="openModal('scheduleDocCallModal')">🩺 Schedule Doc Call</button>
+          <button class="ao-btn ao-btn-wh" onclick="openModal('editOrderModal')">✏ Edit Order</button>
+          <button class="ao-btn ao-btn-wh" onclick="openModal('editAddressModal')">📍 Edit Address</button>
+          <button class="ao-btn ao-btn-ret" onclick="openCancelOrder('1968372')">✕ Cancel Order</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;justify-content:center;flex-shrink:0;padding-left:16px;border-left:1px solid var(--amber-border);position:relative;">
+        <button class="ao-btn ao-btn-wh" onclick="toggleActionsDropdown(event)" style="font-weight:700;padding:6px 14px;font-size:11px;">⚡ Actions ▾</button>
+      </div>
+    </div>
 
+    <!-- Tab Panel 2: Order #1967351 — Delivered -->
+    <div id="activeTabPanel2" style="display:none;flex:1;min-height:0;padding:10px 13px;gap:0;">
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-content:start;flex:1;min-width:0;">
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Order ID</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;align-self:center;">1967351</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Order Date</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">18 Mar 2026</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Status</span>
+        <span style="font-size:11px;font-weight:700;color:var(--green);align-self:center;">Delivered ✓</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Delivered On</span>
+        <span style="font-size:11px;font-weight:700;color:var(--green);align-self:center;">20 Mar 2026</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Payment Mode</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">Prepaid · UPI</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;justify-content:center;flex-shrink:0;padding:0 16px;border-left:1px solid var(--amber-border);margin:0 12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:3px;">✓ Order delivered successfully</div>
+        <div style="display:flex;gap:5px;margin-top:4px;flex-wrap:wrap;">
+          <button class="ao-btn ao-btn-ret" onclick="openModal('initiateReturnModal')">↩ Initiate Return</button>
+          <button class="ao-btn ao-btn-esc" onclick="openModal('raiseTicketModal')">🔺 Escalate to L2</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;justify-content:center;flex-shrink:0;padding-left:16px;border-left:1px solid var(--amber-border);position:relative;">
+        <button class="ao-btn ao-btn-wh" onclick="toggleActionsDropdown(event)" style="font-weight:700;padding:6px 14px;font-size:11px;">⚡ Actions ▾</button>
+      </div>
+    </div>
+
+    <!-- Tab Panel 3: Order #1955803 — Return with QC rejection -->
+    <div id="activeTabPanel3" style="display:none;flex:1;min-height:0;padding:10px 13px;gap:0;">
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-content:start;flex:1;min-width:0;">
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Order ID</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;align-self:center;">1955803</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Return ID</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;align-self:center;">RET-5803</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Status</span>
+        <span style="font-size:11px;font-weight:700;color:var(--amber);align-self:center;">QC Rejected</span>
         <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Refund Mode</span>
         <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">Source (UPI)</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Refund Amount</span>
+        <span style="font-size:11px;font-weight:700;color:var(--teal);font-family:'JetBrains Mono',monospace;align-self:center;">₹142.00</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;justify-content:center;flex-shrink:0;padding:0 16px;border-left:1px solid var(--amber-border);margin:0 12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:3px;">⚠ QC rejection — items not approved</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Return Qty</span><span style="font-weight:700;color:var(--text);">— 2</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Reason</span><span style="font-weight:700;color:var(--red);">— Damage</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Internal Remark</span><span style="font-weight:700;color:var(--text);">— Incomplete order delivered</span></div>
+        <div style="display:flex;gap:5px;margin-top:6px;">
+          <button class="ao-btn ao-btn-esc" onclick="openModal('raiseTicketModal')">🔺 Escalate to L2</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;justify-content:center;flex-shrink:0;padding-left:16px;border-left:1px solid var(--amber-border);position:relative;">
+        <button class="ao-btn ao-btn-wh" onclick="toggleActionsDropdown(event)" style="font-weight:700;padding:6px 14px;font-size:11px;">⚡ Actions ▾</button>
+      </div>
+    </div>
 
-        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Pickup Window</span>
-        <span style="font-size:11px;font-weight:700;color:var(--red);align-self:center;">By 05 Mar 2026</span>
+    <!-- Tab Panel 4: Return #1966034 — Pickup Pending with LOG issue -->
+    <div id="activeTabPanel4" style="display:none;flex:1;min-height:0;padding:10px 13px;gap:0;">
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-content:start;flex:1;min-width:0;">
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Return ID</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;align-self:center;">RET-6034</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Status</span>
+        <span style="font-size:11px;font-weight:700;color:var(--amber);align-self:center;">Pickup Pending</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Carrier</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">Shadowfax</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Refund Mode</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">Source (UPI)</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Refund Amount</span>
+        <span style="font-size:11px;font-weight:700;color:var(--teal);font-family:'JetBrains Mono',monospace;align-self:center;">₹246.43</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;justify-content:center;flex-shrink:0;padding:0 16px;border-left:1px solid var(--amber-border);margin:0 12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:3px;">⚠ Pickup delayed — logistics issue</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Requested Date</span><span style="font-weight:700;color:var(--text);">— 10 Mar 2026</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Pickup Attempts</span><span style="font-weight:700;color:var(--red);">— 2</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Shipment Status</span><span style="font-weight:700;color:var(--amber);">— Out for Pickup</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Last Scan</span><span style="font-weight:700;color:var(--text);">— 13 Mar 2026, 09:14 AM</span></div>
+        <div style="display:flex;gap:5px;margin-top:6px;">
+          <button class="ao-btn ao-btn-esc" onclick="openModal('raiseTicketModal')">🔺 Escalate to LOG</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;justify-content:center;flex-shrink:0;padding-left:16px;border-left:1px solid var(--amber-border);position:relative;">
+        <button class="ao-btn ao-btn-wh" onclick="toggleActionsDropdown(event)" style="font-weight:700;padding:6px 14px;font-size:11px;">⚡ Actions ▾</button>
+      </div>
+    </div>
 
+    <!-- Tab Panel 5: Return #1965981 — Return In Transit LOG issue -->
+    <div id="activeTabPanel5" style="display:none;flex:1;min-height:0;padding:10px 13px;gap:0;">
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-content:start;flex:1;min-width:0;">
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Return ID</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;align-self:center;">RET-5981</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Status</span>
+        <span style="font-size:11px;font-weight:700;color:var(--amber);align-self:center;">Return In Transit</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Carrier</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">Delhivery</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Refund Mode</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">PRx Cash</span>
         <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Refund Amount</span>
         <span style="font-size:11px;font-weight:700;color:var(--teal);font-family:'JetBrains Mono',monospace;align-self:center;">₹388.43</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;justify-content:center;flex-shrink:0;padding:0 16px;border-left:1px solid var(--amber-border);margin:0 12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:3px;">⚠ Return shipment delayed</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Pickup Attempts</span><span style="font-weight:700;color:var(--text);">— 1</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Last Scan</span><span style="font-weight:700;color:var(--text);">— Delhi Hub, 15 Mar 2026</span></div>
+        <div style="display:flex;gap:5px;margin-top:6px;">
+          <button class="ao-btn ao-btn-esc" onclick="openModal('raiseTicketModal')">🔺 Escalate to LOG</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;justify-content:center;flex-shrink:0;padding-left:16px;border-left:1px solid var(--amber-border);position:relative;">
+        <button class="ao-btn ao-btn-wh" onclick="toggleActionsDropdown(event)" style="font-weight:700;padding:6px 14px;font-size:11px;">⚡ Actions ▾</button>
+      </div>
+    </div>
+
+    <!-- Tab Panel 6: Return #1964771 — WH QC issue -->
+    <div id="activeTabPanel6" style="display:none;flex:1;min-height:0;padding:10px 13px;gap:0;">
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-content:start;flex:1;min-width:0;">
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Return ID</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;align-self:center;">RET-4771</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Status</span>
+        <span style="font-size:11px;font-weight:700;color:var(--red);align-self:center;">QC Failed</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Refund Mode</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">Source (UPI)</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Approved Qty</span>
+        <span style="font-size:11px;font-weight:700;color:var(--green);align-self:center;">0</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Refund Amount</span>
+        <span style="font-size:11px;font-weight:700;color:var(--teal);font-family:'JetBrains Mono',monospace;align-self:center;">₹0.00</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;justify-content:center;flex-shrink:0;padding:0 16px;border-left:1px solid var(--amber-border);margin:0 12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:3px;">⚠ All items rejected at warehouse QC</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Approved Qty</span><span style="font-weight:700;color:var(--green);">— 0</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Rejected for Damage</span><span style="font-weight:700;color:var(--red);">— 1</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Rejected for Batch No. Mismatch</span><span style="font-weight:700;color:var(--red);">— 1</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Rejected for Other Reasons</span><span style="font-weight:700;color:var(--red);">— 1</span></div>
+        <div style="display:flex;gap:5px;margin-top:6px;">
+          <button class="ao-btn ao-btn-esc" onclick="openModal('raiseTicketModal')">🔺 Escalate to WH</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;justify-content:center;flex-shrink:0;padding-left:16px;border-left:1px solid var(--amber-border);position:relative;">
+        <button class="ao-btn ao-btn-wh" onclick="toggleActionsDropdown(event)" style="font-weight:700;padding:6px 14px;font-size:11px;">⚡ Actions ▾</button>
+      </div>
+    </div>
+
+    <!-- Tab Panel 7: Return #1964771 ② — Partial refund via Cashfree -->
+    <div id="activeTabPanel7" style="display:none;flex:1;min-height:0;padding:10px 13px;gap:0;">
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-content:start;flex:1;min-width:0;">
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Return ID</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;align-self:center;">RET-4771B</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Status</span>
+        <span style="font-size:11px;font-weight:700;color:var(--amber);align-self:center;">Refund Initiated</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Payment Mode</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">Prepaid · UPI</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Gateway</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">Cashfree</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Refund Amount</span>
+        <span style="font-size:11px;font-weight:700;color:var(--teal);font-family:'JetBrains Mono',monospace;align-self:center;">₹142.00</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;justify-content:center;flex-shrink:0;padding:0 16px;border-left:1px solid var(--amber-border);margin:0 12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:3px;">⚠ Partial QC approval — refund initiated</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Approved Qty</span><span style="font-weight:700;color:var(--green);">— 1</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Rejected for Damage</span><span style="font-weight:700;color:var(--red);">— 1</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Rejected for Batch No. Mismatch</span><span style="font-weight:700;color:var(--red);">— 1</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Rejected for Other Reasons</span><span style="font-weight:700;color:var(--red);">— 1</span></div>
+        <div style="display:flex;gap:5px;margin-top:6px;">
+          <button class="ao-btn ao-btn-esc" onclick="openModal('raiseTicketModal')">🔺 Escalate to L2</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;justify-content:center;flex-shrink:0;padding-left:16px;border-left:1px solid var(--amber-border);position:relative;">
+        <button class="ao-btn ao-btn-wh" onclick="toggleActionsDropdown(event)" style="font-weight:700;padding:6px 14px;font-size:11px;">⚡ Actions ▾</button>
+      </div>
+    </div>
+
+    <!-- Tab Panel 8: Return #1964771 ③ — Refund Processed -->
+    <div id="activeTabPanel8" style="display:none;flex:1;min-height:0;padding:10px 13px;gap:0;">
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-content:start;flex:1;min-width:0;">
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Return ID</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;align-self:center;">RET-4771C</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Status</span>
+        <span style="font-size:11px;font-weight:700;color:var(--green);align-self:center;">Refund Processed ✓</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Refund Mode</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);align-self:center;">Source (UPI)</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">UTR Number</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;align-self:center;">UTR2403201142987</span>
+        <span style="font-size:11px;color:var(--text2);white-space:nowrap;align-self:center;">Refund Amount</span>
+        <span style="font-size:11px;font-weight:700;color:var(--teal);font-family:'JetBrains Mono',monospace;align-self:center;">₹142.00</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;justify-content:center;flex-shrink:0;padding:0 16px;border-left:1px solid var(--amber-border);margin:0 12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:3px;">✓ Refund processed successfully</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Approved Qty</span><span style="font-weight:700;color:var(--green);">— 1</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Rejected for Damage</span><span style="font-weight:700;color:var(--red);">— 1</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Rejected for Batch No. Mismatch</span><span style="font-weight:700;color:var(--red);">— 1</span></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;"><span style="color:var(--text2);white-space:nowrap;">Rejected for Other Reasons</span><span style="font-weight:700;color:var(--red);">— 1</span></div>
+        <div style="display:flex;gap:5px;margin-top:6px;">
+          <button class="ao-btn ao-btn-esc" onclick="openModal('raiseTicketModal')">🔺 Escalate to L2</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;justify-content:center;flex-shrink:0;padding-left:16px;border-left:1px solid var(--amber-border);position:relative;">
+        <button class="ao-btn ao-btn-wh" onclick="toggleActionsDropdown(event)" style="font-weight:700;padding:6px 14px;font-size:11px;">⚡ Actions ▾</button>
       </div>
     </div>
 
@@ -669,7 +881,7 @@ textarea{resize:vertical;}
 <!-- ═══════════════════════════ TAB BAR ═══════════════════════════ -->
 <div class="tab-bar">
   <div class="tab active" onclick="switchTab(0,this)">🔎 Order 360</div>
-  <div class="tab" onclick="switchTab(1,this)">📦 Orders <span class="tc">23</span></div>
+  <div class="tab" onclick="switchTab(1,this)">📦 Orders</div>
   <div class="tab" onclick="switchTab(2,this)">↩ Returns <span class="tc warn">2 open</span></div>
   <div class="tab" onclick="switchTab(3,this)">💸 Transactions &amp; Refunds</div>
   <div class="tab" onclick="switchTab(4,this)">💳 Wallet &amp; Rewards</div>
@@ -983,7 +1195,7 @@ textarea{resize:vertical;}
       <div class="card-title">↩ Return History</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;">
         <input type="text" style="width:160px;" placeholder="🔍 Search by Order ID...">
-        <input type="text" style="width:180px;" placeholder="🔍 Search by Return Requested Date...">
+        <input type="text" style="width:180px;" placeholder="🔍 Search by Return Req Date...">
         <select><option>All Statuses</option><option>Pickup Pending</option><option>Pickup Initiated</option><option>Refund Processed</option></select>
       </div>
     </div>
@@ -1482,11 +1694,11 @@ textarea{resize:vertical;}
       <div id="ah-section-zoho" style="display:none;">
         <div style="padding:12px 14px;max-height:460px;overflow-y:auto;">
           <table class="data-table">
-            <thead><tr><th>Disposition</th><th>Sub-Disposition</th><th>Due Date</th><th>Status</th></tr></thead>
+            <thead><tr><th>Disposition</th><th>Sub-Disposition</th><th>Due Date</th><th>Status</th><th>Visit</th></tr></thead>
             <tbody>
-              <tr><td>Return &amp; Pickup</td><td>Missing or less quantity received</td><td>10 Mar 2026</td><td><span class="badge b-amber">L2 Escalations - LOG</span></td></tr>
-              <tr><td>Payments &amp; Refunds</td><td>Refund not credited to account</td><td>12 Mar 2026</td><td><span class="badge b-blue">Sent for Refund Approval</span></td></tr>
-              <tr><td>Delivery Issues</td><td>Delayed or likely to be delayed</td><td>08 Mar 2026</td><td><span class="badge b-green">Closed</span></td></tr>
+              <tr><td>Return &amp; Pickup</td><td>Missing or less quantity received</td><td>10 Mar 2026</td><td><span class="badge b-amber">L2 Escalations - LOG</span></td><td><a href="#" style="color:var(--red);font-weight:600;font-size:11px;text-decoration:none;">Link ↗</a></td></tr>
+              <tr><td>Payments &amp; Refunds</td><td>Refund not credited to account</td><td>12 Mar 2026</td><td><span class="badge b-blue">Sent for Refund Approval</span></td><td><a href="#" style="color:var(--red);font-weight:600;font-size:11px;text-decoration:none;">Link ↗</a></td></tr>
+              <tr><td>Delivery Issues</td><td>Delayed or likely to be delayed</td><td>08 Mar 2026</td><td><span class="badge b-green">Closed</span></td><td><a href="#" style="color:var(--red);font-weight:600;font-size:11px;text-decoration:none;">Link ↗</a></td></tr>
             </tbody>
           </table>
         </div>
@@ -1892,7 +2104,7 @@ window.onload=function(){
       </div>
       <div style="display:flex;gap:8px;">
         <button class="btn btn-g btn-sm" onclick="closeModal('initiateReturnModal')">Cancel</button>
-        <button class="btn btn-r" style="flex:1;font-size:12px;" onclick="closeModal('initiateReturnModal');alert('Return initiated successfully!')">↩ RETURN</button>
+        <button class="btn btn-r" style="flex:1;font-size:12px;" onclick="closeModal('initiateReturnModal');alert('Return initiated successfully!')">↩ CONFIRM RETURN REQUEST</button>
       </div>
     </div>
   </div>
@@ -1962,9 +2174,10 @@ function toggleEdgeAccordion(id, chevId, rowEl) {
 function toggleActionsDropdown(e) {
   e.stopPropagation();
   var dd = document.getElementById('actionsDropdown');
-  var btn = document.getElementById('actionsBtn');
+  var btn = e.currentTarget;
   var isOpen = dd.style.display !== 'none';
   if (isOpen) { dd.style.display = 'none'; return; }
+  buildActionsDropdown(_activeTabIdx);
   var rect = btn.getBoundingClientRect();
   dd.style.display = 'block';
   dd.style.top = (rect.bottom + 4) + 'px';
@@ -2041,13 +2254,257 @@ function switchAHSub(section, sub, el) {
 }
 
 function switchActiveTab(idx, el) {
+  _activeTabIdx = idx;
   document.querySelectorAll('#activeOrderTabs > div').forEach(function(t,i) {
     t.style.color = i === idx ? 'var(--amber)' : 'var(--text3)';
     t.style.borderBottomColor = i === idx ? 'var(--amber)' : 'transparent';
     t.style.fontWeight = i === idx ? '700' : '600';
   });
-  document.getElementById('activeTabPanel0').style.display = idx === 0 ? 'flex' : 'none';
-  document.getElementById('activeTabPanel1').style.display = idx === 1 ? 'flex' : 'none';
+  for (var i = 0; i <= 8; i++) {
+    var p = document.getElementById('activeTabPanel' + i);
+    if (p) p.style.display = i === idx ? 'flex' : 'none';
+  }
+}
+</script>
+<!-- Schedule Doc Call Modal -->
+<div class="modal-overlay" id="scheduleDocCallModal" onclick="closeOnOv(event,'scheduleDocCallModal')">
+  <div class="modal modal-sm">
+    <div class="modal-hd"><div class="modal-title">🩺 Schedule Doc Call</div><div class="modal-close" onclick="closeModal('scheduleDocCallModal')">✕</div></div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:11px;">
+        <div><div class="f-lbl" style="margin-bottom:3px;">Issue Type</div>
+          <select style="width:100%;" id="docIssueType">
+            <option value="">--- Select issue type ---</option>
+            <option>Doctor did not call or call was missed</option>
+            <option>Doctor consultation call was unsatisfactory</option>
+            <option>Dosage or usage related query</option>
+            <option>Side effect or reaction reported</option>
+            <option>Query about substitutes</option>
+            <option>Issue not listed</option>
+          </select>
+        </div>
+        <div><div class="f-lbl" style="margin-bottom:3px;">Linked Order ID</div><input type="text" style="width:100%;" value="#ORD-4821"></div>
+        <div><div class="f-lbl" style="margin-bottom:3px;">Remarks</div><textarea style="width:100%;height:60px;" placeholder="Add context..."></textarea></div>
+        <div><div class="f-lbl" style="margin-bottom:3px;">Patient Name</div><input type="text" id="docPatientName" style="width:100%;" placeholder="Enter patient name"></div>
+        <div>
+          <div class="f-lbl" style="margin-bottom:3px;">Patient Phone Number</div>
+          <input type="text" id="docPatientPhone" style="width:100%;" placeholder="10-digit mobile number" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'')">
+          <div id="docPhoneErr" style="display:none;font-size:10px;color:var(--red);margin-top:3px;">Please enter a valid 10-digit phone number.</div>
+        </div>
+        <div>
+          <div class="f-lbl" style="margin-bottom:6px;">Booking Consultation Slot For</div>
+          <div style="display:flex;gap:8px;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--text2);">
+              <input type="radio" name="slotChoice" value="now" checked onchange="toggleSlotPicker(this.value)" style="accent-color:var(--accent);width:14px;height:14px;">Now
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--text2);">
+              <input type="radio" name="slotChoice" value="select" onchange="toggleSlotPicker(this.value)" style="accent-color:var(--accent);width:14px;height:14px;">Select Slot
+            </label>
+          </div>
+          <div id="slotPicker" style="display:none;margin-top:8px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <div><div class="f-lbl" style="margin-bottom:3px;">Date</div>
+                <select id="slotDate" style="width:100%;font-size:11.5px;">
+                  <option value="">--- Select date ---</option>
+                  <option>Today — 13 Apr 2026</option><option>Tomorrow — 14 Apr 2026</option>
+                  <option>15 Apr 2026</option><option>16 Apr 2026</option><option>17 Apr 2026</option>
+                </select>
+              </div>
+              <div><div class="f-lbl" style="margin-bottom:3px;">Time</div>
+                <select id="slotTime" style="width:100%;font-size:11.5px;">
+                  <option value="">--- Select time ---</option>
+                  <option>09:00 AM – 09:30 AM</option><option>09:30 AM – 10:00 AM</option>
+                  <option>10:00 AM – 10:30 AM</option><option>10:30 AM – 11:00 AM</option>
+                  <option>11:00 AM – 11:30 AM</option><option>11:30 AM – 12:00 PM</option>
+                  <option>02:00 PM – 02:30 PM</option><option>02:30 PM – 03:00 PM</option>
+                  <option>03:00 PM – 03:30 PM</option><option>03:30 PM – 04:00 PM</option>
+                  <option>04:00 PM – 04:30 PM</option><option>04:30 PM – 05:00 PM</option>
+                  <option>05:00 PM – 05:30 PM</option><option>05:30 PM – 06:00 PM</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-p btn-full" style="font-size:12.5px;padding:9px;" onclick="closeModal('scheduleDocCallModal');alert('Doc call scheduled!')">🩺 Schedule Doc Call</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit History Modal -->
+<div class="modal-overlay" id="editHistoryModal" onclick="closeOnOv(event,'editHistoryModal')">
+  <div class="modal modal-sm">
+    <div class="modal-hd"><div class="modal-title">🕐 Edit History — #ORD-1968372</div><div class="modal-close" onclick="closeModal('editHistoryModal')">✕</div></div>
+    <div class="modal-body" style="padding:14px 18px;">
+      <div style="display:flex;flex-direction:column;gap:0;">
+        <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);">
+          <div style="width:3px;border-radius:3px;background:var(--accent);flex-shrink:0;"></div>
+          <div style="flex:1;"><div style="font-size:11.5px;font-weight:600;color:var(--text);">Qty changed: Metformin 500mg × 2 → × 3</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">Reason: Customer requested additional strip</div><div style="font-size:9.5px;color:var(--text3);margin-top:2px;font-family:'JetBrains Mono',monospace;">18 Mar 2026, 4:42 PM · by Rohit Anand</div></div>
+        </div>
+        <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);">
+          <div style="width:3px;border-radius:3px;background:var(--amber);flex-shrink:0;"></div>
+          <div style="flex:1;"><div style="font-size:11.5px;font-weight:600;color:var(--text);">Item removed: Rosuvastatin 10mg × 1</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">Reason: Out of stock at fulfilment centre</div><div style="font-size:9.5px;color:var(--text3);margin-top:2px;font-family:'JetBrains Mono',monospace;">18 Mar 2026, 4:38 PM · by Rohit Anand</div></div>
+        </div>
+        <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2);">
+          <div style="width:3px;border-radius:3px;background:var(--green);flex-shrink:0;"></div>
+          <div style="flex:1;"><div style="font-size:11.5px;font-weight:600;color:var(--text);">Address updated: HSR Layout → Koramangala</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">Reason: Customer requested delivery address change</div><div style="font-size:9.5px;color:var(--text3);margin-top:2px;font-family:'JetBrains Mono',monospace;">18 Mar 2026, 4:20 PM · by Rohit Anand</div></div>
+        </div>
+        <div style="display:flex;gap:10px;padding:10px 0;">
+          <div style="width:3px;border-radius:3px;background:var(--text3);flex-shrink:0;"></div>
+          <div style="flex:1;"><div style="font-size:11.5px;font-weight:600;color:var(--text);">Order created</div><div style="font-size:10px;color:var(--text3);margin-top:2px;">Reason: —</div><div style="font-size:9.5px;color:var(--text3);margin-top:2px;font-family:'JetBrains Mono',monospace;">18 Mar 2026, 4:15 PM · by System</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cancel Order Modal -->
+<div class="modal-overlay" id="cancelOrderModal" onclick="closeOnOv(event,'cancelOrderModal')">
+  <div class="modal modal-sm">
+    <div class="modal-hd"><div class="modal-title">✕ Cancel Order</div><div class="modal-close" onclick="closeModal('cancelOrderModal')">✕</div></div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div><div class="f-lbl" style="margin-bottom:4px;">Order ID</div><input type="text" id="cancelOrderId" style="width:100%;font-size:12px;" readonly></div>
+        <div><div class="f-lbl" style="margin-bottom:4px;">Reason for Cancellation</div>
+          <select id="cancelOrderReason" style="width:100%;font-size:12px;padding:7px 10px;">
+            <option value="">--- Select a reason ---</option>
+            <option>Customer changed their mind</option>
+            <option>Ordered by mistake / duplicate order</option>
+            <option>Delivery address issue</option>
+            <option>Item(s) no longer needed</option>
+          </select>
+        </div>
+        <div style="background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:7px;padding:9px 12px;font-size:11px;color:var(--amber);display:flex;align-items:flex-start;gap:6px;"><span style="flex-shrink:0;">⚠</span><span>Cancellation is irreversible. Refund (if applicable) will be processed within 5–7 business days.</span></div>
+        <div style="display:flex;gap:8px;margin-top:4px;">
+          <button class="btn btn-g btn-sm" onclick="closeModal('cancelOrderModal')">Go Back</button>
+          <button class="btn btn-r" style="flex:1;font-size:12px;" onclick="closeModal('cancelOrderModal');alert('Order cancelled.')">✕ Confirm Cancellation</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSlotPicker(val) {
+  document.getElementById('slotPicker').style.display = val === 'select' ? 'block' : 'none';
+}
+function openCancelOrder(orderId) {
+  document.getElementById('cancelOrderId').value = '#' + orderId;
+  document.getElementById('cancelOrderReason').value = '';
+  openModal('cancelOrderModal');
+}
+</script>
+
+<script>
+const TAB_ACTIONS = {
+  0: [ // Order #1969951 — In Transit with issue
+    { label: '📤 Share Order Details', action: "alert('Order details shared')" },
+    { label: '✏ Edit Order', disabled: true, reason: 'Not modifiable in transit' },
+    { label: '👤 Edit Patient Name', disabled: true, reason: 'Not modifiable in transit' },
+    { label: '📞 Edit Patient Phone No.', disabled: true, reason: 'Not modifiable in transit' },
+    { label: '📍 Edit Address', disabled: true, reason: 'Not modifiable in transit' },
+    { label: '✕ Cancel Order', disabled: true, reason: 'Cannot cancel in transit' },
+    { separator: true },
+    { label: '🔺 Escalate to L2', danger: true, action: "openModal('raiseTicketModal')" },
+    { label: '📋 Fill Logistics Escalation', action: "window.open('https://script.google.com/a/macros/platinumrx.in/s/AKfycbzo13DwLnMDaq5zT8fRtYVgfAYGO4XhJangfpeiExRMBuY_vkVmC_2H-62PMQwS9FWV2g/exec','_blank')" },
+    { separator: true },
+    { label: '🧾 Share Invoice', disabled: true, reason: 'Available after delivery' },
+    { label: '📋 Share Prescription', disabled: true, reason: 'Available after delivery' },
+    { separator: true },
+    { label: '↩ Initiate Return', disabled: true, reason: 'Not delivered yet' },
+    { label: '🔄 Initiate RTO', danger: true, action: "alert('RTO initiated')" },
+    { label: '🚚 Escalate to Logistics', danger: true, action: "alert('Escalated to Logistics')" },
+    { separator: true },
+    { label: '💸 Share Refund Details', action: "alert('Refund details shared')" },
+    { label: '📩 Request Refund Details', action: "alert('Refund details requested')" },
+  ],
+  1: [ // Order #1968372 — Processing
+    { label: '📤 Share Order Details', action: "alert('Order details shared')" },
+    { label: '✏ Edit Order', action: "openModal('editOrderModal')" },
+    { label: '👤 Edit Patient Name', action: "alert('Edit patient name')" },
+    { label: '📞 Edit Patient Phone No.', action: "alert('Edit patient phone')" },
+    { label: '📍 Edit Address', action: "openModal('editAddressModal')" },
+    { label: '✕ Cancel Order', danger: true, action: "openCancelOrder('1968372')" },
+    { separator: true },
+    { label: '🩺 Schedule Doc Call', action: "openModal('scheduleDocCallModal')" },
+    { separator: true },
+    { label: '🧾 Share Invoice', disabled: true, reason: 'Available after delivery' },
+    { label: '📋 Share Prescription', disabled: true, reason: 'Available after delivery' },
+    { separator: true },
+    { label: '↩ Initiate Return', disabled: true, reason: 'Not delivered yet' },
+    { label: '🔄 Initiate RTO', disabled: true, reason: 'Not in transit yet' },
+  ],
+  2: [ // Order #1967351 — Delivered
+    { label: '📤 Share Order Details', action: "alert('Order details shared')" },
+    { label: '✏ Edit Order', disabled: true, reason: 'Order already delivered' },
+    { label: '📍 Edit Address', disabled: true, reason: 'Order already delivered' },
+    { label: '✕ Cancel Order', disabled: true, reason: 'Order already delivered' },
+    { separator: true },
+    { label: '🧾 Share Invoice', action: "alert('Invoice shared')" },
+    { label: '📋 Share Prescription', action: "alert('Prescription shared')" },
+    { separator: true },
+    { label: '↩ Initiate Return', action: "openModal('initiateReturnModal')" },
+    { label: '🔺 Escalate to L2', danger: true, action: "openModal('raiseTicketModal')" },
+    { separator: true },
+    { label: '💸 Share Refund Details', action: "alert('Refund details shared')" },
+  ],
+  3: [ // Order #1955803 — QC Rejected return
+    { label: '📤 Share Order Details', action: "alert('Order details shared')" },
+    { label: '🔺 Escalate to L2', danger: true, action: "openModal('raiseTicketModal')" },
+    { separator: true },
+    { label: '💸 Share Refund Details', action: "alert('Refund details shared')" },
+    { label: '📩 Request Refund Details', action: "alert('Refund details requested')" },
+  ],
+  4: [ // Return #1966034 — Pickup Pending LOG
+    { label: '🔺 Escalate to LOG', danger: true, action: "openModal('raiseTicketModal')" },
+    { separator: true },
+    { label: '📡 Track Pickup Carrier', action: "alert('Opening carrier tracking')" },
+    { label: '💸 Share Refund Details', action: "alert('Refund details shared')" },
+  ],
+  5: [ // Return #1965981 — Return In Transit LOG
+    { label: '🔺 Escalate to LOG', danger: true, action: "openModal('raiseTicketModal')" },
+    { separator: true },
+    { label: '📡 Track Return Shipment', action: "alert('Opening carrier tracking')" },
+    { label: '💸 Share Refund Details', action: "alert('Refund details shared')" },
+  ],
+  6: [ // Return #1964771 — WH QC Escalate to WH
+    { label: '🔺 Escalate to WH', danger: true, action: "openModal('raiseTicketModal')" },
+    { label: '🔺 Escalate to L2', danger: true, action: "openModal('raiseTicketModal')" },
+    { separator: true },
+    { label: '💸 Share Refund Details', action: "alert('Refund details shared')" },
+    { label: '📩 Request Refund Details', action: "alert('Refund details requested')" },
+  ],
+  7: [ // Return #1964771 ② — Partial Cashfree refund
+    { label: '🔺 Escalate to L2', danger: true, action: "openModal('raiseTicketModal')" },
+    { separator: true },
+    { label: '💸 Share Refund Details', action: "alert('Refund details shared')" },
+    { label: '📩 Request Refund Details', action: "alert('Refund details requested')" },
+    { label: '➕ Add Refund Details', action: "alert('Add refund details')" },
+  ],
+  8: [ // Return #1964771 ③ — Refund Processed
+    { label: '🔺 Escalate to L2', danger: true, action: "openModal('raiseTicketModal')" },
+    { separator: true },
+    { label: '💸 Share Refund Details', action: "alert('Refund details shared')" },
+    { label: '📄 Share Invoice', action: "alert('Invoice shared')" },
+  ],
+};
+
+var _activeTabIdx = 0;
+
+function buildActionsDropdown(tabIdx) {
+  var actions = TAB_ACTIONS[tabIdx] || [];
+  var html = '';
+  actions.forEach(function(item) {
+    if (item.separator) {
+      html += '<div style="height:1px;background:var(--border2);margin:2px 0;"></div>';
+    } else if (item.disabled) {
+      html += '<div class="action-item action-disabled"><span>' + item.label + '</span><span class="action-reason">' + (item.reason || '') + '</span></div>';
+    } else {
+      var cls = item.danger ? 'action-item action-danger' : 'action-item';
+      html += '<div class="' + cls + '" onclick="' + item.action + ';document.getElementById(\'actionsDropdown\').style.display=\'none\'">' + '<span>' + item.label + '</span></div>';
+    }
+  });
+  document.getElementById('actionsDropdown').innerHTML = html;
 }
 </script>
 </body>
